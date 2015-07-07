@@ -55,7 +55,7 @@ static inline uint64_t ror(uint64_t value, int shift) {
 // Get forward-strand hash value of the base kmer, i.e. fhval(kmer_0)
 static inline uint64_t getFhval(const std::string &kmerSeq) {
     uint64_t hVal=0;
-	unsigned k = kmerSeq.length();
+    unsigned k = kmerSeq.length();
     for(unsigned i=0; i<k; i++)
         hVal ^= rol(seedTab[(unsigned)kmerSeq[i]], k-1-i);
     return hVal;
@@ -64,10 +64,26 @@ static inline uint64_t getFhval(const std::string &kmerSeq) {
 // Get reverse-strand hash value of the base kmer, i.e. rhval(kmer_0)
 static inline uint64_t getRhval(const std::string &kmerSeq) {
     uint64_t hVal=0;
-	unsigned k = kmerSeq.length();
+    unsigned k = kmerSeq.length();
     for(unsigned i=0; i<k; i++)
         hVal ^= rol(seedTab[(unsigned)kmerSeq[i]+cpOff], i);
     return hVal;
+}
+
+static inline uint64_t initHashes(const std::string &kmerSeq,
+    uint64_t& fhVal, uint64_t& rhVal)
+{
+    fhVal = getFhval(kmerSeq);
+    rhVal = getRhval(kmerSeq);
+    return (rhVal<fhVal)? rhVal : fhVal;
+}
+
+static inline uint64_t rollHashesRight(uint64_t& fhVal, uint64_t& rhVal,
+    unsigned char charOut, unsigned char charIn, unsigned k)
+{
+    fhVal = rol(fhVal, 1) ^ rol(seedTab[charOut], k) ^ seedTab[charIn];
+    rhVal = ror(rhVal, 1) ^ ror(seedTab[charOut+cpOff], 1) ^ rol(seedTab[charIn+cpOff], k-1);
+    return (rhVal<fhVal)? rhVal : fhVal;
 }
 
 #endif

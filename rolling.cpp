@@ -64,17 +64,15 @@ void loadSeq(unsigned char *bloomFilter, string& seq) {
     transform(seq.begin(), seq.end(), seq.begin(), ::toupper);
     string kmer = seq.substr(0,opt::kmerLen);
 
-    uint64_t fhVal = getFhval(kmer);
-    uint64_t rhVal = getRhval(kmer);
-    uint64_t mhVal = (rhVal<fhVal)? rhVal: fhVal;
+    uint64_t fhVal, rhVal, mhVal;
+    mhVal = initHashes(kmer, fhVal, rhVal);
     size_t hashLoc = mhVal%opt::fsize;
     #pragma omp atomic
     bloomFilter[hashLoc/8] |= (1 << (7 - hashLoc % 8));
     //__sync_or_and_fetch(&bloomFilter[hashLoc/8], (1 << (7 - hashLoc % 8)));
     for (size_t i = 1; i < seq.size() - opt::kmerLen + 1; i++) {
-        fhVal = rol(fhVal, 1) ^ rol(seedTab[(unsigned)seq[i-1]], opt::kmerLen) ^ seedTab[(unsigned)seq[i-1+opt::kmerLen]];
-        rhVal = ror(rhVal, 1) ^ ror(seedTab[(unsigned)seq[i-1]+cpOff], 1) ^ rol(seedTab[(unsigned)seq[i-1+opt::kmerLen]+cpOff], opt::kmerLen-1);
-        mhVal = (rhVal<fhVal)? rhVal: fhVal;
+        mhVal = rollHashesRight(fhVal, rhVal, seq[i-1],
+            seq[i+opt::kmerLen-1], opt::kmerLen);
         hashLoc = mhVal%opt::fsize;
         #pragma omp atomic
         bloomFilter[hashLoc/8] |= (1 << (7 - hashLoc % 8));
