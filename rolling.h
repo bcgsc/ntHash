@@ -2,6 +2,7 @@
 #define ROLLING_HASH_H
 
 #include <string>
+#include <stdint.h>
 
 // cpOff is the offset for the complement base in the random seeds table
 static const int cpOff = -20;
