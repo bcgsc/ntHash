@@ -233,8 +233,8 @@ int main(int argc, char** argv)
 
 	/* count collisions */
 	uint64_t collisions = kmers.size() - hashCounts.size();
-	cout << "distinct k-mers hashed: " << kmers.size() << endl;
-	cout << "hash collisions: " << collisions << endl;
+	cout << "distinct_kmers\tcollisions\n";
+	cout << kmers.size() << "\t" << collisions << "\n";
 
 	/* create PNG image */
 	if (!opt::pngPath.empty()) {
