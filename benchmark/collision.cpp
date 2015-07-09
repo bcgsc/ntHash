@@ -112,7 +112,7 @@ static inline bool hashSeq(string seq, unordered_set<string>& kmers,
 				hash = initHashes(kmer, fwdHash, rcHash);
 			} else {
 				hash = rollHashesRight(fwdHash, rcHash,
-						prevKmer.front(), kmer.back(), opt::k);
+					prevKmer.at(0), kmer.at(opt::k-1), opt::k);
 			}
 		}
 		hash %= opt::windowSize;
