@@ -41,7 +41,15 @@ static const char USAGE_MESSAGE[] =
 "                             every N k-mers [10000]\n"
 "     -v, --verbose           show progress messages\n"
 "     -w, --window-size N     window size; this should normally\n"
-"                             be a prime number [1048573]\n";
+"                             be a prime number [1048573]\n"
+"\n"
+"Sample Prime Numbers (for window size):\n"
+"\n"
+"     1048573\n"
+"     2047541\n"
+"     3055471\n"
+"     4051051\n"
+"     5051143\n";
 
 namespace opt {
 	static float maxDensity = 0.05f;
