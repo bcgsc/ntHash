@@ -98,6 +98,62 @@ struct PNG {
 
 typedef unordered_map<uint64_t, uint8_t> HashCountMap;
 
+static char complement[256] = {
+	0,  0,  0,  0,  0,  0,  0,  0, // 0..7
+	0,  0,  0,  0,  0,  0,  0,  0, // 8..15
+	0,  0,  0,  0,  0,  0,  0,  0, // 16..23
+	0,  0,  0,  0,  0,  0,  0,  0, // 24..31
+	0,  0,  0,  0,  0,  0,  0,  0, // 32..39
+	0,  0,  0,  0,  0,  0,  0,  0, // 40..47
+	0,  0,  0,  0,  0,  0,  0,  0, // 48..55
+	0,  0,  0,  0,  0,  0,  0,  0, // 56..63
+	0, 84,  0, 71,  0,  0,  0, 67, // 64..71 (A,C,G)
+	0,  0,  0,  0,  0,  0,  0,  0, // 72..79
+	0,  0,  0,  0, 65,  0,  0,  0, // 80..87 (T)
+	0,  0,  0,  0,  0,  0,  0,  0, // 88..95
+	0,116,  0,103,  0,  0,  0, 99, // 96..103 (a,c,g)
+	0,  0,  0,  0,  0,  0,  0,  0, // 104..111
+	0,  0,  0,  0, 97,  0,  0,  0, // 112..119 (t)
+	0,  0,  0,  0,  0,  0,  0,  0, // 120..127
+	0,  0,  0,  0,  0,  0,  0,  0, // 128..135
+	0,  0,  0,  0,  0,  0,  0,  0, // 136..143
+	0,  0,  0,  0,  0,  0,  0,  0, // 144..151
+	0,  0,  0,  0,  0,  0,  0,  0, // 152..159
+	0,  0,  0,  0,  0,  0,  0,  0, // 160..167
+	0,  0,  0,  0,  0,  0,  0,  0, // 168..175
+	0,  0,  0,  0,  0,  0,  0,  0, // 176..183
+	0,  0,  0,  0,  0,  0,  0,  0, // 184..191
+	0,  0,  0,  0,  0,  0,  0,  0, // 192..199
+	0,  0,  0,  0,  0,  0,  0,  0, // 200..207
+	0,  0,  0,  0,  0,  0,  0,  0, // 208..215
+	0,  0,  0,  0,  0,  0,  0,  0, // 216..223
+	0,  0,  0,  0,  0,  0,  0,  0, // 224..231
+	0,  0,  0,  0,  0,  0,  0,  0, // 232..239
+	0,  0,  0,  0,  0,  0,  0,  0, // 240..247
+	0,  0,  0,  0,  0,  0,  0,  0  // 248..255
+};
+
+static inline void canonicalize(string& seq)
+{
+	unsigned k = seq.length();
+	string rc(k, 'N');
+	for (unsigned i = 0; i < k; ++i) {
+		unsigned char rcChar = complement[seq.at(i)];
+		rc.at(k-i-1) = rcChar;
+		if (seq.at(i) != rcChar) {
+			if (seq.at(i) < rcChar) {
+				return;
+			} else {
+				/* finish constructing reverse complement */
+				for (unsigned j = i + 1; j < k; ++j)
+					rc.at(k-j-1) = complement[seq.at(j)];
+				seq = rc;
+				return;
+			}
+		}
+	}
+}
+
 static inline bool hashSeq(string seq, unordered_set<string>& kmers,
 	HashCountMap& hashCounts)
 {
@@ -122,6 +178,13 @@ static inline bool hashSeq(string seq, unordered_set<string>& kmers,
 				hash = rollHashesRight(fwdHash, rcHash,
 					prevKmer.at(0), kmer.at(opt::k-1), opt::k);
 			}
+			/*
+			 * The rolling hash returns the same hash value for
+			 * both orientations of a k-mer. In order to count
+			 * the number of collisions correctly, we must store
+			 * only the canonical version of each k-mer.
+			 */
+			canonicalize(kmer);
 		}
 		hash %= opt::windowSize;
 		kmers.insert(kmer);
