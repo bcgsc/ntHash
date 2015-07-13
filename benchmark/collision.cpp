@@ -9,6 +9,8 @@
 #include <fstream>
 #include <sstream>
 #include <getopt.h>
+#include <iomanip>
+#include <time.h>
 #include "rolling.h"
 #include "city.h"
 
@@ -154,9 +156,13 @@ static inline void canonicalize(string& seq)
 	}
 }
 
-static inline bool hashSeq(string seq, unordered_set<string>& kmers,
+static inline pair<clock_t, bool> hashSeq(string seq, unordered_set<string>& kmers,
 	HashCountMap& hashCounts)
 {
+	/* return values */
+	clock_t hashTime = 0;
+	bool hitMaxDensity = false;
+
 	transform(seq.begin(), seq.end(), seq.begin(), ::toupper);
 	uint64_t fwdHash, rcHash, hash;
 	string prevKmer;
@@ -169,15 +175,19 @@ static inline bool hashSeq(string seq, unordered_set<string>& kmers,
 			continue;
 		}
 		if (opt::hashFunc == "city") {
+			clock_t start = clock();
 			hash = CityHash64(kmer.c_str(), kmer.length());
+			hashTime += clock() - start;
 		} else {
 			/* hashFunc == "rolling" */
+			clock_t start = clock();
 			if (prevKmer.empty()) {
 				hash = initHashes(kmer, fwdHash, rcHash);
 			} else {
 				hash = rollHashesRight(fwdHash, rcHash,
 					prevKmer.at(0), kmer.at(opt::k-1), opt::k);
 			}
+			hashTime += clock() - start;
 			/*
 			 * The rolling hash returns the same hash value for
 			 * both orientations of a k-mer. In order to count
@@ -190,13 +200,16 @@ static inline bool hashSeq(string seq, unordered_set<string>& kmers,
 		kmers.insert(kmer);
 		hashCounts[hash]++;
 		prevKmer = kmer;
-		if ((float)kmers.size() / opt::windowSize > opt::maxDensity)
-			return false;
+		/* we have reached max density, so stop early */
+		if ((float)kmers.size() / opt::windowSize > opt::maxDensity) {
+			hitMaxDensity = true;
+			break;
+		}
 		if (opt::verbose && kmers.size() % opt::progressStep == 0) {
 			cerr << "hashed " << kmers.size() << " k-mers" << endl;
 		}
 	}
-	return true;
+	return make_pair(hashTime, hitMaxDensity);
 }
 
 static inline void drawPNG(HashCountMap& hashCounts, PNG& png)
@@ -279,7 +292,6 @@ int main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 
-
 	ifstream fin;
 	if (argc > optind)
 		fin.open(argv[optind]);
@@ -291,21 +303,28 @@ int main(int argc, char** argv)
 	/* number of occurrences of each hash value (usually 1) */
 	HashCountMap hashCounts;
 
-
 	/* read and hash FASTA sequences */
 	string line;
+	clock_t hashTime = 0;
 	while(getline(in, line)) {
 		if (line.empty() || line.at(0) == '>')
 			continue;
-		/* return false when window exceeds opt::maxDensity */
-		if(!hashSeq(line, kmers, hashCounts))
+		pair<clock_t, bool> result =
+			hashSeq(line, kmers, hashCounts);
+		hashTime += result.first;
+		/* if max density threshold exceeded */
+		if (result.second)
 			break;
 	}
 
 	/* count collisions */
 	uint64_t collisions = kmers.size() - hashCounts.size();
-	cout << "distinct_kmers\tcollisions\n";
-	cout << kmers.size() << "\t" << collisions << "\n";
+	cout << "distinct_kmers\tcollisions\tcpu_sec\n";
+	cout << kmers.size() << "\t"
+		<< collisions << "\t"
+		<< setprecision(3)
+		<< (double)hashTime / CLOCKS_PER_SEC
+		<< "\n";
 
 	/* create PNG image */
 	if (!opt::pngPath.empty()) {
