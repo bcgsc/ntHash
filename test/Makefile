@@ -5,7 +5,7 @@ SHELL=/bin/sh
 
 TESTS:=revcomp
 revcomp_SOURCES:=revcomp.cpp
-bloom_HEADERS:=../rolling.h
+revcomp_HEADERS:=../rolling.h
 
 .PHONY: clean run_tests
 default: $(TESTS) run_tests
