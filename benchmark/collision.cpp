@@ -178,6 +178,7 @@ static inline pair<clock_t, bool> hashSeq(string seq, unordered_set<string>& kme
 			clock_t start = clock();
 			hash = CityHash64(kmer.c_str(), kmer.length());
 			hashTime += clock() - start;
+			prevKmer = kmer;
 		} else {
 			/* hashFunc == "rolling" */
 			clock_t start = clock();
@@ -188,6 +189,7 @@ static inline pair<clock_t, bool> hashSeq(string seq, unordered_set<string>& kme
 					prevKmer.at(0), kmer.at(opt::k-1), opt::k);
 			}
 			hashTime += clock() - start;
+			prevKmer = kmer;
 			/*
 			 * The rolling hash returns the same hash value for
 			 * both orientations of a k-mer. In order to count
@@ -199,7 +201,6 @@ static inline pair<clock_t, bool> hashSeq(string seq, unordered_set<string>& kme
 		hash %= opt::windowSize;
 		kmers.insert(kmer);
 		hashCounts[hash]++;
-		prevKmer = kmer;
 		/* we have reached max density, so stop early */
 		if ((float)kmers.size() / opt::windowSize > opt::maxDensity) {
 			hitMaxDensity = true;
