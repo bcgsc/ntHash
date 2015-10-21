@@ -3,7 +3,7 @@ SHELL=/bin/sh
 # turn off suffix-based rules
 .SUFFIXES:
 
-CXXFLAGS:=-std=c++0x $(CXXFLAGS)
+CXXFLAGS:=-O3 -fopenmp $(CXXFLAGS)
 
 PROGRAMS:=bloom collision
 bloom_SOURCES:=bloom.cpp
