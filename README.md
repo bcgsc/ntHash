@@ -1,4 +1,4 @@
-To build the Bloom filter test program (nttest) do:
+To build the test suite (nttest) do:
 ```
 $ make
 ```
