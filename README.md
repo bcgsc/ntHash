@@ -41,9 +41,9 @@ Description:
   QUERY_FILE: the query file name.
 ```
 For example, to evaluate the uniformity of different hash methods using the Bloom filter data structure on randomly generated data sets with following options:
-* 100 genes of length 5,000,000bp as reference in file genes.fa
-* 4,000,000 reads of length 250bp as query in file reads.fa
-* 12 threads
+* `100 genes of length 5,000,000bp as reference in file genes.fa`
+* `4,000,000 reads of length 250bp as query in file reads.fa`
+* `12 threads`
 run:
 ```
 $ ./nttest --uniformity --input -q4000000 -l250 -t100 -g5000000 -j12 genes.fa reads.fa 
