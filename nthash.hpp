@@ -199,12 +199,14 @@ inline uint64_t NT64(const char * kmerSeq, const unsigned k, const unsigned seed
 }
 
 // canonical ntHash
-inline uint64_t NTC64(const char * kmerSeq, const unsigned k) {
-    return (getFhval(kmerSeq, k) ^ getRhval(kmerSeq, k));
+inline uint64_t NTC64(const char * kmerSeq, const unsigned k, uint64_t& fhVal, uint64_t& rhVal) {
+    fhVal = getFhval(kmerSeq, k);
+    rhVal = getRhval(kmerSeq, k);
+    return (rhVal^fhVal);
 }
 
 // canonical ntHash for sliding k-mers
-inline uint64_t NTC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charIn, const unsigned char charOut, const unsigned k) {
+inline uint64_t NTC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k) {
     fhVal = ror(fhVal, 1) ^ ror(seedTab[charOut], 1) ^ rol(seedTab[charIn], k-1);
     rhVal = rol(rhVal, 1) ^ rol(seedTab[charOut+cpOff], k) ^ seedTab[charIn+cpOff];
     return rhVal ^ fhVal;
