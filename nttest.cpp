@@ -20,6 +20,7 @@
 #include <getopt.h>
 #include "seqgen.hpp"
 #include "BloomFilter.hpp"
+#include "nthash.hpp"
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -78,7 +79,7 @@ static const struct option longopts[] = {
     { NULL, 0, NULL, 0 }
 };
 
-static const string itm[]= {"city","murmur","xxhash","nthash","ntbase"};
+static const string itm[]= {"city","murmur","xxhash","ntbase","nthash"};
 
 static const unsigned char b2r[256] = {
     'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', //0
@@ -269,6 +270,10 @@ void queryBf(BloomFilter &myFilter, const char* faqFile) {
         {
             good = getline(uFile, hline);
             good = getline(uFile, line);
+			if(opt::fastq) {
+				getline(uFile, hline);
+				getline(uFile, hline);
+            }
         }
         if(good) {
             if(itm[opt::method]=="city")
@@ -380,7 +385,7 @@ void nthashBF(const char *geneName, const char *readName) {
     omp_set_num_threads(opt::threads);
 #endif
     std::cerr<<"#threads="<<opt::threads << "\n";
-    for(opt::method=0; opt::method<4; opt::method++) {
+    for(opt::method=0; opt::method<5; opt::method++) {
         std::cerr<<"method="<<itm[opt::method]<<" ";
         for (unsigned k=50; k<=opt::squery; k+=100) {
             opt::kmerLen = k;
@@ -469,7 +474,6 @@ void nthashRT(const char *readName) {
 }
 
 int main(int argc, char** argv) {
-
     bool die = false;
     for (int c; (c = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1;) {
         std::istringstream arg(optarg != NULL ? optarg : "");
@@ -512,6 +516,9 @@ int main(int argc, char** argv) {
             break;
         case 'u':
             opt::uniformity=true;
+            break;
+        case 'f':
+            opt::fastq=true;
             break;
         case OPT_HELP:
             std::cerr << USAGE_MESSAGE;

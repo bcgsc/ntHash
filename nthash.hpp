@@ -21,10 +21,10 @@ const int multiShift = 27;
 static const uint64_t multiSeed = 0x90b45d39fb6da1fa;
 
 // 64-bit random seeds corresponding to bases and their complements
-static const uint64_t seedA = 0x3c8bfbb395c60474;
-static const uint64_t seedC = 0x3193c18562a02b4c;
-static const uint64_t seedG = 0x20323ed082572324;
-static const uint64_t seedT = 0x295549f54be24456;
+static const uint64_t seedA = 0x359d7bbf07501017;
+static const uint64_t seedC = 0x4326d1e1c820effb;
+static const uint64_t seedG = 0xec612e52b7efe400;
+static const uint64_t seedT = 0x9ada840c789f1bec;
 static const uint64_t seedN = 0x0000000000000000;
 
 static const uint64_t vecA[64] = {
