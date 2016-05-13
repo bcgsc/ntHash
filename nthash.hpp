@@ -130,7 +130,7 @@ static const uint64_t seedTab[256] = {
     seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 72..79
     seedN, seedN, seedN, seedC, seedT, seedN, seedN, seedN, // 80..87
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
-    seedA, seedA,	seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
+    seedA, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
     seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
