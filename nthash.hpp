@@ -28,47 +28,47 @@ static const uint64_t seedT = 0x9ada840c789f1bec;
 static const uint64_t seedN = 0x0000000000000000;
 
 static const uint64_t vecA[64] = {
-    0x3c8bfbb395c60474,0x7917f7672b8c08e8,0xf22feece571811d0,0xe45fdd9cae3023a1,0xc8bfbb395c604743,0x917f7672b8c08e87,0x22feece571811d0f,0x45fdd9cae3023a1e,
-    0x8bfbb395c604743c,0x17f7672b8c08e879,0x2feece571811d0f2,0x5fdd9cae3023a1e4,0xbfbb395c604743c8,0x7f7672b8c08e8791,0xfeece571811d0f22,0xfdd9cae3023a1e45,
-    0xfbb395c604743c8b,0xf7672b8c08e87917,0xeece571811d0f22f,0xdd9cae3023a1e45f,0xbb395c604743c8bf,0x7672b8c08e87917f,0xece571811d0f22fe,0xd9cae3023a1e45fd,
-    0xb395c604743c8bfb,0x672b8c08e87917f7,0xce571811d0f22fee,0x9cae3023a1e45fdd,0x395c604743c8bfbb,0x72b8c08e87917f76,0xe571811d0f22feec,0xcae3023a1e45fdd9,
-    0x95c604743c8bfbb3,0x2b8c08e87917f767,0x571811d0f22feece,0xae3023a1e45fdd9c,0x5c604743c8bfbb39,0xb8c08e87917f7672,0x71811d0f22feece5,0xe3023a1e45fdd9ca,
-    0xc604743c8bfbb395,0x8c08e87917f7672b,0x1811d0f22feece57,0x3023a1e45fdd9cae,0x604743c8bfbb395c,0xc08e87917f7672b8,0x811d0f22feece571,0x023a1e45fdd9cae3,
-    0x04743c8bfbb395c6,0x08e87917f7672b8c,0x11d0f22feece5718,0x23a1e45fdd9cae30,0x4743c8bfbb395c60,0x8e87917f7672b8c0,0x1d0f22feece57181,0x3a1e45fdd9cae302,
-    0x743c8bfbb395c604,0xe87917f7672b8c08,0xd0f22feece571811,0xa1e45fdd9cae3023,0x43c8bfbb395c6047,0x87917f7672b8c08e,0x0f22feece571811d,0x1e45fdd9cae3023a
+    0x359d7bbf07501017,0x6b3af77e0ea0202e,0xd675eefc1d40405c,0xacebddf83a8080b9,0x59d7bbf075010173,0xb3af77e0ea0202e6,0x675eefc1d40405cd,0xcebddf83a8080b9a,
+    0x9d7bbf0750101735,0x3af77e0ea0202e6b,0x75eefc1d40405cd6,0xebddf83a8080b9ac,0xd7bbf07501017359,0xaf77e0ea0202e6b3,0x5eefc1d40405cd67,0xbddf83a8080b9ace,
+    0x7bbf07501017359d,0xf77e0ea0202e6b3a,0xeefc1d40405cd675,0xddf83a8080b9aceb,0xbbf07501017359d7,0x77e0ea0202e6b3af,0xefc1d40405cd675e,0xdf83a8080b9acebd,
+    0xbf07501017359d7b,0x7e0ea0202e6b3af7,0xfc1d40405cd675ee,0xf83a8080b9acebdd,0xf07501017359d7bb,0xe0ea0202e6b3af77,0xc1d40405cd675eef,0x83a8080b9acebddf,
+    0x07501017359d7bbf,0x0ea0202e6b3af77e,0x1d40405cd675eefc,0x3a8080b9acebddf8,0x7501017359d7bbf0,0xea0202e6b3af77e0,0xd40405cd675eefc1,0xa8080b9acebddf83,
+    0x501017359d7bbf07,0xa0202e6b3af77e0e,0x40405cd675eefc1d,0x8080b9acebddf83a,0x01017359d7bbf075,0x0202e6b3af77e0ea,0x0405cd675eefc1d4,0x080b9acebddf83a8,
+    0x1017359d7bbf0750,0x202e6b3af77e0ea0,0x405cd675eefc1d40,0x80b9acebddf83a80,0x017359d7bbf07501,0x02e6b3af77e0ea02,0x05cd675eefc1d404,0x0b9acebddf83a808,
+    0x17359d7bbf075010,0x2e6b3af77e0ea020,0x5cd675eefc1d4040,0xb9acebddf83a8080,0x7359d7bbf0750101,0xe6b3af77e0ea0202,0xcd675eefc1d40405,0x9acebddf83a8080b
 };
 
 static const uint64_t vecC[64] = {
-    0x3193c18562a02b4c,0x6327830ac5405698,0xc64f06158a80ad30,0x8c9e0c2b15015a61,0x193c18562a02b4c3,0x327830ac54056986,0x64f06158a80ad30c,0xc9e0c2b15015a618,
-    0x93c18562a02b4c31,0x27830ac540569863,0x4f06158a80ad30c6,0x9e0c2b15015a618c,0x3c18562a02b4c319,0x7830ac5405698632,0xf06158a80ad30c64,0xe0c2b15015a618c9,
-    0xc18562a02b4c3193,0x830ac54056986327,0x06158a80ad30c64f,0x0c2b15015a618c9e,0x18562a02b4c3193c,0x30ac540569863278,0x6158a80ad30c64f0,0xc2b15015a618c9e0,
-    0x8562a02b4c3193c1,0x0ac5405698632783,0x158a80ad30c64f06,0x2b15015a618c9e0c,0x562a02b4c3193c18,0xac54056986327830,0x58a80ad30c64f061,0xb15015a618c9e0c2,
-    0x62a02b4c3193c185,0xc54056986327830a,0x8a80ad30c64f0615,0x15015a618c9e0c2b,0x2a02b4c3193c1856,0x54056986327830ac,0xa80ad30c64f06158,0x5015a618c9e0c2b1,
-    0xa02b4c3193c18562,0x4056986327830ac5,0x80ad30c64f06158a,0x015a618c9e0c2b15,0x02b4c3193c18562a,0x056986327830ac54,0x0ad30c64f06158a8,0x15a618c9e0c2b150,
-    0x2b4c3193c18562a0,0x56986327830ac540,0xad30c64f06158a80,0x5a618c9e0c2b1501,0xb4c3193c18562a02,0x6986327830ac5405,0xd30c64f06158a80a,0xa618c9e0c2b15015,
-    0x4c3193c18562a02b,0x986327830ac54056,0x30c64f06158a80ad,0x618c9e0c2b15015a,0xc3193c18562a02b4,0x86327830ac540569,0x0c64f06158a80ad3,0x18c9e0c2b15015a6
+    0x4326d1e1c820effb,0x864da3c39041dff6,0x0c9b47872083bfed,0x19368f0e41077fda,0x326d1e1c820effb4,0x64da3c39041dff68,0xc9b47872083bfed0,0x9368f0e41077fda1,
+    0x26d1e1c820effb43,0x4da3c39041dff686,0x9b47872083bfed0c,0x368f0e41077fda19,0x6d1e1c820effb432,0xda3c39041dff6864,0xb47872083bfed0c9,0x68f0e41077fda193,
+    0xd1e1c820effb4326,0xa3c39041dff6864d,0x47872083bfed0c9b,0x8f0e41077fda1936,0x1e1c820effb4326d,0x3c39041dff6864da,0x7872083bfed0c9b4,0xf0e41077fda19368,
+    0xe1c820effb4326d1,0xc39041dff6864da3,0x872083bfed0c9b47,0x0e41077fda19368f,0x1c820effb4326d1e,0x39041dff6864da3c,0x72083bfed0c9b478,0xe41077fda19368f0,
+    0xc820effb4326d1e1,0x9041dff6864da3c3,0x2083bfed0c9b4787,0x41077fda19368f0e,0x820effb4326d1e1c,0x041dff6864da3c39,0x083bfed0c9b47872,0x1077fda19368f0e4,
+    0x20effb4326d1e1c8,0x41dff6864da3c390,0x83bfed0c9b478720,0x077fda19368f0e41,0x0effb4326d1e1c82,0x1dff6864da3c3904,0x3bfed0c9b4787208,0x77fda19368f0e410,
+    0xeffb4326d1e1c820,0xdff6864da3c39041,0xbfed0c9b47872083,0x7fda19368f0e4107,0xffb4326d1e1c820e,0xff6864da3c39041d,0xfed0c9b47872083b,0xfda19368f0e41077,
+    0xfb4326d1e1c820ef,0xf6864da3c39041df,0xed0c9b47872083bf,0xda19368f0e41077f,0xb4326d1e1c820eff,0x6864da3c39041dff,0xd0c9b47872083bfe,0xa19368f0e41077fd
 };
 
 static const uint64_t vecG[64] = {
-    0x20323ed082572324,0x40647da104ae4648,0x80c8fb42095c8c90,0x0191f68412b91921,0x0323ed0825723242,0x0647da104ae46484,0x0c8fb42095c8c908,0x191f68412b919210,
-    0x323ed08257232420,0x647da104ae464840,0xc8fb42095c8c9080,0x91f68412b9192101,0x23ed082572324203,0x47da104ae4648406,0x8fb42095c8c9080c,0x1f68412b91921019,
-    0x3ed0825723242032,0x7da104ae46484064,0xfb42095c8c9080c8,0xf68412b919210191,0xed08257232420323,0xda104ae464840647,0xb42095c8c9080c8f,0x68412b919210191f,
-    0xd08257232420323e,0xa104ae464840647d,0x42095c8c9080c8fb,0x8412b919210191f6,0x08257232420323ed,0x104ae464840647da,0x2095c8c9080c8fb4,0x412b919210191f68,
-    0x8257232420323ed0,0x04ae464840647da1,0x095c8c9080c8fb42,0x12b919210191f684,0x257232420323ed08,0x4ae464840647da10,0x95c8c9080c8fb420,0x2b919210191f6841,
-    0x57232420323ed082,0xae464840647da104,0x5c8c9080c8fb4209,0xb919210191f68412,0x7232420323ed0825,0xe464840647da104a,0xc8c9080c8fb42095,0x919210191f68412b,
-    0x232420323ed08257,0x464840647da104ae,0x8c9080c8fb42095c,0x19210191f68412b9,0x32420323ed082572,0x64840647da104ae4,0xc9080c8fb42095c8,0x9210191f68412b91,
-    0x2420323ed0825723,0x4840647da104ae46,0x9080c8fb42095c8c,0x210191f68412b919,0x420323ed08257232,0x840647da104ae464,0x080c8fb42095c8c9,0x10191f68412b9192
+    0xec612e52b7efe400,0xd8c25ca56fdfc801,0xb184b94adfbf9003,0x63097295bf7f2007,0xc612e52b7efe400e,0x8c25ca56fdfc801d,0x184b94adfbf9003b,0x3097295bf7f20076,
+    0x612e52b7efe400ec,0xc25ca56fdfc801d8,0x84b94adfbf9003b1,0x097295bf7f200763,0x12e52b7efe400ec6,0x25ca56fdfc801d8c,0x4b94adfbf9003b18,0x97295bf7f2007630,
+    0x2e52b7efe400ec61,0x5ca56fdfc801d8c2,0xb94adfbf9003b184,0x7295bf7f20076309,0xe52b7efe400ec612,0xca56fdfc801d8c25,0x94adfbf9003b184b,0x295bf7f200763097,
+    0x52b7efe400ec612e,0xa56fdfc801d8c25c,0x4adfbf9003b184b9,0x95bf7f2007630972,0x2b7efe400ec612e5,0x56fdfc801d8c25ca,0xadfbf9003b184b94,0x5bf7f20076309729,
+    0xb7efe400ec612e52,0x6fdfc801d8c25ca5,0xdfbf9003b184b94a,0xbf7f200763097295,0x7efe400ec612e52b,0xfdfc801d8c25ca56,0xfbf9003b184b94ad,0xf7f200763097295b,
+    0xefe400ec612e52b7,0xdfc801d8c25ca56f,0xbf9003b184b94adf,0x7f200763097295bf,0xfe400ec612e52b7e,0xfc801d8c25ca56fd,0xf9003b184b94adfb,0xf200763097295bf7,
+    0xe400ec612e52b7ef,0xc801d8c25ca56fdf,0x9003b184b94adfbf,0x200763097295bf7f,0x400ec612e52b7efe,0x801d8c25ca56fdfc,0x003b184b94adfbf9,0x00763097295bf7f2,
+    0x00ec612e52b7efe4,0x01d8c25ca56fdfc8,0x03b184b94adfbf90,0x0763097295bf7f20,0x0ec612e52b7efe40,0x1d8c25ca56fdfc80,0x3b184b94adfbf900,0x763097295bf7f200
 };
 
 static const uint64_t vecT[64] = {
-    0x295549f54be24456,0x52aa93ea97c488ac,0xa55527d52f891158,0x4aaa4faa5f1222b1,0x95549f54be244562,0x2aa93ea97c488ac5,0x55527d52f891158a,0xaaa4faa5f1222b14,
-    0x5549f54be2445629,0xaa93ea97c488ac52,0x5527d52f891158a5,0xaa4faa5f1222b14a,0x549f54be24456295,0xa93ea97c488ac52a,0x527d52f891158a55,0xa4faa5f1222b14aa,
-    0x49f54be244562955,0x93ea97c488ac52aa,0x27d52f891158a555,0x4faa5f1222b14aaa,0x9f54be2445629554,0x3ea97c488ac52aa9,0x7d52f891158a5552,0xfaa5f1222b14aaa4,
-    0xf54be24456295549,0xea97c488ac52aa93,0xd52f891158a55527,0xaa5f1222b14aaa4f,0x54be24456295549f,0xa97c488ac52aa93e,0x52f891158a55527d,0xa5f1222b14aaa4fa,
-    0x4be24456295549f5,0x97c488ac52aa93ea,0x2f891158a55527d5,0x5f1222b14aaa4faa,0xbe24456295549f54,0x7c488ac52aa93ea9,0xf891158a55527d52,0xf1222b14aaa4faa5,
-    0xe24456295549f54b,0xc488ac52aa93ea97,0x891158a55527d52f,0x1222b14aaa4faa5f,0x24456295549f54be,0x488ac52aa93ea97c,0x91158a55527d52f8,0x222b14aaa4faa5f1,
-    0x4456295549f54be2,0x88ac52aa93ea97c4,0x1158a55527d52f89,0x22b14aaa4faa5f12,0x456295549f54be24,0x8ac52aa93ea97c48,0x158a55527d52f891,0x2b14aaa4faa5f122,
-    0x56295549f54be244,0xac52aa93ea97c488,0x58a55527d52f8911,0xb14aaa4faa5f1222,0x6295549f54be2445,0xc52aa93ea97c488a,0x8a55527d52f89115,0x14aaa4faa5f1222b
+    0x9ada840c789f1bec,0x35b50818f13e37d9,0x6b6a1031e27c6fb2,0xd6d42063c4f8df64,0xada840c789f1bec9,0x5b50818f13e37d93,0xb6a1031e27c6fb26,0x6d42063c4f8df64d,
+    0xda840c789f1bec9a,0xb50818f13e37d935,0x6a1031e27c6fb26b,0xd42063c4f8df64d6,0xa840c789f1bec9ad,0x50818f13e37d935b,0xa1031e27c6fb26b6,0x42063c4f8df64d6d,
+    0x840c789f1bec9ada,0x0818f13e37d935b5,0x1031e27c6fb26b6a,0x2063c4f8df64d6d4,0x40c789f1bec9ada8,0x818f13e37d935b50,0x031e27c6fb26b6a1,0x063c4f8df64d6d42,
+    0x0c789f1bec9ada84,0x18f13e37d935b508,0x31e27c6fb26b6a10,0x63c4f8df64d6d420,0xc789f1bec9ada840,0x8f13e37d935b5081,0x1e27c6fb26b6a103,0x3c4f8df64d6d4206,
+    0x789f1bec9ada840c,0xf13e37d935b50818,0xe27c6fb26b6a1031,0xc4f8df64d6d42063,0x89f1bec9ada840c7,0x13e37d935b50818f,0x27c6fb26b6a1031e,0x4f8df64d6d42063c,
+    0x9f1bec9ada840c78,0x3e37d935b50818f1,0x7c6fb26b6a1031e2,0xf8df64d6d42063c4,0xf1bec9ada840c789,0xe37d935b50818f13,0xc6fb26b6a1031e27,0x8df64d6d42063c4f,
+    0x1bec9ada840c789f,0x37d935b50818f13e,0x6fb26b6a1031e27c,0xdf64d6d42063c4f8,0xbec9ada840c789f1,0x7d935b50818f13e3,0xfb26b6a1031e27c6,0xf64d6d42063c4f8d,
+    0xec9ada840c789f1b,0xd935b50818f13e37,0xb26b6a1031e27c6f,0x64d6d42063c4f8df,0xc9ada840c789f1be,0x935b50818f13e37d,0x26b6a1031e27c6fb,0x4d6d42063c4f8df6
 };
 
 static const uint64_t vecN[64] = {
@@ -118,38 +118,38 @@ static const uint64_t *msTab[256] = {
 };
 
 static const uint64_t seedTab[256] = {
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 0..7
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 8..15
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 16..23
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 24..31
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 32..39
-  seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 40..47
-  seedN, seedN, seedN, seedC, seedN, seedN, seedN, seedN, // 48..55
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 56..63
-  seedA, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
-  seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 72..79
-  seedN, seedN, seedN, seedC, seedT, seedN, seedN, seedN, // 80..87
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
-  seedA, seedA,	seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
-  seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 128..135
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 136..143
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 144..151
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 152..159
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 160..167
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 168..175
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 176..183
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 184..191
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 192..199
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 200..207
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 208..215
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 216..223
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 224..231
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 232..239
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 240..247
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN  // 248..255
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 0..7
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 8..15
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 16..23
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 24..31
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 32..39
+    seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 40..47
+    seedN, seedN, seedN, seedC, seedN, seedN, seedN, seedN, // 48..55
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 56..63
+    seedA, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
+    seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 72..79
+    seedN, seedN, seedN, seedC, seedT, seedN, seedN, seedN, // 80..87
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
+    seedA, seedA,	seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
+    seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 128..135
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 136..143
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 144..151
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 152..159
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 160..167
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 168..175
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 176..183
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 184..191
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 192..199
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 200..207
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 208..215
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 216..223
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 224..231
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 232..239
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 240..247
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN  // 248..255
 };
 
 // rotate "v" to the left by "s" positions
