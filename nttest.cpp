@@ -56,7 +56,7 @@ bool uniformity = false;
 
 using namespace std;
 
-static const char shortopts[] = "k:b:h:j:q:l:t:g:m:a:i:u:f:";
+static const char shortopts[] = "k:b:h:j:q:l:t:g:m:a:iu";
 
 enum { OPT_HELP = 1, OPT_VERSION };
 
@@ -73,13 +73,53 @@ static const struct option longopts[] = {
     { "alg",	required_argument, NULL, 'a' },
     { "input",	no_argument, NULL, 'i' },
     { "uniformity",	no_argument, NULL, 'u' },
-    { "fastq",	no_argument, NULL, 'f' },
     { "help",	no_argument, NULL, OPT_HELP },
     { "version",	no_argument, NULL, OPT_VERSION },
     { NULL, 0, NULL, 0 }
 };
 
 static const string itm[]= {"city","murmur","xxhash","ntbase","nthash"};
+
+void getFtype(const char *fName) {
+    std::ifstream in(fName);
+    std::string hLine;
+    bool good=getline(in,hLine);
+    in.close();
+    if(!good) {
+        std::cerr<<"Error in reading file: "<<fName<<"\n";
+        exit(EXIT_FAILURE);
+    }
+    if(hLine[0]=='>')
+        opt::fastq=false;
+    else if (hLine[0]=='@')
+        opt::fastq=true;
+    else {
+        std::cerr<<"Error in file format: "<<fName<<"\n";
+        exit(EXIT_FAILURE);
+    }
+}
+
+bool getSeq(std::ifstream &uFile, std::string &line) {
+    bool good=false;
+    std::string hline;
+    line.clear();
+    if(opt::fastq) {
+        good=getline(uFile, hline);
+        good=getline(uFile, line);
+        good=getline(uFile, hline);
+        good=getline(uFile, hline);
+    }
+    else {
+        do {
+            good=getline(uFile, hline);
+            if(hline[0]=='>'&&!line.empty()) break;// !line.empty() for the first rec
+            if(hline[0]!='>')line+=hline;
+        } while(good);
+        if(!good&&!line.empty())
+            good=true;
+    }
+    return good;
+}
 
 static const unsigned char b2r[256] = {
     'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', //0
@@ -175,15 +215,13 @@ void loadSeqx(BloomFilter & myFilter, const string & seq) {
 }
 
 void loadBf(BloomFilter &myFilter, const char* faqFile) {
+    getFtype(faqFile);
     ifstream uFile(faqFile);
     bool good = true;
     #pragma omp parallel
-    for(string line, hline; good;) {
+    for(string line; good;) {
         #pragma omp critical(uFile)
-        {
-            good = getline(uFile, hline);
-            good = getline(uFile, line);
-        }
+        good = getSeq(uFile, line);
         if(good) {
             if(itm[opt::method]=="city")
                 loadSeqc(myFilter, line);
@@ -261,20 +299,14 @@ void querySeqx(BloomFilter & myFilter, const string & seq, size_t & fHit) {
 }
 
 void queryBf(BloomFilter &myFilter, const char* faqFile) {
-    size_t fHit=0,totKmer=0;
+    getFtype(faqFile);
     ifstream uFile(faqFile);
+    size_t fHit=0,totKmer=0;
     bool good = true;
     #pragma omp parallel
-    for(string line, hline; good;) {
+    for(string line; good;) {
         #pragma omp critical(uFile)
-        {
-            good = getline(uFile, hline);
-            good = getline(uFile, line);
-			if(opt::fastq) {
-				getline(uFile, hline);
-				getline(uFile, hline);
-            }
-        }
+        good = getSeq(uFile, line);
         if(good) {
             if(itm[opt::method]=="city")
                 querySeqc(myFilter, line, fHit);
@@ -409,6 +441,7 @@ void nthashBF(const char *geneName, const char *readName) {
 }
 
 void nthashRT(const char *readName) {
+    getFtype(readName);
     cerr << "CPU time (sec) for hash algorithms for ";
     cerr << "kmer="<<opt::kmerLen<< "\n";
     cerr << "nhash="<<opt::nhash<< "\n";
@@ -421,12 +454,7 @@ void nthashRT(const char *readName) {
             ifstream uFile(readName);
             string line;
             clock_t sTime = clock();
-            while(getline(uFile, line)) {
-                getline(uFile, line);
-                if(opt::fastq) {
-                    getline(uFile, line);
-                    getline(uFile, line);
-                }
+            while(getSeq(uFile,line)) {
                 if(itm[method]=="city")
                     hashSeqcM(line);
                 else if(itm[method]=="murmur")
@@ -449,12 +477,7 @@ void nthashRT(const char *readName) {
             ifstream uFile(readName);
             string line;
             clock_t sTime = clock();
-            while(getline(uFile, line)) {
-                getline(uFile, line);
-                if(opt::fastq) {
-                    getline(uFile, line);
-                    getline(uFile, line);
-                }
+            while(getSeq(uFile, line)) {
                 if(itm[method]=="city")
                     hashSeqc(line);
                 else if(itm[method]=="murmur")
@@ -517,9 +540,6 @@ int main(int argc, char** argv) {
         case 'u':
             opt::uniformity=true;
             break;
-        case 'f':
-            opt::fastq=true;
-            break;
         case OPT_HELP:
             std::cerr << USAGE_MESSAGE;
             exit(EXIT_SUCCESS);
@@ -563,8 +583,14 @@ int main(int argc, char** argv) {
             nthashBF(geneName, readName);
         }
     }
-    else
-        nthashRT(readName);
+    else {
+        if(opt::inpFlag) {
+            makeRead(opt::nquery, opt::squery);
+            nthashRT("reads.fa");
+        }
+        else
+            nthashRT(readName);
+    }
 
     return 0;
 }
