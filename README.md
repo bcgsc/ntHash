@@ -20,13 +20,13 @@ Parameters:
   * `-f` , `--fastq`: to run the test on a fastq file
   * `FILE`: is the input fasta or fastq file
 
-For example to evaluate the runtime of different hash methods on a fasta file `reads.fa` for k-mer length `50`, run:
+For example to evaluate the runtime of different hash methods on the test fasta file `reads.fa` in DATA/ folder for k-mer length `50`, run:
 ```
-$ ./nttest -k50 reads.fa 
+$ nttest -k50 reads.fa 
 ```
 For a fastq file `reads.fq`, just add `--fastq` option, and run:
 ```
-$ ./nttest -k50 --fastq reads.fq 
+$ nttest -k50 --fastq reads.fq 
 ```
 
 # Uniformity test
