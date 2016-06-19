@@ -192,10 +192,11 @@ inline uint32_t NTC32(const char * kmerSeq, const unsigned k, uint32_t& fhVal, u
 
 // canonical ntHash for sliding k-mers
 inline uint32_t NTC32(uint32_t& fhVal, uint32_t& rhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k) {
-    fhVal = ror(fhVal, 1) ^ ror(seedTab[charOut], 1) ^ rol(seedTab[charIn], k-1);
-    rhVal = rol(rhVal, 1) ^ rol(seedTab[charOut+cpOff], k) ^ seedTab[charIn+cpOff];
+    fhVal = rol(fhVal, 1) ^ rol(seedTab[charOut], k) ^ seedTab[charIn];
+    rhVal = ror(rhVal, 1) ^ ror(seedTab[charOut+cpOff], 1) ^ rol(seedTab[charIn+cpOff], k-1);
     return rhVal ^ fhVal;
 }
+
 
 // canonical ntHash with seeding option
 inline uint32_t NTC32(const char * kmerSeq, const unsigned k, const unsigned seed) {
