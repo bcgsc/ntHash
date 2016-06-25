@@ -118,38 +118,38 @@ static const uint64_t *msTab[256] = {
 };
 
 static const uint64_t seedTab[256] = {
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 0..7
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 8..15
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 16..23
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 24..31
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 32..39
-  seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 40..47
-  seedN, seedN, seedN, seedC, seedN, seedN, seedN, seedN, // 48..55
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 56..63
-  seedA, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
-  seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 72..79
-  seedN, seedN, seedN, seedC, seedT, seedN, seedN, seedN, // 80..87
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
-  seedA, seedA,	seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
-  seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 128..135
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 136..143
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 144..151
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 152..159
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 160..167
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 168..175
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 176..183
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 184..191
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 192..199
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 200..207
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 208..215
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 216..223
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 224..231
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 232..239
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 240..247
-  seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN  // 248..255
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 0..7
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 8..15
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 16..23
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 24..31
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 32..39
+    seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 40..47
+    seedN, seedN, seedN, seedC, seedN, seedN, seedN, seedN, // 48..55
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 56..63
+    seedA, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
+    seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 72..79
+    seedN, seedN, seedN, seedC, seedT, seedN, seedN, seedN, // 80..87
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
+    seedA, seedA,	seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
+    seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 128..135
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 136..143
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 144..151
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 152..159
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 160..167
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 168..175
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 176..183
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 184..191
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 192..199
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 200..207
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 208..215
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 216..223
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 224..231
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 232..239
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 240..247
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN  // 248..255
 };
 
 // rotate "v" to the left by "s" positions
@@ -200,9 +200,9 @@ inline uint64_t NT64(const char * kmerSeq, const unsigned k, const unsigned seed
 
 // canonical ntHash, base function
 inline uint64_t NTC64(const char * kmerSeq, const unsigned k) {
-	uint64_t fhVal=0, rhVal=0;
-	fhVal=getFhval(kmerSeq, k);
-	rhVal=getRhval(kmerSeq, k);
+    uint64_t fhVal=0, rhVal=0;
+    fhVal=getFhval(kmerSeq, k);
+    rhVal=getRhval(kmerSeq, k);
     return (rhVal<fhVal)? rhVal : fhVal;
 }
 
@@ -222,7 +222,7 @@ inline uint64_t NTC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char char
 
 // canonical ntHash with seeding option
 inline uint64_t NTC64(const char * kmerSeq, const unsigned k, const unsigned seed) {
-    uint64_t hVal = NTC64(kmerSeq,k);    
+    uint64_t hVal = NTC64(kmerSeq,k);
     hVal *= seed ^ k * multiSeed;
     hVal ^= hVal >> multiShift;
     return hVal;
@@ -274,7 +274,7 @@ inline uint64_t NTPC64(const char * kmerSeq, const unsigned k, uint64_t& fhVal, 
 // canonical ntHash for sliding k-mers using pre-computed seed matrix (msTab)
 inline uint64_t NTPC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k) {
     fhVal = rol(fhVal, 1) ^ rol(seedTab[charOut], k) ^ seedTab[charIn];
-    rhVal = ror(rhVal, 1) ^ ror(seedTab[charOut+cpOff], 1) ^ rol(seedTab[charIn+cpOff], k-1);    
+    rhVal = ror(rhVal, 1) ^ ror(seedTab[charOut+cpOff], 1) ^ rol(seedTab[charIn+cpOff], k-1);
     return (rhVal<fhVal)? rhVal : fhVal;
 }
 
