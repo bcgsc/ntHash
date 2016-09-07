@@ -289,8 +289,8 @@ inline uint64_t NTPC64(const char * kmerSeq, const unsigned k, const unsigned se
 // multi-hash version of ntHash
 void NTM64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *hVal) {
     uint64_t bVal=0, tVal=0;
-    hVal[0] = bVal = NTP64(kmerSeq, k);
-    for(unsigned i=1; i<m; i++) {
+    bVal = NTP64(kmerSeq, k);
+    for(unsigned i=0; i<m; i++) {
         tVal = bVal * (i ^ k * multiSeed);
         tVal ^= tVal >> multiShift;
         hVal[i] =  tVal;
@@ -300,8 +300,19 @@ void NTM64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *h
 // multi-hash version of ntHash for sliding k-mers
 void NTM64(const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t *hVal) {
     uint64_t bVal=0, tVal=0;
-    hVal[0] = bVal = rol(hVal[0], 1) ^ msTab[charOut][k%64] ^ msTab[charIn][0];
-    for(unsigned i=1; i<m; i++) {
+    bVal = rol(hVal[0], 1) ^ msTab[charOut][k%64] ^ msTab[charIn][0];
+    for(unsigned i=0; i<m; i++) {
+        tVal = bVal * (i ^ k * multiSeed);
+        tVal ^= tVal >> multiShift;
+        hVal[i] =  tVal;
+    }
+}
+
+// canonical multi-hash version of ntHash
+void NTMC64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *hVal) {
+    uint64_t bVal=0, tVal=0;
+    bVal = NTPC64(kmerSeq, k);
+    for(unsigned i=0; i<m; i++) {
         tVal = bVal * (i ^ k * multiSeed);
         tVal ^= tVal >> multiShift;
         hVal[i] =  tVal;
@@ -311,8 +322,8 @@ void NTM64(const unsigned char charOut, const unsigned char charIn, const unsign
 // canonical multi-hash version of ntHash
 void NTMC64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *hVal, uint64_t& fhVal, uint64_t& rhVal) {
     uint64_t bVal=0, tVal=0;
-    hVal[0] = bVal = NTPC64(kmerSeq, k, fhVal, rhVal);
-    for(unsigned i=1; i<m; i++) {
+    bVal = NTPC64(kmerSeq, k, fhVal, rhVal);
+    for(unsigned i=0; i<m; i++) {
         tVal = bVal * (i ^ k * multiSeed);
         tVal ^= tVal >> multiShift;
         hVal[i] =  tVal;
@@ -322,8 +333,8 @@ void NTMC64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *
 // canonical multi-hash version of ntHash for sliding k-mers
 void NTMC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t *hVal) {
     uint64_t bVal=0, tVal=0;
-    hVal[0] = bVal = NTPC64(fhVal, rhVal, charOut, charIn, k);
-    for(unsigned i=1; i<m; i++) {
+    bVal = NTPC64(fhVal, rhVal, charOut, charIn, k);
+    for(unsigned i=0; i<m; i++) {
         tVal = bVal * (i ^ k * multiSeed);
         tVal ^= tVal >> multiShift;
         hVal[i] =  tVal;

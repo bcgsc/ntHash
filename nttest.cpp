@@ -174,19 +174,16 @@ void getCanon(std::string &bMer) {
 void loadSeq(BloomFilter & myFilter, const string & seq) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
-        string kmer = seq.substr(i, opt::kmerLen);
-        myFilter.insertF(kmer.c_str());
+        myFilter.insert(seq.c_str()+i);
     }
 }
 
 void loadSeqr(BloomFilter & myFilter, const string & seq) {
     if (seq.size() < opt::kmerLen) return;
-
-    string kmer = seq.substr(0,opt::kmerLen);
-    uint64_t fhVal;
-    myFilter.insertF(kmer.c_str(), fhVal);
+    uint64_t fhVal, rhVal;
+    myFilter.insert(seq.c_str(), fhVal, rhVal);
     for (size_t i = 1; i < seq.size() - opt::kmerLen + 1; i++) {
-        myFilter.insertF(fhVal, seq[i-1], seq[i+opt::kmerLen-1]);
+        myFilter.insert(fhVal, rhVal, seq[i-1], seq[i+opt::kmerLen-1]);
     }
 }
 
@@ -194,6 +191,7 @@ void loadSeqm(BloomFilter & myFilter, const string & seq) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         myFilter.insertMur(kmer.c_str());
     }
 }
@@ -202,6 +200,7 @@ void loadSeqc(BloomFilter & myFilter, const string & seq) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         myFilter.insertCit(kmer.c_str());
     }
 }
@@ -210,6 +209,7 @@ void loadSeqx(BloomFilter & myFilter, const string & seq) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         myFilter.insertXxh(kmer.c_str());
     }
 }
@@ -240,14 +240,13 @@ void loadBf(BloomFilter &myFilter, const char* faqFile) {
 
 void querySeqr(BloomFilter & myFilter, const string & seq, size_t & fHit) {
     if (seq.size() < opt::kmerLen) return;
-    string kmer = seq.substr(0,opt::kmerLen);
-    uint64_t fhVal;
-    if(myFilter.containsF(kmer.c_str(), fhVal)) {
+    uint64_t fhVal, rhVal;
+    if(myFilter.contains(seq.c_str(), fhVal, rhVal)) {
         #pragma omp atomic
         ++fHit;
     }
     for (size_t i = 1; i < seq.size() - opt::kmerLen + 1; i++) {
-        if(myFilter.containsF(fhVal, seq[i-1], seq[i+opt::kmerLen-1])) {
+        if(myFilter.contains(fhVal, rhVal, seq[i-1], seq[i+opt::kmerLen-1])) {
             #pragma omp atomic
             ++fHit;
         }
@@ -257,8 +256,7 @@ void querySeqr(BloomFilter & myFilter, const string & seq, size_t & fHit) {
 void querySeq(BloomFilter & myFilter, const string & seq, size_t & fHit) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
-        string kmer = seq.substr(i, opt::kmerLen);
-        if(myFilter.containsF(kmer.c_str())) {
+        if(myFilter.contains(seq.c_str()+i)) {
             #pragma omp atomic
             ++fHit;
         }
@@ -269,6 +267,7 @@ void querySeqm(BloomFilter & myFilter, const string & seq, size_t & fHit) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         if(myFilter.containsMur(kmer.c_str())) {
             #pragma omp atomic
             ++fHit;
@@ -280,6 +279,7 @@ void querySeqc(BloomFilter & myFilter, const string & seq, size_t & fHit) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         if(myFilter.containsCit(kmer.c_str())) {
             #pragma omp atomic
             ++fHit;
@@ -291,6 +291,7 @@ void querySeqx(BloomFilter & myFilter, const string & seq, size_t & fHit) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         if(myFilter.containsXxh(kmer.c_str())) {
             #pragma omp atomic
             ++fHit;
@@ -329,18 +330,16 @@ void queryBf(BloomFilter &myFilter, const char* faqFile) {
 
 void hashSeqb(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
-        string kmer = seq.substr(i, opt::kmerLen);
-        if(NTP64(kmer.c_str(), opt::kmerLen)) opt::nz++;
+        if(NTPC64(seq.c_str()+i, opt::kmerLen)) opt::nz++;
     }
 }
 
 void hashSeqr(const string & seq) {
-    string kmer = seq.substr(0, opt::kmerLen);
     uint64_t fhVal,rhVal,hVal;
-    hVal = NTP64(kmer.c_str(), opt::kmerLen);
+    hVal = NTPC64(seq.c_str(), opt::kmerLen, fhVal, rhVal);
     if(hVal)opt::nz++;
     for (size_t i = 1; i < seq.length() - opt::kmerLen + 1; i++) {
-        hVal = NTP64(hVal, seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen);
+        hVal = NTPC64(fhVal, rhVal, seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen);
         if(hVal)opt::nz++;
     }
 }
@@ -348,6 +347,7 @@ void hashSeqr(const string & seq) {
 void hashSeqx(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         if(XXH64(kmer.c_str(), opt::kmerLen, 0))++opt::nz;
     }
 }
@@ -355,6 +355,7 @@ void hashSeqx(const string & seq) {
 void hashSeqc(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         if (CityHash64(kmer.c_str(), opt::kmerLen))++opt::nz;
     }
 }
@@ -362,6 +363,7 @@ void hashSeqc(const string & seq) {
 void hashSeqm(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         if(MurmurHash64A(kmer.c_str(), opt::kmerLen, 0))++opt::nz;
     }
 }
@@ -369,20 +371,18 @@ void hashSeqm(const string & seq) {
 void hashSeqbM(const string & seq) {
     uint64_t hVal[opt::nhash];
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
-        string kmer = seq.substr(i, opt::kmerLen);
-        NTM64(kmer.c_str(), opt::kmerLen, opt::nhash, hVal);
+        NTMC64(seq.c_str()+i, opt::kmerLen, opt::nhash, hVal);
         for(unsigned i=0; i<opt::nhash; i++)
             if(hVal[i])opt::nz++;
     }
 }
 
 void hashSeqrM(const string & seq) {
-    string kmer = seq.substr(0, opt::kmerLen);
-    uint64_t hVal[opt::nhash];
-    NTM64(kmer.c_str(), opt::kmerLen, opt::nhash, hVal);
+    uint64_t hVal[opt::nhash], fhVal, rhVal;
+    NTMC64(seq.c_str(), opt::kmerLen, opt::nhash, hVal, fhVal, rhVal);
     for(unsigned h=0; h<opt::nhash; h++) if(hVal[h])opt::nz++;
     for (size_t i = 1; i < seq.length() - opt::kmerLen + 1; i++) {
-        NTM64(seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen, opt::nhash, hVal);
+        NTMC64(fhVal, rhVal, seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen, opt::nhash, hVal);
         for(unsigned h=0; h<opt::nhash; h++) if(hVal[h])opt::nz++;
     }
 }
@@ -390,6 +390,7 @@ void hashSeqrM(const string & seq) {
 void hashSeqxM(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         for(unsigned h=0; h<opt::nhash; h++)
             if(XXH64(kmer.c_str(), opt::kmerLen, h))++opt::nz;
     }
@@ -398,6 +399,7 @@ void hashSeqxM(const string & seq) {
 void hashSeqcM(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         for(unsigned h=0; h<opt::nhash; h++)
             if (CityHash64WithSeed(kmer.c_str(), opt::kmerLen, h))++opt::nz;
     }
@@ -406,6 +408,7 @@ void hashSeqcM(const string & seq) {
 void hashSeqmM(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
         string kmer = seq.substr(i, opt::kmerLen);
+        getCanon(kmer);
         for(unsigned h=0; h<opt::nhash; h++)
             if(MurmurHash64A(kmer.c_str(), opt::kmerLen, h))++opt::nz;
     }
