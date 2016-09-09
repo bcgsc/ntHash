@@ -339,7 +339,7 @@ void hashSeqr(const string & seq) {
     hVal = NTPC64(seq.c_str(), opt::kmerLen, fhVal, rhVal);
     if(hVal)opt::nz++;
     for (size_t i = 1; i < seq.length() - opt::kmerLen + 1; i++) {
-        hVal = NTPC64(fhVal, rhVal, seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen);
+        hVal = NTPC64(seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen, fhVal, rhVal);
         if(hVal)opt::nz++;
     }
 }
@@ -379,10 +379,10 @@ void hashSeqbM(const string & seq) {
 
 void hashSeqrM(const string & seq) {
     uint64_t hVal[opt::nhash], fhVal, rhVal;
-    NTMC64(seq.c_str(), opt::kmerLen, opt::nhash, hVal, fhVal, rhVal);
+    NTMC64(seq.c_str(), opt::kmerLen, opt::nhash, fhVal, rhVal, hVal);
     for(unsigned h=0; h<opt::nhash; h++) if(hVal[h])opt::nz++;
     for (size_t i = 1; i < seq.length() - opt::kmerLen + 1; i++) {
-        NTMC64(fhVal, rhVal, seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen, opt::nhash, hVal);
+        NTMC64(seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen, opt::nhash, fhVal, rhVal, hVal);
         for(unsigned h=0; h<opt::nhash; h++) if(hVal[h])opt::nz++;
     }
 }
@@ -500,6 +500,10 @@ void nthashRT(const char *readName) {
 }
 
 int main(int argc, char** argv) {
+    //std::cerr << std::hex << rol(0x3c8bfbb395c60474,4) << "\n";
+    //std::cerr << std::hex << ror(0x193c18562a02b4c3,4) << "\n";
+    //exit(0);
+
     bool die = false;
     for (int c; (c = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1;) {
         std::istringstream arg(optarg != NULL ? optarg : "");

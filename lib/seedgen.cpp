@@ -21,17 +21,17 @@ void printBin(uint64_t n) {
 }
 
 void balanceSeed() {
-	
-	srand(time(NULL));
-	int r1[4]={32,32,32,32};
-	const int seedNum=4;
+
+    srand(time(NULL));
+    int r1[4]= {32,32,32,32};
+    const int seedNum=4;
     int hashSeed[seedNum][64];
     for (int i=0; i<seedNum; i++)
         for (int j=0; j<64; j++)
             hashSeed[i][j]=0;
     for (int j=0; j<64; j++) {
-		int ranVec[seedNum];
-		for (int i=0; i<seedNum; i++)
+        int ranVec[seedNum];
+        for (int i=0; i<seedNum; i++)
             ranVec[i]=i;
         for (int i=0; i<seedNum/2; i++) {
             int ranInd = rand() % (seedNum-i);
@@ -40,39 +40,49 @@ void balanceSeed() {
             ranVec[ranInd] = tmp;
         }
         if(r1[ranVec[0]]>0 && r1[ranVec[1]]>0) {
-			hashSeed[ranVec[0]][j] = 1; r1[ranVec[0]]--;
-			hashSeed[ranVec[1]][j] = 1; r1[ranVec[1]]--;			
-		}
-		else if(r1[ranVec[0]]<0 && r1[ranVec[1]]>0) {
-			hashSeed[ranVec[1]][j] = 1; r1[ranVec[1]]--;
-			if(r1[ranVec[2]]>0) {
-				hashSeed[ranVec[2]][j] = 1; r1[ranVec[2]]--;
-			}
-			else 
-				hashSeed[ranVec[3]][j] = 1; r1[ranVec[3]]--;
-		}
-		else if(r1[ranVec[0]]>0 && r1[ranVec[1]]<0) {
-			hashSeed[ranVec[0]][j] = 1; r1[ranVec[0]]--;
-			if(r1[ranVec[2]]>0) {
-				hashSeed[ranVec[2]][j] = 1; r1[ranVec[2]]--;
-			}
-			else 
-				hashSeed[ranVec[3]][j] = 1; r1[ranVec[3]]--;
-		}
-		else {
-			hashSeed[ranVec[2]][j] = 1; r1[ranVec[2]]--;
-			hashSeed[ranVec[3]][j] = 1; r1[ranVec[3]]--;
-		}
-		
-	}
-	
-	for (int i=0; i<seedNum; i++) {
+            hashSeed[ranVec[0]][j] = 1;
+            r1[ranVec[0]]--;
+            hashSeed[ranVec[1]][j] = 1;
+            r1[ranVec[1]]--;
+        }
+        else if(r1[ranVec[0]]<0 && r1[ranVec[1]]>0) {
+            hashSeed[ranVec[1]][j] = 1;
+            r1[ranVec[1]]--;
+            if(r1[ranVec[2]]>0) {
+                hashSeed[ranVec[2]][j] = 1;
+                r1[ranVec[2]]--;
+            }
+            else
+                hashSeed[ranVec[3]][j] = 1;
+            r1[ranVec[3]]--;
+        }
+        else if(r1[ranVec[0]]>0 && r1[ranVec[1]]<0) {
+            hashSeed[ranVec[0]][j] = 1;
+            r1[ranVec[0]]--;
+            if(r1[ranVec[2]]>0) {
+                hashSeed[ranVec[2]][j] = 1;
+                r1[ranVec[2]]--;
+            }
+            else
+                hashSeed[ranVec[3]][j] = 1;
+            r1[ranVec[3]]--;
+        }
+        else {
+            hashSeed[ranVec[2]][j] = 1;
+            r1[ranVec[2]]--;
+            hashSeed[ranVec[3]][j] = 1;
+            r1[ranVec[3]]--;
+        }
+
+    }
+
+    for (int i=0; i<seedNum; i++) {
         for (int j=0; j<64; j++)
             std::cout << hashSeed[i][j] << " ";
         std::cout << "\n";
     }
 
-	uint64_t allSeed[seedNum];
+    uint64_t allSeed[seedNum];
     for (int i=0; i<seedNum; i++) {
         uint64_t hSeed=0;
         for (int j=0; j<64; j++) {
@@ -92,11 +102,11 @@ void balanceSeed() {
     printf("static const uint64_t seedC = 0x%llx;\n", allSeed[1]);
     printf("static const uint64_t seedG = 0x%llx;\n", allSeed[2]);
     printf("static const uint64_t seedT = 0x%llx;\n", allSeed[3]);
-	exit(0);
+    exit(0);
 }
 
 int main(int argc, const char* argv[]) {
-	balanceSeed();
+    balanceSeed();
     srand(time(NULL));
     const int seedNum=4;
     int hashSeed[seedNum][64];
@@ -125,7 +135,7 @@ int main(int argc, const char* argv[]) {
         std::cout << "\n";
     }
 
-	uint64_t allSeed[seedNum];
+    uint64_t allSeed[seedNum];
 
     for (int i=0; i<seedNum; i++) {
         uint64_t hSeed=0;
@@ -135,12 +145,12 @@ int main(int argc, const char* argv[]) {
             else
                 hSeed = (uint64_t) (hSeed << 1 | 0);
         }
-		allSeed[i]=hSeed;
+        allSeed[i]=hSeed;
         printf("%" PRIu64 "\n", hSeed);
         printBin(hSeed);
 
     }
-    
+
     printf("static const uint64_t seedA = 0x%llx;\n", allSeed[0]);
     printf("static const uint64_t seedC = 0x%llx;\n", allSeed[1]);
     printf("static const uint64_t seedG = 0x%llx;\n", allSeed[2]);

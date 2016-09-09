@@ -11,8 +11,9 @@
 
 #include <stdint.h>
 
+
 // offset for the complement base in the random seeds table
-const int cpOff = -20;
+const uint8_t cpOff = 0x07;
 
 // shift for gerenerating multiple hash values
 const int multiShift = 27;
@@ -83,19 +84,19 @@ static const uint64_t vecN[64] = {
 };
 
 static const uint64_t *msTab[256] = {
-    vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 0..7
+    vecN, vecT, vecN, vecG, vecA, vecN, vecN, vecC, // 0..7
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 8..15
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 16..23
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 24..31
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 32..39
-    vecN, vecN, vecN, vecN, vecN, vecT, vecN, vecG, // 40..47
-    vecN, vecN, vecN, vecC, vecN, vecN, vecN, vecN, // 48..55
+    vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 40..47
+    vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 48..55
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 56..63
-    vecA, vecA, vecN, vecC, vecN, vecN, vecN, vecG, // 64..71
-    vecN, vecN, vecN, vecN, vecN, vecT, vecN, vecG, // 72..79
-    vecN, vecN, vecN, vecC, vecT, vecN, vecN, vecN, // 80..87
+    vecN, vecA, vecN, vecC, vecN, vecN, vecN, vecG, // 64..71
+    vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 72..79
+    vecN, vecN, vecN, vecN, vecT, vecN, vecN, vecN, // 80..87
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 88..95
-    vecA, vecA, vecN, vecC, vecN, vecN, vecN, vecG, // 96..103
+    vecN, vecA, vecN, vecC, vecN, vecN, vecN, vecG, // 96..103
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 104..111
     vecN, vecN, vecN, vecN, vecT, vecN, vecN, vecN, // 112..119
     vecN, vecN, vecN, vecN, vecN, vecN, vecN, vecN, // 120..127
@@ -118,19 +119,19 @@ static const uint64_t *msTab[256] = {
 };
 
 static const uint64_t seedTab[256] = {
-    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 0..7
+    seedN, seedT, seedN, seedG, seedA, seedN, seedN, seedC, // 0..7
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 8..15
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 16..23
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 24..31
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 32..39
-    seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 40..47
-    seedN, seedN, seedN, seedC, seedN, seedN, seedN, seedN, // 48..55
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 40..47
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 48..55
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 56..63
-    seedA, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
-    seedN, seedN, seedN, seedN, seedN, seedT, seedN, seedG, // 72..79
-    seedN, seedN, seedN, seedC, seedT, seedN, seedN, seedN, // 80..87
+    seedN, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
+    seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 72..79
+    seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 80..87
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
-    seedA, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
+    seedN, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
     seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
@@ -151,6 +152,21 @@ static const uint64_t seedTab[256] = {
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 240..247
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN  // 248..255
 };
+
+
+/*// asembly rol
+inline uint64_t rol (uint64_t v, size_t n)
+{
+	asm("rol %b1, %0":"+r,r"(v):"i,c"(n));
+    return (v);
+}
+
+// asembly ror
+inline uint64_t ror (uint64_t v, size_t n)
+{
+    asm("ror %b1, %0":"+r,r"(v):"i,c"(n));
+    return (v);
+}*/
 
 // rotate "v" to the left by "s" positions
 inline uint64_t rol(const uint64_t v, const int s) {
@@ -174,7 +190,7 @@ inline uint64_t getFhval(const char * kmerSeq, const unsigned k) {
 inline uint64_t getRhval(const char * kmerSeq, const unsigned k) {
     uint64_t hVal=0;
     for(unsigned i=0; i<k; i++)
-        hVal ^= rol(seedTab[(unsigned char)kmerSeq[i]+cpOff], i);
+        hVal ^= rol(seedTab[(unsigned char)kmerSeq[i]&cpOff], i);
     return hVal;
 }
 
@@ -214,9 +230,9 @@ inline uint64_t NTC64(const char * kmerSeq, const unsigned k, uint64_t& fhVal, u
 }
 
 // canonical ntHash for sliding k-mers, using rotate ops
-inline uint64_t NTC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k) {
+inline uint64_t NTC64(const unsigned char charOut, const unsigned char charIn, const unsigned k, uint64_t& fhVal, uint64_t& rhVal) {
     fhVal = rol(fhVal, 1) ^ rol(seedTab[charOut], k) ^ seedTab[charIn];
-    rhVal = ror(rhVal, 1) ^ ror(seedTab[charOut+cpOff], 1) ^ rol(seedTab[charIn+cpOff], k-1);
+    rhVal = ror(rhVal, 1) ^ ror(seedTab[charOut&cpOff], 1) ^ rol(seedTab[charIn&cpOff], k-1);
     return (rhVal<fhVal)? rhVal : fhVal;
 }
 
@@ -230,7 +246,7 @@ inline uint64_t NTC64(const char * kmerSeq, const unsigned k, const unsigned see
 
 /*
  * Using pre-computed seed matrix msTab instead of rotate opts
-*/ 
+*/
 
 // ntHash
 inline uint64_t NTP64(const char * kmerSeq, const unsigned k) {
@@ -243,7 +259,7 @@ inline uint64_t NTP64(const char * kmerSeq, const unsigned k) {
 // ntHash for sliding k-mers
 inline uint64_t NTP64(const uint64_t fhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k) {
     return(rol(fhVal, 1) ^ msTab[charOut][k%64] ^ msTab[charIn][0]);
- }
+}
 
 // ntBase with seeding option
 inline uint64_t NTP64(const char * kmerSeq, const unsigned k, const unsigned seed) {
@@ -260,7 +276,7 @@ inline uint64_t NTPC64(const char * kmerSeq, const unsigned k) {
     uint64_t fhVal=0, rhVal=0;
     for(unsigned i=0; i<k; i++) {
         fhVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-        rhVal ^= msTab[(unsigned char)kmerSeq[i]+cpOff][i%64];
+        rhVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
     }
     return (rhVal<fhVal)? rhVal : fhVal;
 }
@@ -270,15 +286,15 @@ inline uint64_t NTPC64(const char * kmerSeq, const unsigned k, uint64_t& fhVal, 
     fhVal=0, rhVal=0;
     for(unsigned i=0; i<k; i++) {
         fhVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-        rhVal ^= msTab[(unsigned char)kmerSeq[i]+cpOff][i%64];
+        rhVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
     }
     return (rhVal<fhVal)? rhVal : fhVal;
 }
 
 // canonical ntHash for sliding k-mers
-inline uint64_t NTPC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k) {
-    fhVal = rol(fhVal, 1) ^ rol(seedTab[charOut], k) ^ seedTab[charIn];
-    rhVal = ror(rhVal, 1) ^ ror(seedTab[charOut+cpOff], 1) ^ rol(seedTab[charIn+cpOff], k-1);    
+inline uint64_t NTPC64(const unsigned char charOut, const unsigned char charIn, const unsigned k, uint64_t& fhVal, uint64_t& rhVal) {
+    fhVal = rol(fhVal, 1) ^ msTab[charOut][k%64] ^ msTab[charIn][0];
+    rhVal = ror(rhVal, 1) ^ msTab[charOut&cpOff][63] ^ msTab[charIn&cpOff][(k-1)%64];
     return (rhVal<fhVal)? rhVal : fhVal;
 }
 
@@ -327,7 +343,7 @@ void NTMC64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *
 }
 
 // canonical multihash ntHash
-void NTMC64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *hVal, uint64_t& fhVal, uint64_t& rhVal) {
+void NTMC64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, uint64_t *hVal) {
     uint64_t bVal=0, tVal=0;
     bVal = NTPC64(kmerSeq, k, fhVal, rhVal);
     hVal[0] = bVal;
@@ -339,9 +355,9 @@ void NTMC64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *
 }
 
 // canonical multihash ntHash for sliding k-mers
-void NTMC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t *hVal) {
+void NTMC64(const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, uint64_t *hVal) {
     uint64_t bVal=0, tVal=0;
-    bVal = NTPC64(fhVal, rhVal, charOut, charIn, k);
+    bVal = NTPC64(charOut, charIn, k, fhVal, rhVal);
     hVal[0] = bVal;
     for(unsigned i=1; i<m; i++) {
         tVal = bVal * (i ^ k * multiSeed);
@@ -350,7 +366,7 @@ void NTMC64(uint64_t& fhVal, uint64_t& rhVal, const unsigned char charOut, const
     }
 }
 
-/* 
+/*
  * ignoring k-mers containing nonACGT using ntHash function
 */
 
@@ -364,14 +380,14 @@ inline bool NTPC64(const char *kmerSeq, const unsigned k, uint64_t& hVal, unsign
             return false;
         }
         fhVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-        rhVal ^= msTab[(unsigned char)kmerSeq[i]+cpOff][i%64];
+        rhVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
     }
     hVal = (rhVal<fhVal)? rhVal : fhVal;
     return true;
 }
 
 // canonical multihash ntBase
-inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, uint64_t* hVal, unsigned& locN) {
+inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, unsigned& locN, uint64_t* hVal) {
     uint64_t bVal=0, tVal=0, fhVal=0, rhVal=0;
     for(int i=k-1; i>=0; i--) {
         if(msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64]==seedN) {
@@ -379,9 +395,9 @@ inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, uint
             return false;
         }
         fhVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-        rhVal ^= msTab[(unsigned char)kmerSeq[i]+cpOff][i%64];
+        rhVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
     }
-    bVal = (rhVal<fhVal)? rhVal : fhVal;    
+    bVal = (rhVal<fhVal)? rhVal : fhVal;
     hVal[0] = bVal;
     for(unsigned i=1; i<m; i++) {
         tVal = bVal * (i ^ k * multiSeed);
@@ -400,25 +416,25 @@ inline bool NTPC64(const char *kmerSeq, const unsigned k, uint64_t& fhVal, uint6
             return false;
         }
         fhVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-        rhVal ^= msTab[(unsigned char)kmerSeq[i]+cpOff][i%64];
+        rhVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
     }
     hVal = (rhVal<fhVal)? rhVal : fhVal;
     return true;
 }
 
 // canonical multihash ntHash
-inline bool NTMC64(const char *kmerSeq, const unsigned k, uint64_t& fhVal, uint64_t& rhVal, const unsigned m, uint64_t* hVal, unsigned& locN) {
+inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, unsigned& locN, uint64_t* hVal) {
     fhVal=rhVal=0;
-    uint64_t bVal=0, tVal=0;    
+    uint64_t bVal=0, tVal=0;
     for(int i=k-1; i>=0; i--) {
         if(msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64]==seedN) {
             locN=i;
             return false;
         }
         fhVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-        rhVal ^= msTab[(unsigned char)kmerSeq[i]+cpOff][i%64];
+        rhVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
     }
-    bVal = (rhVal<fhVal)? rhVal : fhVal;    
+    bVal = (rhVal<fhVal)? rhVal : fhVal;
     hVal[0] = bVal;
     for(unsigned i=1; i<m; i++) {
         tVal = bVal * (i ^ k * multiSeed);
