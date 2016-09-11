@@ -93,7 +93,7 @@ Enables ntHash on strings
 
 To hash all k-mers of length `k` in a given sequence `seq` with `h` hash values using ntHashIterator: 
 ```bash
-ntHashIterator itr(&seq, k, h);			
+ntHashIterator itr(seq, h, k);			
 while (itr != itr.end()) 
 {
  ... use *itr ...
@@ -112,17 +112,17 @@ Outputing hash values of all k-mers in a sequence
 int main(int argc, const char* argv[])
 {
 	/* test sequence */
-    std::string seq = "GAGTGTCAAACATTCAGACAACAGCAGGGGTGCTCTGGAATCCTATGTGAGGAACAAACATTCAGGCCACAGTAG";
-    unsigned k = 70;
-    unsigned h = 1;
+	std::string seq = "GAGTGTCAAACATTCAGACAACAGCAGGGGTGCTCTGGAATCCTATGTGAGGAACAAACATTCAGGCCACAGTAG";
+	unsigned k = 70;
+	unsigned h = 1;
 
-    /* init ntHash state and compute hash values for first k-mer */
-    ntHashIterator itr(&seq, k, h);
-    while (itr != itr.end()) {
-        std::cout << std::hex << (*itr)[0] << std::endl;
-        ++itr;
-    }
-    
-    return 0;
+	/* init ntHash state and compute hash values for first k-mer */
+	ntHashIterator itr(seq, h, k);
+	while (itr != itr.end()) {
+		std::cout << (*itr)[0] << std::endl;
+		++itr;
+	}
+
+	return 0;
 }
 ```

@@ -420,7 +420,7 @@ void nthashBF(const char *geneName, const char *readName) {
     omp_set_num_threads(opt::threads);
 #endif
     std::cerr<<"#threads="<<opt::threads << "\n";
-    for(opt::method=0; opt::method<5; opt::method++) {
+    for(opt::method=0; opt::method<5; opt::method++) { 
         std::cerr<<"method="<<itm[opt::method]<<" ";
         for (unsigned k=50; k<=opt::squery; k+=100) {
             opt::kmerLen = k;
