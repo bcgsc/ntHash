@@ -44,8 +44,12 @@ public:
     /** Initialize internal state of iterator */
     void init()
     {
-        unsigned locN;
-        while (!NTMC64(m_seq.data()+m_pos, m_k, m_h, m_fhVal, m_rhVal, locN, m_hVec) && m_pos<m_seq.length()-m_k+1)
+        if (m_k > m_seq.length()) {
+            m_pos = std::numeric_limits<std::size_t>::max();
+            return;
+        }
+        unsigned locN=0;
+        while (m_pos<m_seq.length()-m_k+1 && !NTMC64(m_seq.data()+m_pos, m_k, m_h, m_fhVal, m_rhVal, locN, m_hVec))
             m_pos+=locN+1;
         if (m_pos >= m_seq.length()-m_k+1)
             m_pos = std::numeric_limits<std::size_t>::max();
@@ -100,7 +104,7 @@ public:
 
     /** destructor */
     ~ntHashIterator() {
-        if (m_hVec != NULL)
+        if(m_hVec!=NULL)
             delete [] m_hVec;
     }
 

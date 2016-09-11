@@ -373,6 +373,7 @@ void NTMC64(const unsigned char charOut, const unsigned char charIn, const unsig
 // canonical ntBase
 inline bool NTPC64(const char *kmerSeq, const unsigned k, uint64_t& hVal, unsigned& locN) {
     hVal=0;
+    locN=0;
     uint64_t fhVal=0,rhVal=0;
     for(int i=k-1; i>=0; i--) {
         if(msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64]==seedN) {
@@ -389,6 +390,7 @@ inline bool NTPC64(const char *kmerSeq, const unsigned k, uint64_t& hVal, unsign
 // canonical multihash ntBase
 inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, unsigned& locN, uint64_t* hVal) {
     uint64_t bVal=0, tVal=0, fhVal=0, rhVal=0;
+    locN=0;
     for(int i=k-1; i>=0; i--) {
         if(msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64]==seedN) {
             locN=i;
@@ -410,6 +412,7 @@ inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, unsi
 // canonical ntHash
 inline bool NTPC64(const char *kmerSeq, const unsigned k, uint64_t& fhVal, uint64_t& rhVal, uint64_t& hVal, unsigned& locN) {
     hVal=fhVal=rhVal=0;
+    locN=0;
     for(int i=k-1; i>=0; i--) {
         if(msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64]==seedN) {
             locN=i;
@@ -426,6 +429,7 @@ inline bool NTPC64(const char *kmerSeq, const unsigned k, uint64_t& fhVal, uint6
 inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, unsigned& locN, uint64_t* hVal) {
     fhVal=rhVal=0;
     uint64_t bVal=0, tVal=0;
+    locN=0;
     for(int i=k-1; i>=0; i--) {
         if(msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64]==seedN) {
             locN=i;
