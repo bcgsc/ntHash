@@ -101,7 +101,7 @@ while (itr != itr.end())
 }
 ```
 
-# usage example (C++)
+# Usage example (C++)
 Outputing hash values of all k-mers in a sequence
 
 ```C++
