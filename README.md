@@ -2,14 +2,14 @@ ntHash
 =
 ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA sequence. 
 
-## Build the test suite
+# Build the test suite
 Run:
 ```
 $ make
 ```
 The nttest suite has the options for *runtime* and *uniformity* tests. 
 
-## Runtime test
+# Runtime test
 For the runtime test the program has the following options:
 ```
 ./nttest [OPTIONS] ... [FILE]
