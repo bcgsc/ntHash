@@ -19,7 +19,7 @@ License: GPL-3
  For commercial licensing options, please contact
  Patrick Rebstein <prebstein@bccancer.bc.ca>
 
-Files: *
+Files: nthash.hpp ntHashIterator.hpp nttest.cpp
 Copyright: Copyright 2016 Hamid Mohamadi 
 License: GPL-3
 
