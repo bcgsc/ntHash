@@ -89,7 +89,7 @@ To multi-hash with `h` hash values all k-mers of length `k` in a given sequence 
 ```
 
 # ntHashIterator
-Enables ntHash on strings
+Enables ntHash on sequences
 
 To hash all k-mers of length `k` in a given sequence `seq` with `h` hash values using ntHashIterator: 
 ```bash
