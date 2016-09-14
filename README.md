@@ -9,7 +9,7 @@ $ make
 ```
 The nttest suite has the options for *runtime* and *uniformity* tests. 
 
-# Runtime test
+## Runtime test
 For the runtime test the program has the following options:
 ```
 ./nttest [OPTIONS] ... [FILE]
@@ -24,7 +24,7 @@ For example to evaluate the runtime of different hash methods on the test file `
 $ nttest -k50 reads.fa 
 ```
 
-# Uniformity test
+## Uniformity test
 For the uniformity test using the Bloom filter data structure the program has the following options:
 ```
 ./nttest --uniformity [OPTIONS] ... [REF_FILE] [QUERY_FILE]
@@ -101,7 +101,7 @@ while (itr != itr.end())
 }
 ```
 
-# Usage example (C++)
+## Usage example (C++)
 Outputing hash values of all k-mers in a sequence
 
 ```C++
