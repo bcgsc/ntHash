@@ -23,7 +23,7 @@ Copyright: Copyright 2011 Google, Inc.
 License: Expat
 
 Files: lib/xxhash.c lib/xxhash.h
-Copyright: Copyright (C) 2012-201666666, Yann Collet.
+Copyright: Copyright (C) 2012-2016 Yann Collet.
 License: BSD 2-Clause
 
 
