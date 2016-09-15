@@ -126,3 +126,14 @@ int main(int argc, const char* argv[])
 	return 0;
 }
 ```
+
+Publications
+============
+
+## [ntHash](http://bioinformatics.oxfordjournals.org/content/early/2016/08/01/bioinformatics.btw397)
+
+Hamid Mohamadi, Justin Chu, Benjamin P Vandervalk, and Inanc Birol.
+**ntHash: recursive nucleotide hashing**.
+*Bioinformatics* (2016): btw397v2-btw397.
+[doi:10.1093/bioinformatics/btw397 ](http://dx.doi.org/10.1093/bioinformatics/btw397)
+
