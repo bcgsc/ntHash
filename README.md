@@ -12,7 +12,7 @@ The nttest suite has the options for *runtime* and *uniformity* tests.
 ## Runtime test
 For the runtime test the program has the following options:
 ```
-./nttest [OPTIONS] ... [FILE]
+nttest [OPTIONS] ... [FILE]
 ```
 Parameters:
   * `-k`,  `--kmer=SIZE`: the length of k-mer used for runtime test hashing `[50]`
@@ -27,7 +27,7 @@ $ nttest -k50 reads.fa
 ## Uniformity test
 For the uniformity test using the Bloom filter data structure the program has the following options:
 ```
-./nttest --uniformity [OPTIONS] ... [REF_FILE] [QUERY_FILE]
+nttest --uniformity [OPTIONS] ... [REF_FILE] [QUERY_FILE]
 ```
 
 Parameters:
@@ -47,7 +47,7 @@ For example, to evaluate the uniformity of different hash methods using the Bloo
 
 run:
 ```
-$ ./nttest --uniformity --input -q4000000 -l250 -t100 -g5000000 -j12 genes.fa reads.fa 
+$ nttest --uniformity --input -q4000000 -l250 -t100 -g5000000 -j12 genes.fa reads.fa 
 ```
 
 ## Code samples
