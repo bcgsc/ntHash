@@ -134,6 +134,6 @@ Publications
 
 Hamid Mohamadi, Justin Chu, Benjamin P Vandervalk, and Inanc Birol.
 **ntHash: recursive nucleotide hashing**.
-*Bioinformatics* (2016): btw397v2-btw397.
+*Bioinformatics* (2016) 32 (22): 3492-3494.
 [doi:10.1093/bioinformatics/btw397 ](http://dx.doi.org/10.1093/bioinformatics/btw397)
 
