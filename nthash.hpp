@@ -153,15 +153,14 @@ static const uint64_t seedTab[256] = {
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN  // 248..255
 };
 
-
-/*// asembly rol
+/*// assembly rol
 inline uint64_t rol (uint64_t v, size_t n)
 {
-	asm("rol %b1, %0":"+r,r"(v):"i,c"(n));
+    asm("rol %b1, %0":"+r,r"(v):"i,c"(n));
     return (v);
 }
 
-// asembly ror
+// assembly ror
 inline uint64_t ror (uint64_t v, size_t n)
 {
     asm("ror %b1, %0":"+r,r"(v):"i,c"(n));
@@ -316,6 +315,15 @@ void NTM64(const char * kmerSeq, const unsigned k, const unsigned m, uint64_t *h
         tVal ^= tVal >> multiShift;
         hVal[i] =  tVal;
     }
+}
+
+//JUSTIN
+// ONE extra hash for given base hash
+uint64_t NTE64(const uint64_t hVal, const unsigned k, const unsigned i) {
+    uint64_t tVal = hVal;
+    tVal *= (i ^ k * multiSeed);
+    tVal ^= tVal >> multiShift;
+    return tVal;
 }
 
 // multihash ntHash for sliding k-mers
