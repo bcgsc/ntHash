@@ -70,7 +70,13 @@ public:
             NTMC64(m_seq.at(m_pos-1), m_seq.at(m_pos-1+m_k), m_k, m_h, m_fhVal, m_rhVal, m_hVec);
     }
 
-    /** get reference to hash values for current k-mer */
+    /** get pointer to hash values for current k-mer */
+	const uint64_t* operator->() const
+	{
+		return m_hVec;
+	}
+
+    /** get pointer to hash values for current k-mer */
     const uint64_t* operator*() const
     {
         return m_hVec;
