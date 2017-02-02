@@ -71,12 +71,6 @@ public:
     }
 
     /** get pointer to hash values for current k-mer */
-	const uint64_t* operator->() const
-	{
-		return m_hVec;
-	}
-
-    /** get pointer to hash values for current k-mer */
     const uint64_t* operator*() const
     {
         return m_hVec;
