@@ -2,11 +2,25 @@ ntHash
 =
 ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA sequence. 
 
+
 # Build the test suite
-Run:
+
 ```
+$ ./autogen.sh
+$ ./configure
 $ make
+$ sudo make install
 ```
+
+To install nttest in a specified directory:
+
+```
+$ ./autogen.sh
+$ ./configure --prefix=/opt/ntHash/
+$ make
+$ make install
+```
+
 The nttest suite has the options for *runtime* and *uniformity* tests. 
 
 ## Runtime test

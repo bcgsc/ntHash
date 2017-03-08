@@ -83,7 +83,7 @@ static const string itm[]= {"city","murmur","xxhash","ntbase","nthash"};
 void getFtype(const char *fName) {
     std::ifstream in(fName);
     std::string hLine;
-    bool good=getline(in,hLine);
+    bool good=static_cast<bool>(getline(in,hLine));
     in.close();
     if(!good) {
         std::cerr<<"Error in reading file: "<<fName<<"\n";
@@ -104,14 +104,14 @@ bool getSeq(std::ifstream &uFile, std::string &line) {
     std::string hline;
     line.clear();
     if(opt::fastq) {
-        good=getline(uFile, hline);
-        good=getline(uFile, line);
-        good=getline(uFile, hline);
-        good=getline(uFile, hline);
+        good=static_cast<bool>(getline(uFile, hline));
+        good=static_cast<bool>(getline(uFile, line));
+        good=static_cast<bool>(getline(uFile, hline));
+        good=static_cast<bool>(getline(uFile, hline));
     }
     else {
         do {
-            good=getline(uFile, hline);
+            good=static_cast<bool>(getline(uFile, hline));
             if(hline[0]=='>'&&!line.empty()) break;// !line.empty() for the first rec
             if(hline[0]!='>')line+=hline;
         } while(good);
@@ -420,7 +420,7 @@ void nthashBF(const char *geneName, const char *readName) {
     omp_set_num_threads(opt::threads);
 #endif
     std::cerr<<"#threads="<<opt::threads << "\n";
-    for(opt::method=0; opt::method<5; opt::method++) { 
+    for(opt::method=0; opt::method<5; opt::method++) {
         std::cerr<<"method="<<itm[opt::method]<<" ";
         for (unsigned k=50; k<=opt::squery; k+=100) {
             opt::kmerLen = k;

@@ -78,7 +78,7 @@ public:
     }
 
     void insertF(uint64_t& hVal, const char charOut, const char charIn) {
-        hVal = rol(hVal, 1)^rol(seedTab[charOut], m_kmerSize)^ seedTab[charIn];
+        hVal = rol(hVal, 1)^rol(seedTab[(unsigned)charOut], m_kmerSize)^ seedTab[(unsigned)charIn];
         size_t hLoc = hVal % m_size;
         __sync_or_and_fetch(&m_filter[hLoc / 8], (1 << (7 - hLoc % 8)));
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -175,7 +175,7 @@ public:
     }
 
     bool containsF(uint64_t& hVal, const char charOut, const char charIn) {
-        hVal = rol(hVal, 1) ^ rol(seedTab[charOut], m_kmerSize) ^ seedTab[charIn];
+        hVal = rol(hVal, 1) ^ rol(seedTab[(unsigned)charOut], m_kmerSize) ^ seedTab[(unsigned)charIn];
         size_t hLoc = hVal % m_size;
         if ((m_filter[hLoc / 8] & (1 << (7 - hLoc % 8))) == 0) return false;
         for (unsigned i = 1; i < m_hashNum; i++) {

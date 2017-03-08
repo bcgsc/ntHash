@@ -82,7 +82,7 @@ void balanceSeed() {
         std::cout << "\n";
     }
 
-    uint64_t allSeed[seedNum];
+    long long unsigned int allSeed[seedNum];
     for (int i=0; i<seedNum; i++) {
         uint64_t hSeed=0;
         for (int j=0; j<64; j++) {
@@ -105,8 +105,8 @@ void balanceSeed() {
     exit(0);
 }
 
-int main(int argc, const char* argv[]) {
-    balanceSeed();
+void getSeeds() {
+    //balanceSeed();
     srand(time(NULL));
     const int seedNum=4;
     int hashSeed[seedNum][64];
@@ -135,7 +135,7 @@ int main(int argc, const char* argv[]) {
         std::cout << "\n";
     }
 
-    uint64_t allSeed[seedNum];
+    long long unsigned int allSeed[seedNum];
 
     for (int i=0; i<seedNum; i++) {
         uint64_t hSeed=0;
@@ -155,5 +155,5 @@ int main(int argc, const char* argv[]) {
     printf("static const uint64_t seedC = 0x%llx;\n", allSeed[1]);
     printf("static const uint64_t seedG = 0x%llx;\n", allSeed[2]);
     printf("static const uint64_t seedT = 0x%llx;\n", allSeed[3]);
-    return 0;
+    //return 0;
 }
