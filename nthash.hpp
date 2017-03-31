@@ -11,7 +11,6 @@
 
 #include <stdint.h>
 
-
 // offset for the complement base in the random seeds table
 const uint8_t cpOff = 0x07;
 
@@ -154,15 +153,13 @@ static const uint64_t seedTab[256] = {
 };
 
 /*// assembly rol
-inline uint64_t rol (uint64_t v, size_t n)
-{
+inline uint64_t rol (uint64_t v, size_t n) {
     asm("rol %b1, %0":"+r,r"(v):"i,c"(n));
     return (v);
 }
 
 // assembly ror
-inline uint64_t ror (uint64_t v, size_t n)
-{
+inline uint64_t ror (uint64_t v, size_t n) {
     asm("ror %b1, %0":"+r,r"(v):"i,c"(n));
     return (v);
 }*/
@@ -317,7 +314,7 @@ inline void NTM64(const char * kmerSeq, const unsigned k, const unsigned m, uint
     }
 }
 
-// ONE extra hash for given base hash
+// one extra hash for given base hash
 inline uint64_t NTE64(const uint64_t hVal, const unsigned k, const unsigned i) {
     uint64_t tVal = hVal;
     tVal *= (i ^ k * multiSeed);
