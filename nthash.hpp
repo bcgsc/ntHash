@@ -165,12 +165,16 @@ inline uint64_t ror (uint64_t v, size_t n) {
 }*/
 
 // rotate "v" to the left by "s" positions
-inline uint64_t rol(const uint64_t v, const int s) {
+inline uint64_t rol(const uint64_t v, int s) {
+    if ((s &= 63) == 0)
+        return v;
     return (v << s) | (v >> (64 - s));
 }
 
 // rotate "v" to the right by "s" positions
-inline uint64_t ror(const uint64_t v, const int s) {
+inline uint64_t ror(const uint64_t v, int s) {
+    if ((s &= 63) == 0)
+        return v;
     return (v >> s) | (v << (64 - s));
 }
 
