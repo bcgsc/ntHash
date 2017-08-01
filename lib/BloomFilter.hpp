@@ -265,7 +265,9 @@ public:
 
     size_t getPop() const {
         size_t i, popBF=0;
+	#ifdef _OPENMP
         #pragma omp parallel for reduction(+:popBF)
+	#endif
         for(i=0; i<(m_size + 7)/8; i++)
             popBF = popBF + popCnt(m_filter[i]);
         return popBF;

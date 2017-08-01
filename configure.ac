@@ -70,9 +70,6 @@ AM_CONDITIONAL([HAVE_LIBZ],
 # Check for OpenMP.
 AC_LANG_PUSH([C++])
 AC_OPENMP
-if test -z $OPENMP_CXXFLAGS; then
-	AC_MSG_ERROR([NTHASH must be compiled with a C++ compiler that supports OpenMP threading.])
-fi
 AC_LANG_POP([C++])
 
 # Find the absolute path to the source.

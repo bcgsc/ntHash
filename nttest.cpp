@@ -218,9 +218,17 @@ void loadBf(BloomFilter &myFilter, const char* faqFile) {
     getFtype(faqFile);
     ifstream uFile(faqFile);
     bool good = true;
+    
+    #ifdef _OPENMP
     #pragma omp parallel
+    #endif
+    
     for(string line; good;) {
+
+        #ifdef _OPENMP
         #pragma omp critical(uFile)
+        #endif
+
         good = getSeq(uFile, line);
         if(good) {
             if(itm[opt::method]=="city")
@@ -242,12 +250,16 @@ void querySeqr(BloomFilter & myFilter, const string & seq, size_t & fHit) {
     if (seq.size() < opt::kmerLen) return;
     uint64_t fhVal, rhVal;
     if(myFilter.contains(seq.c_str(), fhVal, rhVal)) {
+        #ifdef _OPENMP
         #pragma omp atomic
+        #endif
         ++fHit;
     }
     for (size_t i = 1; i < seq.size() - opt::kmerLen + 1; i++) {
         if(myFilter.contains(fhVal, rhVal, seq[i-1], seq[i+opt::kmerLen-1])) {
+            #ifdef _OPENMP
             #pragma omp atomic
+            #endif
             ++fHit;
         }
     }
@@ -257,7 +269,9 @@ void querySeq(BloomFilter & myFilter, const string & seq, size_t & fHit) {
     if (seq.size() < opt::kmerLen) return;
     for (size_t i = 0; i < seq.size() - opt::kmerLen + 1; i++) {
         if(myFilter.contains(seq.c_str()+i)) {
+            #ifdef _OPENMP
             #pragma omp atomic
+            #endif
             ++fHit;
         }
     }
@@ -269,7 +283,9 @@ void querySeqm(BloomFilter & myFilter, const string & seq, size_t & fHit) {
         string kmer = seq.substr(i, opt::kmerLen);
         getCanon(kmer);
         if(myFilter.containsMur(kmer.c_str())) {
+            #ifdef _OPENMP
             #pragma omp atomic
+            #endif
             ++fHit;
         }
     }
@@ -281,7 +297,9 @@ void querySeqc(BloomFilter & myFilter, const string & seq, size_t & fHit) {
         string kmer = seq.substr(i, opt::kmerLen);
         getCanon(kmer);
         if(myFilter.containsCit(kmer.c_str())) {
+            #ifdef _OPENMP
             #pragma omp atomic
+            #endif
             ++fHit;
         }
     }
@@ -293,7 +311,9 @@ void querySeqx(BloomFilter & myFilter, const string & seq, size_t & fHit) {
         string kmer = seq.substr(i, opt::kmerLen);
         getCanon(kmer);
         if(myFilter.containsXxh(kmer.c_str())) {
+            #ifdef _OPENMP
             #pragma omp atomic
+            #endif
             ++fHit;
         }
     }
@@ -304,9 +324,13 @@ void queryBf(BloomFilter &myFilter, const char* faqFile) {
     ifstream uFile(faqFile);
     size_t fHit=0,totKmer=0;
     bool good = true;
+    #ifdef _OPENMP
     #pragma omp parallel
+    #endif
     for(string line; good;) {
+        #ifdef _OPENMP
         #pragma omp critical(uFile)
+        #endif
         good = getSeq(uFile, line);
         if(good) {
             if(itm[opt::method]=="city")
@@ -319,7 +343,9 @@ void queryBf(BloomFilter &myFilter, const char* faqFile) {
                 querySeq(myFilter, line, fHit);
             else if(itm[opt::method]=="nthash")
                 querySeqr(myFilter, line, fHit);
+            #ifdef _OPENMP
             #pragma omp atomic
+            #endif
             totKmer+=opt::squery-opt::kmerLen+1;
         }
     }
@@ -428,15 +454,38 @@ void nthashBF(const char *geneName, const char *readName) {
             for (unsigned i=1; i<6; i+=2) {
                 opt::nhash = i;
                 std::cerr<<"nhash="<<opt::nhash<<" ";
+                
+
+                #ifdef _OPENMP
                 double sTime = omp_get_wtime();
+                #else
+                clock_t start = clock();
+                #endif
+
+                
                 BloomFilter myFilter(opt::ibits*opt::ngene*opt::sgene , opt::nhash, opt::kmerLen);
                 loadBf(myFilter, geneName);
                 cerr << "|popBF|=" << myFilter.getPop() << " ";
-                cerr << "load_time=" <<setprecision(4) << fixed << omp_get_wtime() - sTime << "\n";
 
+                #ifdef _OPENMP
+                std::cerr << "load_time=" <<setprecision(4) << fixed << omp_get_wtime() - sTime << "\n";
+                #else
+                std::cerr << "load_time=" <<setprecision(4) << (double)(clock() - start)/CLOCKS_PER_SEC << "\n";
+                #endif
+                
+                #ifdef _OPENMP
                 sTime = omp_get_wtime();
+                #else
+                start = clock();
+                #endif
+                
                 queryBf(myFilter, readName);
-                cerr << "query_time=" << setprecision(4) << fixed << omp_get_wtime() - sTime << "\n";
+                
+                #ifdef _OPENMP
+                std::cerr << "query_time=" <<setprecision(4) << fixed << omp_get_wtime() - sTime << "\n";
+                #else
+                std::cerr << "query_time=" <<setprecision(4) << (double)(clock() - start)/CLOCKS_PER_SEC << "\n";
+                #endif
             }
         }
         cerr << "\n";
@@ -500,9 +549,6 @@ void nthashRT(const char *readName) {
 }
 
 int main(int argc, char** argv) {
-    //std::cerr << std::hex << rol(0x3c8bfbb395c60474,4) << "\n";
-    //std::cerr << std::hex << ror(0x193c18562a02b4c3,4) << "\n";
-    //exit(0);
 
     bool die = false;
     for (int c; (c = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1;) {
