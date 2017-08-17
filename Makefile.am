@@ -18,7 +18,6 @@ nttest_SOURCES = \
 dist_doc_DATA = \
 	ChangeLog \
 	CITATION.bib \
-	COPYRIGHT \
 	LICENSE \
 	README.md
 
