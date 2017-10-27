@@ -58,6 +58,7 @@ public:
     /** Advance iterator right to the next valid k-mer */
     void next()
     {
+        ++m_pos;
         if (m_pos >= m_seq.length()-m_k+1) {
             m_pos = std::numeric_limits<std::size_t>::max();
             return;
@@ -68,6 +69,10 @@ public:
         }
         else
             NTMC64(m_seq.at(m_pos-1), m_seq.at(m_pos-1+m_k), m_k, m_h, m_fhVal, m_rhVal, m_hVec);
+    }
+    
+    size_t pos() const{
+    	return m_pos;
     }
 
     /** get pointer to hash values for current k-mer */
@@ -91,7 +96,6 @@ public:
     /** pre-increment operator */
     ntHashIterator& operator++()
     {
-        ++m_pos;
         next();
         return *this;
     }
