@@ -20,5 +20,7 @@ dist_doc_DATA = \
 	CITATION.bib \
 	LICENSE \
 	README.md
+	
+SUBDIRS = ssTest
 
 EXTRA_DIST=autogen.sh
