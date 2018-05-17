@@ -95,11 +95,11 @@ void computeHashByMasking(const char * file,
 				sequence = string(seq->seq.s, seq->seq.l);
 			}
 		}
+        std::cerr << sequence << std::endl;
 		if (l >= 0) {
-			for (RollingHashIterator itr(sequence, sseeds[0].length(),
-					RollingHash::parseSeedString(sseeds)); itr != itr.end();
-					++itr) {
-			}
+			for (RollingHashIterator itr(sequence, sseeds[0].length(),RollingHash::parseSeedString(sseeds)); itr != itr.end();++itr) {
+                std::cout << *itr << std::endl;
+            }
 		} else {
 			break;
 		}

@@ -32,5 +32,15 @@ int main(int argc, const char* argv[])
         --ssitr;
     }
     
+    std::cout << endl << endl;
+    
+    uint64_t* hVal = new uint64_t[4];
+    for(unsigned i=0; i<seq.length()-k+1;i++) {
+        string kmer = seq.substr(i,k);
+        NTMS64_test(kmer.data(), seedSeq, k, h, hVal);
+        std::cout << hVal[0] << "\t" << hVal[1] <<"\t" << hVal[2] << "\t" << hVal[3] <<"\t" << std::endl;
+    }
+        
+    
     return 0;
 }

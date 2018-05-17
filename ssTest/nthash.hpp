@@ -511,4 +511,20 @@ inline void NTMS64(const char *kmerSeq, const std::vector<std::string> &seedSeq,
 }
 
 
+//Test sshash
+inline bool NTMS64_test(const char *kmerSeq, const std::vector<std::string> &seedSeq, const unsigned k, const unsigned m, uint64_t* hVal) {
+
+    for(unsigned j=0; j<m; j++) {
+        uint64_t fsVal=0, rsVal=0;
+        for(int i=k-1; i>=0; i--)
+            if(seedSeq[j][i]=='1') {
+                fsVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
+                rsVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
+            }
+        hVal[j] = (rsVal<fsVal)? rsVal : fsVal;
+    }
+    return true;
+}
+
+
 #endif
