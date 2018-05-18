@@ -466,4 +466,29 @@ inline bool NTMC64(const char *kmerSeq, const unsigned k, const unsigned m, uint
     return true;
 }
 
+/*
+ * Spaced Seed ntHash
+ */
+
+// spaced seed ntHash
+inline uint64_t NTPS64(const char * kmerSeq, const std::vector<bool> &seed, const unsigned k, uint64_t &hVal) {
+    hVal=0;
+    uint64_t sVal = 0;
+    for(unsigned i=0; i<k; i++) {
+        uint64_t ntVal = msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
+        hVal ^= ntVal;
+        if(seed[i]) sVal ^= ntVal;
+    }
+    return sVal;
+}
+
+// spaced seed ntHash for sliding k-mers
+inline uint64_t NTPS64(const char * kmerSeq, const std::vector<bool> &seed, const unsigned char charOut, const unsigned char charIn, const unsigned k, uint64_t &hVal) {
+    hVal = rol1(hVal) ^ msTab[charOut][k%64] ^ msTab[charIn][0];
+    uint64_t sVal = hVal;
+    for(unsigned i=0; i<k; i++)
+        if(seed[i]) sVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
+    return sVal;
+}
+
 #endif

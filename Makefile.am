@@ -1,19 +1,11 @@
-bin_PROGRAMS = nttest
+bin_PROGRAMS = sstest
 
-nttest_CPPFLAGS = -I$(top_srcdir)/lib
+sstest_CPPFLAGS = -I$(top_srcdir)/lib
 
-nttest_SOURCES = \
-	lib/BloomFilter.hpp \
-	lib/city.cc \
-	lib/city.h \
-	lib/murmur.hpp \
-	lib/seedgen.cpp \
-	lib/seqgen.hpp \
-	lib/xxhash.c \
-	lib/xxhash.h \
+sstest_SOURCES = \
 	nthash.hpp \
-	ntHashIterator.hpp \
-	nttest.cpp
+	ssHashIterator.hpp \
+	sstest.cpp
 
 dist_doc_DATA = \
 	ChangeLog \
@@ -21,6 +13,4 @@ dist_doc_DATA = \
 	LICENSE \
 	README.md
 	
-SUBDIRS = ssTest
-
 EXTRA_DIST=autogen.sh

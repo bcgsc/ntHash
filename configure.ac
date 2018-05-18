@@ -3,7 +3,7 @@ AC_INIT(NTHASH, 1.0.4, hmohamadi@bcgsc.ca, ntHash,
 		https://github.com/bcgsc/ntHash)
 # add 'foreign' to allow README.md instead of README
 AM_INIT_AUTOMAKE([foreign subdir-objects])
-AC_CONFIG_SRCDIR([nttest.cpp])
+AC_CONFIG_SRCDIR([sstest.cpp])
 AC_CONFIG_HEADER([config.h])
 
 if test -z $CXXFLAGS; then
@@ -85,6 +85,5 @@ AC_SUBST(AM_CXXFLAGS, '-Wall -Wextra -Werror')
 
 AC_CONFIG_FILES([
 	Makefile
-	ssTest/Makefile
 ])
 AC_OUTPUT
