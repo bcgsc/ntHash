@@ -23,7 +23,7 @@ int main()
     //cerr << seedSeq[3] << endl;
 //    ,"110011110011101","111110110011101","100111110011101"};
     
-    ntHashIterator ssitr(seq, seedSeq, h, seedSeq[0].size());
+    stHashIterator ssitr(seq, seedSeq, h, seedSeq[0].size());
     
     while (ssitr != ssitr.end()) {
         std::cout << (*ssitr)[0] << "\t" << (*ssitr)[1] <<"\t" << (*ssitr)[2] << "\t" <<(*ssitr)[3] <<"\t" << std::endl;

@@ -15,7 +15,7 @@
  * hash values for successive k-mers.
  */
 
-class ntHashIterator
+class stHashIterator
 {
 
 public:
@@ -24,7 +24,7 @@ public:
      * Default constructor. Creates an iterator pointing to
      * the end of the iterator range.
     */
-    ntHashIterator():
+    stHashIterator():
         m_hVec(NULL),
         m_hStn(NULL),
         m_pos(std::numeric_limits<std::size_t>::max())
@@ -37,7 +37,7 @@ public:
      * @param k k-mer size
      * @param h number of hashes
     */
-    ntHashIterator(const std::string& seq, std::vector<std::string> &seed, unsigned h, unsigned k):
+    stHashIterator(const std::string& seq, std::vector<std::string> &seed, unsigned h, unsigned k):
     m_seq(seq), m_seed(seed), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_hStn(new bool[h]), m_pos(0)
     {
         init();
@@ -93,32 +93,32 @@ public:
     
 
     /** test equality with another iterator */
-    bool operator==(const ntHashIterator& it) const
+    bool operator==(const stHashIterator& it) const
     {
         return m_pos == it.m_pos;
     }
 
     /** test inequality with another iterator */
-    bool operator!=(const ntHashIterator& it) const
+    bool operator!=(const stHashIterator& it) const
     {
         return !(*this == it);
     }
     
     /** pre-increment operator */
-    ntHashIterator& operator++()
+    stHashIterator& operator++()
     {
         next();
         return *this;
     }
     
     /** iterator pointing to one past last element */
-    static const ntHashIterator end()
+    static const stHashIterator end()
     {
-        return ntHashIterator();
+        return stHashIterator();
     }
 
     /** destructor */
-    ~ntHashIterator() {
+    ~stHashIterator() {
         if(m_hVec!=NULL) {
             delete [] m_hVec;
             delete [] m_hStn;
