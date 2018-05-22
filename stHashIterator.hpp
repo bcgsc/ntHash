@@ -26,20 +26,9 @@ public:
     */
     ntHashIterator():
         m_hVec(NULL),
+        m_hStn(NULL),
         m_pos(std::numeric_limits<std::size_t>::max())
     {}
-
-    /**
-     * Constructor.
-     * @param seq address of DNA sequence to be hashed
-     * @param k k-mer size
-     * @param h number of hashes
-    */
-    ntHashIterator(const std::string& seq, unsigned h, unsigned k):
-        m_seq(seq), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_pos(0)
-    {
-        init();
-    }
 
     /**
      * Constructor.
@@ -49,12 +38,12 @@ public:
      * @param h number of hashes
     */
     ntHashIterator(const std::string& seq, std::vector<std::string> &seed, unsigned h, unsigned k):
-    m_seq(seq), m_seed(seed), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_pos(0)
+    m_seq(seq), m_seed(seed), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_hStn(new bool[h]), m_pos(0)
     {
-        init_seed();
+        init();
     }
 
-    
+   
     /** Initialize internal state of iterator */
     void init()
     {
@@ -63,21 +52,7 @@ public:
             return;
         }
         unsigned locN=0;
-        while (m_pos<m_seq.length()-m_k+1 && !NTMC64(m_seq.data()+m_pos, m_k, m_h, m_fhVal, m_rhVal, locN, m_hVec))
-            m_pos+=locN+1;
-        if (m_pos >= m_seq.length()-m_k+1)
-            m_pos = std::numeric_limits<std::size_t>::max();
-    }
-    
-    /** Initialize internal state of iterator */
-    void init_seed()
-    {
-        if (m_k > m_seq.length()) {
-            m_pos = std::numeric_limits<std::size_t>::max();
-            return;
-        }
-        unsigned locN=0;
-        while (m_pos<m_seq.length()-m_k+1 && !NTMS64(m_seq.data()+m_pos, m_seed, m_k, m_h, m_fhVal, m_rhVal, locN, m_hVec))
+        while (m_pos<m_seq.length()-m_k+1 && !NTMS64(m_seq.data()+m_pos, m_seed, m_k, m_h, m_fhVal, m_rhVal, locN, m_hVec, m_hStn))
             m_pos+=locN+1;
         if (m_pos >= m_seq.length()-m_k+1)
             m_pos = std::numeric_limits<std::size_t>::max();
@@ -96,22 +71,7 @@ public:
             init();
         }
         else
-            NTMC64(m_seq.at(m_pos-1), m_seq.at(m_pos-1+m_k), m_k, m_h, m_fhVal, m_rhVal, m_hVec);
-    }
-    
-    void next_seed()
-    {
-        ++m_pos;
-        if (m_pos >= m_seq.length()-m_k+1) {
-            m_pos = std::numeric_limits<std::size_t>::max();
-            return;
-        }
-        if(seedTab[(unsigned char)(m_seq.at(m_pos+m_k-1))]==seedN) {
-            m_pos+=m_k;
-            init_seed();
-        }
-        else
-            NTMS64(m_seq.data()+m_pos, m_seed, m_seq.at(m_pos-1), m_seq.at(m_pos-1+m_k), m_k, m_h, m_fhVal, m_rhVal, m_hVec);
+            NTMS64(m_seq.data()+m_pos, m_seed, m_seq.at(m_pos-1), m_seq.at(m_pos-1+m_k), m_k, m_h, m_fhVal, m_rhVal, m_hVec, m_hStn);
     }
     
     size_t pos() const{
@@ -119,10 +79,18 @@ public:
     }
 
     /** get pointer to hash values for current k-mer */
+    const bool* strand() const
+    {
+        return m_hStn;
+    }
+
+    
+    /** get pointer to hash values for current k-mer */
     const uint64_t* operator*() const
     {
         return m_hVec;
     }
+    
 
     /** test equality with another iterator */
     bool operator==(const ntHashIterator& it) const
@@ -143,14 +111,6 @@ public:
         return *this;
     }
     
-    /** pre-decrement operator */
-    ntHashIterator& operator--()
-    {
-        next_seed();
-        return *this;
-    }
-
-
     /** iterator pointing to one past last element */
     static const ntHashIterator end()
     {
@@ -159,8 +119,10 @@ public:
 
     /** destructor */
     ~ntHashIterator() {
-        if(m_hVec!=NULL)
+        if(m_hVec!=NULL) {
             delete [] m_hVec;
+            delete [] m_hStn;
+        }
     }
 
 private:
@@ -180,6 +142,9 @@ private:
     /** hash values */
     uint64_t *m_hVec;
 
+    /** hash strands, forward = 0, reverse-complement = 1 */
+    bool *m_hStn;
+    
     /** position of current k-mer */
     size_t m_pos;
 

@@ -1,18 +1,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "ntHashIterator.hpp"
+#include "stHashIterator.hpp"
 
 using namespace std;
 
-int main(int argc, const char* argv[])
+int main()
 {
     /* test sequence */
     std::string seq = "GAGTGTCAAACATTCAGACAACAGCAGGGGTGCTCTGGAATCCTATGTGAGGAACAAACATTCAGGCCACAGTAG";
     
-    /* k is the k-mer length */
-    unsigned k = 42;
-    
+   
     /* h is the number of hashes for each k-mer */
     unsigned h = 4;
     
@@ -25,22 +23,17 @@ int main(int argc, const char* argv[])
     //cerr << seedSeq[3] << endl;
 //    ,"110011110011101","111110110011101","100111110011101"};
     
-    ntHashIterator ssitr(seq, seedSeq, h, k);
+    ntHashIterator ssitr(seq, seedSeq, h, seedSeq[0].size());
     
     while (ssitr != ssitr.end()) {
         std::cout << (*ssitr)[0] << "\t" << (*ssitr)[1] <<"\t" << (*ssitr)[2] << "\t" <<(*ssitr)[3] <<"\t" << std::endl;
-        --ssitr;
+        std::cout << (ssitr.strand())[0] << "\t" << (ssitr.strand())[1] <<"\t" << (ssitr.strand())[2] << "\t" <<(ssitr.strand())[3] <<"\t" << std::endl;
+
+        ++ssitr;
     }
     
     std::cout << endl << endl;
     
-    uint64_t* hVal = new uint64_t[4];
-    for(unsigned i=0; i<seq.length()-k+1;i++) {
-        string kmer = seq.substr(i,k);
-        NTMS64_test(kmer.data(), seedSeq, k, h, hVal);
-        std::cout << hVal[0] << "\t" << hVal[1] <<"\t" << hVal[2] << "\t" << hVal[3] <<"\t" << std::endl;
-    }
-        
     
     return 0;
 }

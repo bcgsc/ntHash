@@ -1,4 +1,11 @@
-bin_PROGRAMS = sstest
+bin_PROGRAMS = sttest sstest
+
+sttest_CPPFLAGS = -I$(top_srcdir)/lib
+
+sttest_SOURCES = \
+	nthash.hpp \
+	stHashIterator.hpp \
+	sttest.cpp
 
 sstest_CPPFLAGS = -I$(top_srcdir)/lib
 
