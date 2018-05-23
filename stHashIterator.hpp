@@ -1,5 +1,5 @@
-#ifndef NTHASH__ITERATOR_H
-#define NTHASH__ITERATOR_H 1
+#ifndef STHASH__ITERATOR_H
+#define STHASH__ITERATOR_H 1
 
 #include <string>
 #include <limits>
