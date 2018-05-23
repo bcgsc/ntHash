@@ -531,7 +531,7 @@ inline uint64_t NTPS64(const char * kmerSeq, const std::vector<bool> &seed, cons
 }
 
 // strand-aware multihash spaced seed ntHash
-inline bool NTMS64(const char *kmerSeq, const std::vector<std::string> &seedSeq, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, unsigned& locN, uint64_t* hVal, bool *hStn) {
+inline bool NTMS64(const char *kmerSeq, const std::vector<std::vector<unsigned> > &seedSeq, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, unsigned& locN, uint64_t* hVal, bool *hStn) {
     fhVal=rhVal=0;
     locN=0;
     for(int i=k-1; i>=0; i--) {
@@ -545,11 +545,10 @@ inline bool NTMS64(const char *kmerSeq, const std::vector<std::string> &seedSeq,
     
     for(unsigned j=0; j<m; j++) {
         uint64_t fsVal=fhVal, rsVal=rhVal;
-        for(int i=k-1; i>=0; i--)
-            if(seedSeq[j][i]=='0') {
-                fsVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-                rsVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
-            }
+        for(std::vector<unsigned>::const_iterator i=seedSeq[j].begin(); i!=seedSeq[j].end(); ++i) {
+            fsVal ^= msTab[(unsigned char)kmerSeq[*i]][(k-1-*i)%64];
+            rsVal ^= msTab[(unsigned char)kmerSeq[*i]&cpOff][*i%64];
+        }
         hStn[j] = rsVal<fsVal;
         hVal[j] = hStn[j]? rsVal : fsVal;
     }
@@ -557,17 +556,16 @@ inline bool NTMS64(const char *kmerSeq, const std::vector<std::string> &seedSeq,
 }
 
 // strand-aware multihash spaced seed ntHash for sliding k-mers
-inline void NTMS64(const char *kmerSeq, const std::vector<std::string> &seedSeq, const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, uint64_t *hVal, bool *hStn) {
+inline void NTMS64(const char *kmerSeq, const std::vector<std::vector<unsigned> > &seedSeq, const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, uint64_t *hVal, bool *hStn) {
     fhVal = rol1(fhVal) ^ msTab[charOut][k%64] ^ msTab[charIn][0];
     rhVal = ror1(rhVal) ^ msTab[charOut&cpOff][63] ^ msTab[charIn&cpOff][(k-1)%64];
     
     for(unsigned j=0; j<m; j++) {
         uint64_t fsVal=fhVal, rsVal=rhVal;
-        for(int i=k-1; i>=0; i--)
-            if(seedSeq[j][i]=='0') {
-                fsVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
-                rsVal ^= msTab[(unsigned char)kmerSeq[i]&cpOff][i%64];
-            }
+        for(std::vector<unsigned>::const_iterator i=seedSeq[j].begin(); i!=seedSeq[j].end(); ++i) {
+            fsVal ^= msTab[(unsigned char)kmerSeq[*i]][(k-1-*i)%64];
+            rsVal ^= msTab[(unsigned char)kmerSeq[*i]&cpOff][*i%64];
+        }
         hStn[j] = rsVal<fsVal;
         hVal[j] = hStn[j]? rsVal : fsVal;
     }

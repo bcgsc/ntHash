@@ -15,11 +15,22 @@
  * hash values for successive k-mers.
  */
 
+std::vector<std::vector<unsigned> > parseSeed(const std::vector<std::string> &seedString) {
+    std::vector<std::vector<unsigned> > seedSet;
+    for(unsigned i=0; i< seedString.size(); i++) {
+        std::vector<unsigned> sSeed;
+        for(unsigned j=0; j < seedString[i].size(); j++)
+            if(seedString[i][j]=='1') sSeed.push_back(j);
+        seedSet.push_back(sSeed);
+    }
+    return seedSet;
+}
+
 class stHashIterator
 {
 
 public:
-
+    
     /**
      * Default constructor. Creates an iterator pointing to
      * the end of the iterator range.
@@ -37,12 +48,11 @@ public:
      * @param k k-mer size
      * @param h number of hashes
     */
-    stHashIterator(const std::string& seq, std::vector<std::string> &seed, unsigned h, unsigned k):
+    stHashIterator(const std::string& seq, const std::vector<std::vector<unsigned> >& seed, unsigned h, unsigned k):
     m_seq(seq), m_seed(seed), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_hStn(new bool[h]), m_pos(0)
     {
         init();
     }
-
    
     /** Initialize internal state of iterator */
     void init()
@@ -116,7 +126,7 @@ public:
     {
         return stHashIterator();
     }
-
+    
     /** destructor */
     ~stHashIterator() {
         if(m_hVec!=NULL) {
@@ -126,13 +136,13 @@ public:
     }
 
 private:
-
+    
     /** DNA sequence */
     std::string m_seq;
-
-    /** Spaced Seed sequence */
-    std::vector<std::string> m_seed;
     
+    /** Spaced Seed sequence */
+    std::vector<std::vector<unsigned> > m_seed;
+   
     /** number of hashes */
     unsigned m_h;
 
