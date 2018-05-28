@@ -526,7 +526,7 @@ inline uint64_t NTPS64(const char * kmerSeq, const std::vector<bool> &seed, cons
     hVal = rol1(hVal) ^ msTab[charOut][k%64] ^ msTab[charIn][0];
     uint64_t sVal = hVal;
     for(unsigned i=0; i<k; i++)
-        if(seed[i]) sVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
+        if(!seed[i]) sVal ^= msTab[(unsigned char)kmerSeq[i]][(k-1-i)%64];
     return sVal;
 }
 
