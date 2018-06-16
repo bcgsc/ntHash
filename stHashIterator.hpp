@@ -89,7 +89,7 @@ public:
     }
 
     /** get pointer to hash values for current k-mer */
-    const bool* strand() const
+    const bool* strandArray() const
     {
         return m_hStn;
     }

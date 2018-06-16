@@ -36,7 +36,7 @@ public:
      * @param h number of hashes
     */
     ntHashIterator(const std::string& seq, unsigned h, unsigned k):
-        m_seq(seq), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_pos(0)
+        m_seq(seq), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_hStnArray(new bool[h]), m_pos(0)
     {
         init();
     }
@@ -53,6 +53,9 @@ public:
             m_pos+=locN+1;
         if (m_pos >= m_seq.length()-m_k+1)
             m_pos = std::numeric_limits<std::size_t>::max();
+		for (unsigned i = 0; i < m_h; ++i) {
+			m_hStnArray[i] = m_hStn;
+		}
     }
 
     /** Advance iterator right to the next valid k-mer */
@@ -69,6 +72,9 @@ public:
         }
         else
             NTMC64(m_seq.at(m_pos-1), m_seq.at(m_pos-1+m_k), m_k, m_h, m_fhVal, m_rhVal, m_hVec, m_hStn);
+		for (unsigned i = 0; i < m_h; ++i) {
+			m_hStnArray[i] = m_hStn;
+		}
     }
     
     size_t pos() const{
@@ -81,6 +87,10 @@ public:
         return m_hStn;
     }
 
+	/** get the starnd of hash value for current k-mer */
+    const bool* strandArray() const {
+		return m_hStnArray;
+	}
     
     /** get pointer to hash values for current k-mer */
     const uint64_t* operator*() const
@@ -115,8 +125,10 @@ public:
 
     /** destructor */
     ~ntHashIterator() {
-        if(m_hVec!=NULL)
+        if(m_hVec!=NULL) {
             delete [] m_hVec;
+            delete [] m_hStnArray;
+        }
     }
 
 private:
@@ -134,6 +146,9 @@ private:
     uint64_t *m_hVec;
     
     bool m_hStn;
+
+    /** hash values */
+    bool *m_hStnArray;
 
     /** position of current k-mer */
     size_t m_pos;
