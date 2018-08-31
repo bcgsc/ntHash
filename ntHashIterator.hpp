@@ -38,6 +38,7 @@ public:
     ntHashIterator(const std::string& seq, unsigned h, unsigned k):
         m_seq(seq), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_pos(0)
     {
+        init_kmod(k);
         init();
     }
 

@@ -54,7 +54,7 @@ public:
     }
 
     void insertF(const char* kmer) {
-        uint64_t hVal = NTP64(kmer, m_kmerSize);
+        uint64_t hVal = NTF64(kmer, m_kmerSize);
         size_t hLoc = hVal % m_size;
         __sync_or_and_fetch(&m_filter[hLoc / 8], (1 << (7 - hLoc % 8)));
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -66,7 +66,7 @@ public:
     }
 
     void insertF(const char * kmer, uint64_t& hVal) {
-        hVal = NTP64(kmer, m_kmerSize);
+        hVal = NTF64(kmer, m_kmerSize);
         size_t hLoc = hVal % m_size;
         __sync_or_and_fetch(&m_filter[hLoc / 8], (1 << (7 - hLoc % 8)));
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -78,7 +78,7 @@ public:
     }
 
     void insertF(uint64_t& hVal, const char charOut, const char charIn) {
-        hVal = rol(hVal, 1)^rol(seedTab[(unsigned)charOut], m_kmerSize)^ seedTab[(unsigned)charIn];
+        hVal = NTF64(hVal, charOut, charIn);
         size_t hLoc = hVal % m_size;
         __sync_or_and_fetch(&m_filter[hLoc / 8], (1 << (7 - hLoc % 8)));
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -90,7 +90,7 @@ public:
     }
 
     void insert(const char* kmer) {
-        uint64_t hVal = NTPC64(kmer, m_kmerSize);
+        uint64_t hVal = NTC64(kmer, m_kmerSize);
         size_t hLoc = hVal % m_size;
         __sync_or_and_fetch(&m_filter[hLoc / 8], (1 << (7 - hLoc % 8)));
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -102,7 +102,7 @@ public:
     }
 
     void insert(const char * kmer, uint64_t& fhVal, uint64_t& rhVal) {
-        uint64_t hVal = NTPC64(kmer, m_kmerSize, fhVal, rhVal);
+        uint64_t hVal = NTC64(kmer, m_kmerSize, fhVal, rhVal);
         size_t hLoc = hVal % m_size;
         __sync_or_and_fetch(&m_filter[hLoc / 8], (1 << (7 - hLoc % 8)));
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -114,7 +114,7 @@ public:
     }
 
     void insert(uint64_t& fhVal, uint64_t& rhVal, const char charOut, const char charIn) {
-        uint64_t hVal = NTPC64(charOut, charIn, m_kmerSize, fhVal, rhVal);
+        uint64_t hVal = NTC64(charOut, charIn, fhVal, rhVal);
         size_t hLoc = hVal % m_size;
         __sync_or_and_fetch(&m_filter[hLoc / 8], (1 << (7 - hLoc % 8)));
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -147,7 +147,7 @@ public:
     }
 
     bool containsF(const char* kmer) const {
-        uint64_t hVal = NTP64(kmer, m_kmerSize);
+        uint64_t hVal = NTF64(kmer, m_kmerSize);
         size_t hLoc = hVal % m_size;
         if ((m_filter[hLoc / 8] & (1 << (7 - hLoc % 8))) == 0) return false;
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -161,7 +161,7 @@ public:
     }
 
     bool containsF(const char * kmer, uint64_t& hVal) {
-        hVal = NTP64(kmer, m_kmerSize);
+        hVal = NTF64(kmer, m_kmerSize);
         size_t hLoc = hVal % m_size;
         if ((m_filter[hLoc / 8] & (1 << (7 - hLoc % 8))) == 0) return false;
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -175,7 +175,7 @@ public:
     }
 
     bool containsF(uint64_t& hVal, const char charOut, const char charIn) {
-        hVal = rol(hVal, 1) ^ rol(seedTab[(unsigned)charOut], m_kmerSize) ^ seedTab[(unsigned)charIn];
+        hVal = NTF64(hVal, charOut, charIn);
         size_t hLoc = hVal % m_size;
         if ((m_filter[hLoc / 8] & (1 << (7 - hLoc % 8))) == 0) return false;
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -189,7 +189,7 @@ public:
     }
 
     bool contains(const char* kmer) const {
-        uint64_t hVal = NTPC64(kmer, m_kmerSize);
+        uint64_t hVal = NTC64(kmer, m_kmerSize);
         size_t hLoc = hVal % m_size;
         if ((m_filter[hLoc / 8] & (1 << (7 - hLoc % 8))) == 0) return false;
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -203,7 +203,7 @@ public:
     }
 
     bool contains(const char * kmer, uint64_t& fhVal, uint64_t& rhVal) {
-        uint64_t hVal = NTPC64(kmer, m_kmerSize, fhVal, rhVal);
+        uint64_t hVal = NTC64(kmer, m_kmerSize, fhVal, rhVal);
         size_t hLoc = hVal % m_size;
         if ((m_filter[hLoc / 8] & (1 << (7 - hLoc % 8))) == 0) return false;
         for (unsigned i = 1; i < m_hashNum; i++) {
@@ -217,7 +217,7 @@ public:
     }
 
     bool contains(uint64_t& fhVal, uint64_t& rhVal, const char charOut, const char charIn) {
-        uint64_t hVal = NTPC64(charOut, charIn, m_kmerSize, fhVal, rhVal);
+        uint64_t hVal = NTC64(charOut, charIn, fhVal, rhVal);
         size_t hLoc = hVal % m_size;
         if ((m_filter[hLoc / 8] & (1 << (7 - hLoc % 8))) == 0) return false;
         for (unsigned i = 1; i < m_hashNum; i++) {
