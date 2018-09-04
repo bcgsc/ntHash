@@ -69,11 +69,11 @@ To hash all k-mers of length `k` in a given sequence `seq`:
 ```bash
     string kmer = seq.substr(0, k);
     uint64_t hVal=0;
-    hVal = NTP64(kmer.c_str(), k); // initial hash value
+    hVal = NT64(kmer.c_str(), k); // initial hash value
     ...
     for (size_t i = 0; i < seq.length() - k; i++) 
     {
-        hVal = NTP64(hVal, seq[i], seq[i+k], k); // consecutive hash values
+        hVal = NT64(hVal, seq[i], seq[i+k], k); // consecutive hash values
         ...
     }
 ```
@@ -81,11 +81,11 @@ To canonical hash all k-mers of length `k` in a given sequence `seq`:
 ```bash
     string kmer = seq.substr(0, k);
     uint64_t hVal, fhVal=0, rhVal=0; // canonical, forward, and reverse-strand hash values
-    hVal = NTPC64(kmer.c_str(), k, fhVal, rhVal); // initial hash value
+    hVal = NTC64(kmer.c_str(), k, fhVal, rhVal); // initial hash value
     ...
     for (size_t i = 0; i < seq.length() - k; i++) 
     {
-        hVal = NTPC64(seq[i], seq[i+k], k, fhVal, rhVal); // consecutive hash values
+        hVal = NTC64(seq[i], seq[i+k], k, fhVal, rhVal); // consecutive hash values
         ...
     }
 ```
