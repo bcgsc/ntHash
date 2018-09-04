@@ -78,7 +78,7 @@ static const struct option longopts[] = {
     { NULL, 0, NULL, 0 }
 };
 
-static const string itm[]= {"city","murmur","xxhash","ntbase","nthash"};
+static const string itm[]= {"ntbase","nthash","city"};
 
 void getFtype(const char *fName) {
     std::ifstream in(fName);
@@ -356,16 +356,16 @@ void queryBf(BloomFilter &myFilter, const char* faqFile) {
 
 void hashSeqb(const string & seq) {
     for (size_t i = 0; i < seq.length() - opt::kmerLen + 1; i++) {
-        if(NTPC64(seq.c_str()+i, opt::kmerLen)) opt::nz++;
+        if(NTC64(seq.c_str()+i, opt::kmerLen)) opt::nz++;
     }
 }
 
 void hashSeqr(const string & seq) {
     uint64_t fhVal,rhVal,hVal;
-    hVal = NTPC64(seq.c_str(), opt::kmerLen, fhVal, rhVal);
+    hVal = NTC64(seq.c_str(), opt::kmerLen, fhVal, rhVal);
     if(hVal)opt::nz++;
     for (size_t i = 1; i < seq.length() - opt::kmerLen + 1; i++) {
-        hVal = NTPC64(seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen, fhVal, rhVal);
+        hVal = NTC64(seq[i-1], seq[i-1+opt::kmerLen], opt::kmerLen, fhVal, rhVal);
         if(hVal)opt::nz++;
     }
 }
@@ -446,10 +446,11 @@ void nthashBF(const char *geneName, const char *readName) {
     omp_set_num_threads(opt::threads);
 #endif
     std::cerr<<"#threads="<<opt::threads << "\n";
-    for(opt::method=0; opt::method<5; opt::method++) {
+    for(opt::method=0; opt::method<3; opt::method++) {
         std::cerr<<"method="<<itm[opt::method]<<" ";
         for (unsigned k=50; k<=opt::squery; k+=100) {
             opt::kmerLen = k;
+            //init_kmod(opt::kmerLen);
             std::cerr<<"kmerl="<<opt::kmerLen<<"\n";
             for (unsigned i=1; i<6; i+=2) {
                 opt::nhash = i;
@@ -497,11 +498,11 @@ void nthashRT(const char *readName) {
     cerr << "CPU time (sec) for hash algorithms for ";
     cerr << "kmer="<<opt::kmerLen<< "\n";
     cerr << "nhash="<<opt::nhash<< "\n";
-    for(unsigned method=0; method<5; method++)
+    for(unsigned method=0; method<2; method++)
         cerr << itm[method] << "\t";
     cerr << "\n";
     if(opt::nhash>1) {
-        for(unsigned method=0; method<5; method++) {
+        for(unsigned method=0; method<2; method++) {
             opt::nz=0;
             ifstream uFile(readName);
             string line;
@@ -524,7 +525,7 @@ void nthashRT(const char *readName) {
         cerr << "\n";
     }
     else {
-        for(unsigned method=0; method<5; method++) {
+        for(unsigned method=0; method<2; method++) {
             opt::nz=0;
             ifstream uFile(readName);
             string line;
@@ -580,6 +581,7 @@ int main(int argc, char** argv) {
             break;
         case 'k':
             arg >> opt::kmerLen;
+            //init_kmod(opt::kmerLen);
             break;
         case 'm':
             arg >> opt::maxitr;
