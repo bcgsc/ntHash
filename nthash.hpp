@@ -136,9 +136,8 @@ inline uint64_t NTR64(const uint64_t rhVal, const unsigned k, const unsigned cha
     uint64_t rBits = seedTab[charIn&cpOff] & 0x1FFFFFFFF;
     uint64_t sIn = (rol31(lBits,k) << 33) | (rol33(rBits,k));
     uint64_t hVal = rhVal ^ sIn;
+    hVal ^= seedTab[charOut&cpOff];
     hVal = ror1(hVal);
-    uint64_t sOut = ror1(seedTab[charOut&cpOff]);
-    hVal ^= sOut;
     hVal = swapbits3263(hVal);
     return hVal;
 }
