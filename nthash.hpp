@@ -425,4 +425,23 @@ inline void NTMC64(const unsigned char charOut, const unsigned char charIn, cons
     }
 }
 
+// masking canonical ntHash using spaced seed pattern
+inline uint64_t maskHash(uint64_t &fkVal, uint64_t &rkVal, const char * seedSeq, const char * kmerSeq, const unsigned k) {
+    uint64_t fsVal=fkVal, rsVal=rkVal;
+    for(unsigned i=0; i<k; i++) {
+        if(seedSeq[i]!='1') {
+            uint64_t lfBits = seedTab[(unsigned char)kmerSeq[i]] >> 33;
+            uint64_t rfBits = seedTab[(unsigned char)kmerSeq[i]] & 0x1FFFFFFFF;
+            uint64_t sfMask = (rol31(lfBits,k-1-i) << 33) | (rol33(rfBits,k-1-i));
+            fsVal ^= sfMask;
+
+            uint64_t lrBits = seedTab[(unsigned char)kmerSeq[i]&cpOff] >> 33;
+            uint64_t rrBits = seedTab[(unsigned char)kmerSeq[i]&cpOff] & 0x1FFFFFFFF;
+            uint64_t srMask = (rol31(lrBits,i) << 33) | (rol33(rrBits,i));
+            rsVal ^= srMask;
+        }
+    }
+    return (rsVal<fsVal)? rsVal : fsVal;
+}
+
 #endif
