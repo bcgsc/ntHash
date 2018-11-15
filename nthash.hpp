@@ -444,4 +444,92 @@ inline uint64_t maskHash(uint64_t &fkVal, uint64_t &rkVal, const char * seedSeq,
     return (rsVal<fsVal)? rsVal : fsVal;
 }
 
+// spaced seed ntHash for base kmer, i.e. fhval(kmer_0)
+inline uint64_t NTS64(const char * kmerSeq, const std::vector<bool> &seed, const unsigned k, uint64_t &hVal) {
+    hVal=0;
+    uint64_t sVal = 0;
+    for(unsigned i=0; i<k; i++) {
+        hVal = rol1(hVal);
+        hVal = swapbits033(hVal);
+        sVal = hVal;
+        hVal ^= seedTab[(unsigned char)kmerSeq[i]];
+        if(seed[i]) sVal = hVal;
+    }
+    return sVal;
+}
+
+// spaced seed ntHash for sliding k-mers
+inline uint64_t NTS64(const char * kmerSeq, const std::vector<bool> &seed, const unsigned char charOut, const unsigned char charIn, const unsigned k, uint64_t &hVal) {
+    hVal = NTF64(hVal,k,charOut,charIn);
+    uint64_t sVal = hVal;
+    for(unsigned i=0; i<k; i++)
+        if(!seed[i]) {
+            uint64_t lBits = seedTab[(unsigned char)kmerSeq[i]] >> 33;
+            uint64_t rBits = seedTab[(unsigned char)kmerSeq[i]] & 0x1FFFFFFFF;
+            uint64_t sOut = (rol31(lBits,k) << 33) | (rol33(rBits,k));
+            sVal ^= sOut;
+        }
+    return sVal;
+}
+
+// strand-aware multihash spaced seed ntHash
+inline bool NTMS64(const char *kmerSeq, const std::vector<std::vector<unsigned> > &seedSeq, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, unsigned& locN, uint64_t* hVal, bool *hStn) {
+    fhVal=rhVal=0;
+    locN=0;
+    for(int i=k-1; i>=0; i--) {
+        if(seedTab[(unsigned char)kmerSeq[i]]==seedN) {
+            locN=i;
+            return false;
+        }
+        fhVal = rol1(fhVal);
+        fhVal = swapbits033(fhVal);
+        fhVal ^= seedTab[(unsigned char)kmerSeq[k-1-i]];
+        
+        rhVal = rol1(rhVal);
+        rhVal = swapbits033(rhVal);
+        rhVal ^= seedTab[(unsigned char)kmerSeq[i]&cpOff];
+    }
+    
+    for(unsigned j=0; j<m; j++) {
+        uint64_t fsVal=fhVal, rsVal=rhVal;
+        for(std::vector<unsigned>::const_iterator i=seedSeq[j].begin(); i!=seedSeq[j].end(); ++i) {
+            uint64_t lfBits = seedTab[(unsigned char)kmerSeq[*i]] >> 33;
+            uint64_t rfBits = seedTab[(unsigned char)kmerSeq[*i]] & 0x1FFFFFFFF;
+            uint64_t sfMask = (rol31(lfBits,k-1-*i) << 33) | (rol33(rfBits,k-1-*i));
+            fsVal ^= sfMask;
+            
+            uint64_t lrBits = seedTab[(unsigned char)kmerSeq[*i]&cpOff] >> 33;
+            uint64_t rrBits = seedTab[(unsigned char)kmerSeq[*i]&cpOff] & 0x1FFFFFFFF;
+            uint64_t srMask = (rol31(lrBits,*i) << 33) | (rol33(rrBits,*i));
+            rsVal ^= srMask;
+        }
+        hStn[j] = rsVal<fsVal;
+        hVal[j] = hStn[j]? rsVal : fsVal;
+    }
+    return true;
+}
+
+// strand-aware multihash spaced seed ntHash for sliding k-mers
+inline void NTMS64(const char *kmerSeq, const std::vector<std::vector<unsigned> > &seedSeq, const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, uint64_t *hVal, bool *hStn) {
+    fhVal = NTF64(fhVal,k,charOut,charIn);
+    rhVal = NTR64(fhVal,k,charOut,charIn);
+    for(unsigned j=0; j<m; j++) {
+        uint64_t fsVal=fhVal, rsVal=rhVal;
+        for(std::vector<unsigned>::const_iterator i=seedSeq[j].begin(); i!=seedSeq[j].end(); ++i) {
+            uint64_t lfBits = seedTab[(unsigned char)kmerSeq[*i]] >> 33;
+            uint64_t rfBits = seedTab[(unsigned char)kmerSeq[*i]] & 0x1FFFFFFFF;
+            uint64_t sfMask = (rol31(lfBits,k-1-*i) << 33) | (rol33(rfBits,k-1-*i));
+            fsVal ^= sfMask;
+            
+            uint64_t lrBits = seedTab[(unsigned char)kmerSeq[*i]&cpOff] >> 33;
+            uint64_t rrBits = seedTab[(unsigned char)kmerSeq[*i]&cpOff] & 0x1FFFFFFFF;
+            uint64_t srMask = (rol31(lrBits,*i) << 33) | (rol33(rrBits,*i));
+            rsVal ^= srMask;
+        }
+        hStn[j] = rsVal<fsVal;
+        hVal[j] = hStn[j]? rsVal : fsVal;
+    }
+}
+
+
 #endif
