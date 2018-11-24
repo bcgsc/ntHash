@@ -262,20 +262,6 @@ inline __m256i _mm256_NTC_epu64(const char * kmerSeq, const unsigned k, const __
 				_mask,
 				_rhVal)));
 
-#ifdef _DEBUG
-	uint64_t fbVal, rbVal, bVal;
-	for (int i = 0; i < 4; i++)
-	{
-		bVal = NTC64(kmerSeq + i, k, fbVal, rbVal);
-		assert(bVal == _hVal.m256i_u64[i]);
-		assert(fbVal == _fhVal.m256i_u64[i]);
-		assert(rbVal == _rhVal.m256i_u64[i]);
-
-		bVal = NTC64(kmerSeq + i, k);
-		assert(bVal == _hVal.m256i_u64[i]);
-	}
-#endif
-
 	return _hVal;
 }
 
@@ -518,20 +504,6 @@ inline __m256i _mm256_NTC_epu64(const char * kmerOut, const char * kmerIn, const
 				_mask,
 				_rhVal)));
 
-#ifdef _DEBUG
-	uint64_t fbVal, rbVal, bVal;
-	for (int i = 0; i < 4; i++)
-	{
-		bVal = NTC64(kmerOut + i + 1, k, fbVal, rbVal);
-		assert(bVal == _hVal.m256i_u64[i]);
-		assert(fbVal == _fhVal.m256i_u64[i]);
-		assert(rbVal == _rhVal.m256i_u64[i]);
-
-		bVal = NTC64(kmerOut + i + 1, k);
-		assert(bVal == _hVal.m256i_u64[i]);
-	}
-#endif
-
 	return _hVal;
 }
 
@@ -668,20 +640,6 @@ inline __m256i _mm256_NTC_epu32(const char * kmerSeq, const unsigned k, const __
 		_mm256_cmpgt_epi32(
 			_fhVal,
 			_rhVal));
-
-#ifdef _DEBUG
-	uint64_t fbVal, rbVal, bVal;
-	for (int i = 0; i < 8; i++)
-	{
-		bVal = NTC64(kmerSeq + i, k, fbVal, rbVal);
-		assert((bVal >> 33) == _hVal.m256i_u32[i]);
-		assert((fbVal >> 33) == _fhVal.m256i_u32[i]);
-		assert((rbVal >> 33) == _rhVal.m256i_u32[i]);
-
-		bVal = NTC64(kmerSeq + i, k);
-		assert((bVal >> 33) == _hVal.m256i_u32[i]);
-	}
-#endif
 
 	return _hVal;
 }
@@ -822,20 +780,6 @@ inline __m256i _mm256_NTC_epu32(const char * kmerOut, const char * kmerIn, const
 		_mm256_cmpgt_epi32(
 			_fhVal,
 			_rhVal));
-
-#ifdef _DEBUG
-	uint64_t fbVal, rbVal, bVal;
-	for (int i = 0; i < 4; i++)
-	{
-		bVal = NTC64(kmerOut + i + 1, k, fbVal, rbVal);
-		assert((bVal >> 33) == _hVal.m256i_u32[i]);
-		assert((fbVal >> 33) == _fhVal.m256i_u32[i]);
-		assert((rbVal >> 33) == _rhVal.m256i_u32[i]);
-
-		bVal = NTC64(kmerOut + i + 1, k);
-		assert((bVal >> 33) == _hVal.m256i_u32[i]);
-	}
-#endif
 
 	return _hVal;
 }
@@ -1063,20 +1007,6 @@ inline __m512i _mm512_NTC_epu64(const char * kmerSeq, const unsigned k, const __
 			_rhVal),
 		_fhVal,
 		_rhVal);
-
-#ifdef _DEBUG
-	uint64_t fbVal, rbVal, bVal;
-	for (int i = 0; i < 8; i++)
-	{
-		bVal = NTC64(kmerSeq + i, k, fbVal, rbVal);
-		assert(bVal == _hVal.m512i_u64[i]);
-		assert(fbVal == _fhVal.m512i_u64[i]);
-		assert(rbVal == _rhVal.m512i_u64[i]);
-
-		bVal = NTC64(kmerSeq + i, k);
-		assert(bVal == _hVal.m512i_u64[i]);
-	}
-#endif
 
 	return _hVal;
 }
@@ -1341,20 +1271,6 @@ inline __m512i _mm512_NTC_epu64(const char * kmerOut, const char * kmerIn, const
 			_rhVal),
 		_fhVal,
 		_rhVal);
-
-#ifdef _DEBUG
-	uint64_t fbVal, rbVal, bVal;
-	for (int i = 0; i < 8; i++)
-	{
-		bVal = NTC64(kmerOut + i + 1, k, fbVal, rbVal);
-		assert(bVal == _hVal.m512i_u64[i]);
-		assert(fbVal == _fhVal.m512i_u64[i]);
-		assert(rbVal == _rhVal.m512i_u64[i]);
-
-		bVal = NTC64(kmerOut + i + 1, k);
-		assert(bVal == _hVal.m512i_u64[i]);
-	}
-#endif
 
 	return _hVal;
 }
