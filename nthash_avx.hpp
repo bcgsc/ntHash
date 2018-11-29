@@ -878,10 +878,11 @@ __m512i _mm512_rori33_epu64(const __m512i _v) {
 
 // load kmers in 3 bit format
 inline __m512i _mm512_LKX_epu64(const char * kmerSeq) {
-	__m512i _kmer = _mm512_cvtepu8_epi32(
+	__m512i _kmer = _mm512_cvtepu8_epi64(
 		_mm_CKX_epu8(
-            _mm_loadl_epi64(
-				(__m128i const*)kmerSeq)));
+            _mm_maskz_load_epi64(
+                0x01,
+                kmerSeq)));
 
 	return _kmer;
 }
@@ -1059,49 +1060,49 @@ inline __m512i _mm512_NTF_epu64(const __m512i _fhVal, const __m512i _k, const ch
 	_kmer31 = _mm512_xor_epi64(
 		_kmer31,
 		_mm512_maskz_expand_epi64(
-			0x7f,
+			0xfe,
 			_mm512_rori31_epu64<30>(
 				_kmer31)));
 
 	_kmer33 = _mm512_xor_epi64(
 		_kmer33,
 		_mm512_maskz_expand_epi64(
-			0x7f,
+			0xfe,
 			_mm512_rori33_epu64<32>(
 				_kmer33)));
 
 	_kmer31 = _mm512_xor_epi64(
 		_kmer31,
 		_mm512_maskz_expand_epi64(
-			0x3f,
+			0xfc,
 			_mm512_rori31_epu64<29>(
 				_kmer31)));
 
 	_kmer33 = _mm512_xor_epi64(
 		_kmer33,
 		_mm512_maskz_expand_epi64(
-			0x3f,
+			0xfc,
 			_mm512_rori33_epu64<31>(
 				_kmer33)));
 
 	_kmer31 = _mm512_xor_epi64(
 		_kmer31,
 		_mm512_maskz_expand_epi64(
-			0x0f,
+			0xf0,
 			_mm512_rori31_epu64<27>(
 				_kmer31)));
 
 	_kmer33 = _mm512_xor_epi64(
 		_kmer33,
 		_mm512_maskz_expand_epi64(
-			0x0f,
+			0xf0,
 			_mm512_rori33_epu64<29>(
 				_kmer33)));
 
 	// var-shift the hash
-	__m512i _hVal = _mm512_permutex_epi64(
-		_fhVal,
-		0xff);
+	__m512i _hVal = _mm512_permutexvar_epi64(
+		_mm512_set1_epi64(7),
+		_fhVal);
 
 	__m512i _hVal31, _hVal33;
 	_mm512_split3133_epu64(
@@ -1180,49 +1181,49 @@ inline __m512i _mm512_NTR_epu64(const __m512i _rhVal, const __m512i _k, const ch
 	_kmer31 = _mm512_xor_epi64(
 		_kmer31,
 		_mm512_maskz_expand_epi64(
-			0x7f,
+			0xfe,
 			_mm512_rori31_epu64<1>(
 				_kmer31)));
 
 	_kmer33 = _mm512_xor_epi64(
 		_kmer33,
 		_mm512_maskz_expand_epi64(
-			0x7f,
+			0xfe,
 			_mm512_rori33_epu64<1>(
 				_kmer33)));
 
 	_kmer31 = _mm512_xor_epi64(
 		_kmer31,
 		_mm512_maskz_expand_epi64(
-			0x3f,
+			0xfc,
 			_mm512_rori31_epu64<2>(
 				_kmer31)));
 
 	_kmer33 = _mm512_xor_epi64(
 		_kmer33,
 		_mm512_maskz_expand_epi64(
-			0x3f,
+			0xfc,
 			_mm512_rori33_epu64<2>(
 				_kmer33)));
 
 	_kmer31 = _mm512_xor_epi64(
 		_kmer31,
 		_mm512_maskz_expand_epi64(
-			0x0f,
+			0xf0,
 			_mm512_rori31_epu64<4>(
 				_kmer31)));
 
 	_kmer33 = _mm512_xor_epi64(
 		_kmer33,
 		_mm512_maskz_expand_epi64(
-			0x0f,
+			0xf0,
 			_mm512_rori33_epu64<4>(
 				_kmer33)));
 
 	// var-shift the hash
-	__m512i _hVal = _mm512_permutex_epi64(
-		_rhVal,
-		0xff);
+	__m512i _hVal = _mm512_permutexvar_epi64(
+		_mm512_set1_epi64(7),
+		_rhVal);
 
 	__m512i _hVal31, _hVal33;
 	_mm512_split3133_epu64(
@@ -1274,4 +1275,302 @@ inline __m512i _mm512_NTC_epu64(const char * kmerOut, const char * kmerIn, const
 
 	return _hVal;
 }
+
+
+// encode complement of "k" modulo 31 
+inline __m512i _mm512_kmod31_epu32(const uint32_t k) {
+	return  _mm512_set1_epi32(31 - (k % 31));
+}
+
+// rotate 31-right bits of "_v" to the right by _s position
+// elements of _s must be less than 31
+inline __m512i _mm512_rorv31_epu32(const __m512i _v, const __m512i _s) {
+	const __m512i _32 = _mm512_set1_epi32(32);
+
+	return _mm512_or_epi32(
+		_mm512_srlv_epi32(
+			_v,
+			_s),
+		_mm512_srli_epi32(
+			_mm512_sllv_epi32(_v,
+				_mm512_sub_epi32(
+					_32,
+					_s)),
+			1));
+}
+
+// rotate 31-right bits of "_v" to the right by imm positions
+template <int imm>
+__m512i _mm512_rori31_epu32(const __m512i _v) {
+	return _mm512_or_epi32(
+		_mm512_srli_epi32(
+			_v,
+			imm),
+		_mm512_srli_epi32(
+			_mm512_slli_epi32(
+				_v,
+				32 - imm),
+			1));
+}
+
+// load kmers in 3 bit format
+inline __m512i _mm512_LKX_epu32(const char * kmerSeq) {
+	__m512i _kmer = _mm512_cvtepu8_epi32(
+		_mm_CKX_epu8(
+			_mm_loadu_si128(
+				(const __m128i *)kmerSeq)));
+
+	return _kmer;
+}
+
+// load forward-strand kmers
+inline __m512i _mm512_LKF_epu32(const char * kmerSeq) {
+	const __m512i _seed = _mm512_set_epi32(
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		(int)(seedT >> 33),
+		(int)(seedG >> 33),
+		(int)(seedC >> 33),
+		(int)(seedA >> 33));
+
+	__m512i _kmer = _mm512_permutexvar_epi32(
+		_mm512_LKX_epu32(
+			kmerSeq),
+		_seed);
+
+	return _kmer;
+}
+
+// load reverse-strand kmers
+inline __m512i _mm512_LKR_epu32(const char * kmerSeq) {
+	const __m512i _seed = _mm512_set_epi32(
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		(int)(seedA >> 33),
+		(int)(seedC >> 33),
+		(int)(seedG >> 33),
+		(int)(seedT >> 33));
+
+	__m512i _kmer = _mm512_permutexvar_epi32(
+		_mm512_LKX_epu32(
+			kmerSeq),
+		_seed);
+
+	return _kmer;
+}
+
+// forward-strand hash value of the base kmer, i.e. fhval(kmer_0)
+inline __m512i _mm512_NTF_epu32(const char * kmerSeq, const unsigned k) {
+	__m512i _hVal31 = _mm512_setzero_si512();
+
+	for (unsigned i = 0; i < k; i++)
+	{
+		_hVal31 = _mm512_rori31_epu32<30>(_hVal31);
+
+		__m512i _kmer31 = _mm512_LKF_epu32(kmerSeq + i);
+
+		_hVal31 = _mm512_xor_epi32(
+			_hVal31,
+			_kmer31);
+	}
+
+	return _hVal31;
+}
+
+// reverse-strand hash value of the base kmer, i.e. rhval(kmer_0)
+inline __m512i _mm512_NTR_epu32(const char * kmerSeq, const unsigned k, const __m512i _k) {
+	const __m512i _zero = _mm512_setzero_si512();
+
+	__m512i _hVal31 = _zero;
+
+	for (unsigned i = 0; i < k; i++)
+	{
+		__m512i _kmer31 = _mm512_LKR_epu32(kmerSeq + i);
+
+		_kmer31 = _mm512_rorv31_epu32(
+			_kmer31,
+			_k);
+
+		_hVal31 = _mm512_xor_epi32(
+			_hVal31,
+			_kmer31);
+
+		_hVal31 = _mm512_rori31_epu32<1>(_hVal31);
+	}
+
+	return _hVal31;
+}
+
+// canonical ntHash
+inline __m512i _mm512_NTC_epu32(const char * kmerSeq, const unsigned k, const __m512i _k, __m512i& _fhVal, __m512i& _rhVal) {
+	_fhVal = _mm512_NTF_epu32(kmerSeq, k);
+	_rhVal = _mm512_NTR_epu32(kmerSeq, k, _k);
+
+	__m512i _hVal = _mm512_mask_blend_epi32(
+		_mm512_cmpgt_epu32_mask(
+			_fhVal,
+			_rhVal),
+		_fhVal,
+		_rhVal);
+	return _hVal;
+}
+
+// canonical ntBase
+inline __m512i _mm512_NTC_epu32(const char * kmerSeq, const unsigned k, const __m512i _k) {
+	__m512i _fhVal, _rhVal;
+
+	return _mm512_NTC_epu32(kmerSeq, k, _k, _fhVal, _rhVal);
+}
+
+// forward-strand ntHash for sliding k-mers
+inline __m512i _mm512_NTF_epu32(const __m512i _fhVal, const __m512i _k, const char * kmerOut, const char * kmerIn) {
+	const __m512i _zero = _mm512_setzero_si512();
+
+	// construct input kmers
+	__m512i _in31 = _mm512_LKF_epu32(kmerIn);
+
+	__m512i _out31 = _mm512_LKF_epu32(kmerOut);
+
+	_out31 = _mm512_rorv31_epu32(
+		_out31,
+		_k);
+
+	__m512i _kmer31 = _mm512_xor_epi32(
+		_in31,
+		_out31);
+
+	// scan-shift kmers	
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xfffe,
+			_mm512_rori31_epu32<30>(
+				_kmer31)));
+
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xfffc,
+			_mm512_rori31_epu32<29>(
+				_kmer31)));
+
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xfff0,
+			_mm512_rori31_epu32<27>(
+				_kmer31)));
+
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xff00,
+			_mm512_rori31_epu32<23>(
+				_kmer31)));
+
+	// var-shift the hash
+	__m512i _hVal31 = _mm512_permutexvar_epi32(
+		_mm512_set1_epi32(15),
+		_fhVal);
+
+	const __m512i _shift31 = _mm512_set_epi32(
+		15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30);
+
+	_hVal31 = _mm512_rorv31_epu32(
+		_hVal31,
+		_shift31);
+
+	// merge everything together
+	_hVal31 = _mm512_xor_epi32(
+		_hVal31,
+		_kmer31);
+
+	return _hVal31;
+}
+
+// reverse-complement ntHash for sliding k-mers
+inline __m512i _mm512_NTR_epu32(const __m512i _rhVal, const __m512i _k, const char * kmerOut, const char * kmerIn) {
+	const __m512i _zero = _mm512_setzero_si512();
+
+	// construct input kmers
+	__m512i _in31 = _mm512_LKR_epu32(kmerIn);
+
+	_in31 = _mm512_rorv31_epu32(
+		_in31,
+		_k);
+
+	__m512i _out31 = _mm512_LKR_epu32(kmerOut);
+
+	__m512i _kmer31 = _mm512_xor_epi32(
+		_in31,
+		_out31);
+
+	// scan-shift kmers	
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xfffe,
+			_mm512_rori31_epu32<1>(
+				_kmer31)));
+
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xfffc,
+			_mm512_rori31_epu32<2>(
+				_kmer31)));
+
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xfff0,
+			_mm512_rori31_epu32<4>(
+				_kmer31)));
+
+	_kmer31 = _mm512_xor_epi32(
+		_kmer31,
+		_mm512_maskz_expand_epi32(
+			0xff00,
+			_mm512_rori31_epu32<8>(
+				_kmer31)));
+
+	// var-shift the hash
+	__m512i _hVal31 = _mm512_permutexvar_epi32(
+		_mm512_set1_epi32(15),
+		_rhVal);
+
+	const __m512i _shift31 = _mm512_set_epi32(
+		15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0);
+
+	_hVal31 = _mm512_rorv31_epu32(
+		_hVal31,
+		_shift31);
+
+	// merge everything together
+	_hVal31 = _mm512_xor_epi32(
+		_hVal31,
+		_kmer31);
+
+	_hVal31 = _mm512_rori31_epu32<1>(_hVal31);
+
+	return _hVal31;
+}
+
+// canonical ntHash for sliding k-mers
+inline __m512i _mm512_NTC_epu32(const char * kmerOut, const char * kmerIn, const unsigned k, const __m512i _k, __m512i& _fhVal, __m512i& _rhVal) {
+	_fhVal = _mm512_NTF_epu32(_fhVal, _k, kmerOut, kmerIn);
+	_rhVal = _mm512_NTR_epu32(_rhVal, _k, kmerOut, kmerIn);
+
+	__m512i _hVal = _mm512_mask_blend_epi32(
+		_mm512_cmpgt_epu32_mask(
+			_fhVal,
+			_rhVal),
+		_fhVal,
+		_rhVal);
+
+	return _hVal;
+}
+
 #endif

@@ -190,7 +190,7 @@ void hashSeqAvx2x32(const string & seq) {
 
 	size_t sentinel = seq.length() - opt::kmerLen;
 
-	for (size_t i = 4; i < sentinel; i += 8, kmerSeq += 8) {
+	for (size_t i = 8; i < sentinel; i += 8, kmerSeq += 8) {
 		_hVal = _mm256_NTC_epu32(kmerSeq, kmerSeq + opt::kmerLen, _k, _fhVal, _rhVal);
 
 		__m256i _isZero = _mm256_cmpeq_epi32(
@@ -216,23 +216,97 @@ void hashSeqAvx2x32(const string & seq) {
 }
 
 void hashSeqAvx512(const string & seq) {
-	uint64_t fhVal, rhVal, hVal;
-	hVal = NTC64(seq.c_str(), opt::kmerLen, fhVal, rhVal);
-	if (hVal)opt::nz++;
-	for (size_t i = 1; i < seq.length() - opt::kmerLen + 1; i++) {
-		hVal = NTC64(seq[i - 1], seq[i - 1 + opt::kmerLen], opt::kmerLen, fhVal, rhVal);
-		if (hVal)opt::nz++;
+	const char* kmerSeq = seq.data();
+
+	__m512i _nz = _mm512_setzero_si512();
+	__m512i _zero = _mm512_setzero_si512();
+
+	__m512i _k = _mm512_kmod3133_epu64(opt::kmerLen);
+
+	__m512i _fhVal, _rhVal, _hVal;
+
+	_hVal = _mm512_NTC_epu64(kmerSeq, opt::kmerLen, _k, _fhVal, _rhVal);
+
+	__mmask8 _isZero = _mm512_cmpeq_epi64_mask(
+		_hVal,
+		_zero);
+
+	_nz = _mm512_mask_sub_epi64(
+		_nz,
+		_isZero,
+		_nz,
+		_mm512_xor_epi64(
+			_zero,
+			_zero));
+
+	kmerSeq += 7;
+
+	size_t sentinel = seq.length() - opt::kmerLen;
+
+	for (size_t i = 8; i < sentinel; i += 8, kmerSeq += 8) {
+		_hVal = _mm512_NTC_epu64(kmerSeq, kmerSeq + opt::kmerLen, _k, _fhVal, _rhVal);
+
+		__mmask8 _isZero = _mm512_cmpeq_epi64_mask(
+			_hVal,
+			_zero);
+
+		_nz = _mm512_mask_sub_epi64(
+			_nz,
+			_isZero,
+			_nz,
+			_mm512_xor_epi64(
+				_zero,
+				_zero));
 	}
+
+	opt::nz = _mm512_reduce_add_epi64(_nz);
 }
 
 void hashSeqAvx512x32(const string & seq) {
-	uint64_t fhVal, rhVal, hVal;
-	hVal = NTC64(seq.c_str(), opt::kmerLen, fhVal, rhVal);
-	if (hVal)opt::nz++;
-	for (size_t i = 1; i < seq.length() - opt::kmerLen + 1; i++) {
-		hVal = NTC64(seq[i - 1], seq[i - 1 + opt::kmerLen], opt::kmerLen, fhVal, rhVal);
-		if (hVal)opt::nz++;
+	const char* kmerSeq = seq.data();
+
+	__m512i _nz = _mm512_setzero_si512();
+	__m512i _zero = _mm512_setzero_si512();
+
+	__m512i _k = _mm512_kmod31_epu32(opt::kmerLen);
+
+	__m512i _fhVal, _rhVal, _hVal;
+
+	_hVal = _mm512_NTC_epu32(kmerSeq, opt::kmerLen, _k, _fhVal, _rhVal);
+
+	__mmask16 _isZero = _mm512_cmpeq_epi32_mask(
+		_hVal,
+		_zero);
+
+	_nz = _mm512_mask_sub_epi32(
+		_nz,
+		_isZero,
+		_nz,
+		_mm512_xor_epi32(
+			_zero,
+			_zero));
+
+	kmerSeq += 15;
+
+	size_t sentinel = seq.length() - opt::kmerLen;
+
+	for (size_t i = 16; i < sentinel; i += 16, kmerSeq += 16) {
+		_hVal = _mm512_NTC_epu32(kmerSeq, kmerSeq + opt::kmerLen, opt::kmerLen, _k, _fhVal, _rhVal);
+
+		__mmask16 _isZero = _mm512_cmpeq_epi32_mask(
+			_hVal,
+			_zero);
+
+		_nz = _mm512_mask_sub_epi32(
+			_nz,
+			_isZero,
+			_nz,
+			_mm512_xor_epi32(
+				_zero,
+				_zero));
 	}
+
+	opt::nz = _mm512_reduce_add_epi32(_nz);
 }
 
 void nthashRT(const char *readName) {
