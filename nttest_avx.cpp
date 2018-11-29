@@ -291,7 +291,7 @@ void hashSeqAvx512x32(const string & seq) {
 	size_t sentinel = seq.length() - opt::kmerLen;
 
 	for (size_t i = 16; i < sentinel; i += 16, kmerSeq += 16) {
-		_hVal = _mm512_NTC_epu32(kmerSeq, kmerSeq + opt::kmerLen, opt::kmerLen, _k, _fhVal, _rhVal);
+		_hVal = _mm512_NTC_epu32(kmerSeq, kmerSeq + opt::kmerLen, _k, _fhVal, _rhVal);
 
 		__mmask16 _isZero = _mm512_cmpeq_epi32_mask(
 			_hVal,

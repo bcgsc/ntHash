@@ -2,7 +2,7 @@ bin_PROGRAMS = nttest nttest_avx
 
 nttest_CPPFLAGS = -I$(top_srcdir)/lib
 
-nttest_avx_CPPFLAGS = --std=c++11 -march=sandybridge -mavx512f -I$(top_srcdir)/lib
+nttest_avx_CPPFLAGS = --std=c++11 -march=sandybridge -mavx512f -mavx512bw -mavx512vl -I$(top_srcdir)/lib
 
 nttest_SOURCES = \
 	lib/BloomFilter.hpp \
