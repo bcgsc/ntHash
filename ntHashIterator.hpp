@@ -40,6 +40,20 @@ public:
     {
         init();
     }
+    
+    /** Copy constructor */
+    ntHashIterator(const ntHashIterator &nth)
+    {
+        m_seq = nth.m_seq;
+        m_h = nth.m_h;
+        m_k = nth.m_k;
+        m_hVec = new uint64_t[m_h];
+        for (unsigned i=0; i<m_h; i++) m_hVec[i] = nth.m_hVec[i];
+        m_pos = nth.m_pos;
+        m_fhVal = nth.m_fhVal;
+        m_rhVal = nth.m_rhVal;
+    }
+    
 
     /** Initialize internal state of iterator */
     void init()

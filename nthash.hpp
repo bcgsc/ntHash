@@ -512,7 +512,7 @@ inline bool NTMS64(const char *kmerSeq, const std::vector<std::vector<unsigned> 
 // strand-aware multihash spaced seed ntHash for sliding k-mers
 inline void NTMS64(const char *kmerSeq, const std::vector<std::vector<unsigned> > &seedSeq, const unsigned char charOut, const unsigned char charIn, const unsigned k, const unsigned m, uint64_t& fhVal, uint64_t& rhVal, uint64_t *hVal, bool *hStn) {
     fhVal = NTF64(fhVal,k,charOut,charIn);
-    rhVal = NTR64(fhVal,k,charOut,charIn);
+    rhVal = NTR64(rhVal,k,charOut,charIn);
     for(unsigned j=0; j<m; j++) {
         uint64_t fsVal=fhVal, rsVal=rhVal;
         for(std::vector<unsigned>::const_iterator i=seedSeq[j].begin(); i!=seedSeq[j].end(); ++i) {
