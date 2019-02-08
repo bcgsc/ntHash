@@ -15,21 +15,22 @@
  * hash values for successive k-mers.
  */
 
-std::vector<std::vector<unsigned> > parseSeed(const std::vector<std::string> &seedString) {
-    std::vector<std::vector<unsigned> > seedSet;
-    for(unsigned i=0; i< seedString.size(); i++) {
-        std::vector<unsigned> sSeed;
-        for(unsigned j=0; j < seedString[i].size(); j++)
-            if(seedString[i][j]!='1') sSeed.push_back(j);
-        seedSet.push_back(sSeed);
-    }
-    return seedSet;
-}
-
 class stHashIterator
 {
 
 public:
+   
+    static std::vector<std::vector<unsigned> > parseSeed(const std::vector<std::string> &seedString) {
+        std::vector<std::vector<unsigned> > seedSet;
+        for (unsigned i=0; i< seedString.size(); i++) {
+            std::vector<unsigned> sSeed;
+            for (unsigned j=0; j < seedString[i].size(); j++) {
+                if(seedString[i][j]!='1') sSeed.push_back(j);
+            }
+            seedSet.push_back(sSeed);
+        }
+        return seedSet;
+    }
     
     /**
      * Default constructor. Creates an iterator pointing to
