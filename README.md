@@ -69,11 +69,11 @@ To hash all k-mers of length `k` in a given sequence `seq`:
 ```bash
     string kmer = seq.substr(0, k);
     uint64_t hVal=0;
-    hVal = NT64(kmer.c_str(), k); // initial hash value
+    hVal = NTF64(kmer.c_str(), k); // initial hash value
     ...
     for (size_t i = 0; i < seq.length() - k; i++) 
     {
-        hVal = NT64(hVal, seq[i], seq[i+k], k); // consecutive hash values
+        hVal = NTF64(hVal, seq[i], seq[i+k], k); // consecutive hash values
         ...
     }
 ```

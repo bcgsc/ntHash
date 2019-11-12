@@ -394,7 +394,7 @@ inline void NTMC64(const unsigned char charOut, const unsigned char charIn, cons
 */
 
 // canonical ntBase
-inline bool NTC4(const char *kmerSeq, const unsigned k, uint64_t& hVal, unsigned& locN) {
+inline bool NTC64(const char *kmerSeq, const unsigned k, uint64_t& hVal, unsigned& locN) {
     hVal=0;
     locN=0;
     uint64_t fhVal=0,rhVal=0;
