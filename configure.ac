@@ -84,8 +84,8 @@ AC_SUBST(AM_CXXFLAGS, '-Wall -Wextra -Werror')
 
 
 AC_CONFIG_FILES([
-				Makefile
-				unittest/Makefile
-				vendor/Makefile
+	Makefile
+	unittest/Makefile
+	vendor/Makefile
 ])
 AC_OUTPUT
