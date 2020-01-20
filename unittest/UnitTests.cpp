@@ -117,6 +117,5 @@ TEST_CASE("test fixture", "[UnitTests]")
         assert((*ssItr)[0] == (*ssM1Itr)[0]);
         assert((*ssItr)[0] == (*ssM2Itr)[0]);
         assert((*ssItr)[0] == (*ssM3Itr)[0]);
-
     } /* end test fixture */
 }
