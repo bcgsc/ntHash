@@ -72,6 +72,11 @@ AC_LANG_PUSH([C++])
 AC_OPENMP
 AC_LANG_POP([C++])
 
+# FLag std=c++11
+AC_CONFIG_MACRO_DIR([m4])
+m4_include([m4/ax_cxx_compile_stdcxx.m4])
+AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+
 # Find the absolute path to the source.
 my_abs_srcdir=$(cd $srcdir; pwd)
 
