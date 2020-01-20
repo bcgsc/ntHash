@@ -29,7 +29,7 @@ static const uint64_t seedT = 0x295549f54be24456;
 static const uint64_t seedN = 0x0000000000000000;
 
 static const uint64_t seedTab[256] = {
-    seedN, seedT, seedN, seedG, seedA, seedN, seedN, seedC, // 0..7
+    seedN, seedT, seedN, seedG, seedA, seedA, seedN, seedC, // 0..7
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 8..15
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 16..23
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 24..31
@@ -39,11 +39,11 @@ static const uint64_t seedTab[256] = {
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 56..63
     seedN, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 72..79
-    seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 80..87
+    seedN, seedN, seedN, seedN, seedT, seedT, seedN, seedN, // 80..87
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
     seedN, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
-    seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
+    seedN, seedN, seedN, seedN, seedT, seedT, seedN, seedN, // 112..119
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 128..135
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 136..143
