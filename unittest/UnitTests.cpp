@@ -116,5 +116,18 @@ TEST_CASE("test fixture", "[UnitTests]")
         assert((*ssItr)[0] == (*ssM1Itr)[0]);
         assert((*ssItr)[0] == (*ssM2Itr)[0]);
         assert((*ssItr)[0] == (*ssM3Itr)[0]);
+    }
+
+    SECTION("RNA")
+    {
+        ntHashIterator dnaIt(kmer, 3, 20);
+
+        std::string rnaKmer = "ACGUACACUGGACUGAGUCU";
+        ntHashIterator rnaIt(kmer, 3, 20);
+
+        for (int i = 0; i < 3; i++)
+        {
+            assert((*dnaIt)[i] == (*rnaIt)[i]);
+        }
     } /* end test fixture */
 }
