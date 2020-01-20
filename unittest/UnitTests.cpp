@@ -45,7 +45,7 @@ TEST_CASE("test fixture", "[UnitTests]")
         ntHashIterator invariantIt(kmer, 3, 20);
 
         /* Hash values*/
-        const uint64_t hashes[3] = {10434435546371013747U, 16073887395445158014U, 8061578976118370557U};
+        const std::vector<uint64_t> hashes = {10434435546371013747U, 16073887395445158014U, 8061578976118370557U};
 
         for (int i = 0; i < 3; i++)
         {
@@ -98,9 +98,8 @@ TEST_CASE("test fixture", "[UnitTests]")
         std::vector<std::string> seedString;
         seedString.push_back("11111100000000111111");
 
-        unsigned h, k;
-        h = seedString.size();
-        k = seedString[0].size();
+        auto h = seedString.size();
+        auto k = seedString[0].size();
 
         std::vector<std::vector<unsigned>> seedSet = stHashIterator::parseSeed(seedString);
 
