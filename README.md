@@ -155,3 +155,8 @@ Hamid Mohamadi, Justin Chu, Benjamin P Vandervalk, and Inanc Birol.
 *Bioinformatics* (2016) 32 (22): 3492-3494.
 [doi:10.1093/bioinformatics/btw397 ](http://dx.doi.org/10.1093/bioinformatics/btw397)
 
+
+# acknowledgements
+
+This projects uses:
+* [CATCH](https://github.com/philsquared/Catch) unit test framework for C/C++
