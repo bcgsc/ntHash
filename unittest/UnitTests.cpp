@@ -88,7 +88,6 @@ TEST_CASE("test fixture", "[UnitTests]")
             {
                 assert((*rollingHashIt)[j] == (*vecKmerIt[i])[j]);
             }
-
             ++rollingHashIt;
         }
     }
