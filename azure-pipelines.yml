@@ -14,4 +14,4 @@ jobs:
       ./autogen.sh
       ./configure
       make distcheck
-    displayName: Compiliation and unit test
+    displayName: Compilation and unit test
