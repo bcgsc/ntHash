@@ -13,5 +13,5 @@ jobs:
   - script: |
       ./autogen.sh
       ./configure
-      make
-    displayName: Compiliation test
+      make distcheck
+    displayName: Compilation and unit test
