@@ -47,7 +47,7 @@ TEST_CASE("test fixture", "[UnitTests]")
         /* Hash values*/
         const std::vector<uint64_t> hashes = {10434435546371013747U, 16073887395445158014U, 8061578976118370557U};
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; ++i)
         {
             assert((*invariantIt)[i] == hashes[i]);
         }
@@ -61,7 +61,7 @@ TEST_CASE("test fixture", "[UnitTests]")
         std::string rcKmer = "AGACTCAGTCCAGTGTACGT";
         ntHashIterator rcKmerIt(rcKmer, 3, 20);
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; ++i)
         {
             assert((*kmerIt)[i] == (*rcKmerIt)[i]);
         }
