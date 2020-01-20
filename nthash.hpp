@@ -29,7 +29,7 @@ static const uint64_t seedT = 0x295549f54be24456;
 static const uint64_t seedN = 0x0000000000000000;
 
 static const uint64_t seedTab[256] = {
-    seedN, seedT, seedN, seedG, seedA, seedN, seedN, seedC, // 0..7
+    seedN, seedT, seedN, seedG, seedA, seedA, seedN, seedC, // 0..7
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 8..15
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 16..23
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 24..31
@@ -39,11 +39,11 @@ static const uint64_t seedTab[256] = {
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 56..63
     seedN, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 64..71
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 72..79
-    seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 80..87
+    seedN, seedN, seedN, seedN, seedT, seedT, seedN, seedN, // 80..87
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 88..95
     seedN, seedA, seedN, seedC, seedN, seedN, seedN, seedG, // 96..103
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 104..111
-    seedN, seedN, seedN, seedN, seedT, seedN, seedN, seedN, // 112..119
+    seedN, seedN, seedN, seedN, seedT, seedT, seedN, seedN, // 112..119
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 120..127
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 128..135
     seedN, seedN, seedN, seedN, seedN, seedN, seedN, seedN, // 136..143
@@ -113,7 +113,7 @@ static const uint64_t N31l[31] = {
 
 
 static const uint64_t *msTab33r[256] = {
-    N33r, T33r, N33r, G33r, A33r, N33r, N33r, C33r, // 0..7
+    N33r, T33r, N33r, G33r, A33r, A33r, N33r, C33r, // 0..7
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 8..15
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 16..23
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 24..31
@@ -123,11 +123,11 @@ static const uint64_t *msTab33r[256] = {
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 56..63
     N33r, A33r, N33r, C33r, N33r, N33r, N33r, G33r, // 64..71
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 72..79
-    N33r, N33r, N33r, N33r, T33r, N33r, N33r, N33r, // 80..87
+    N33r, N33r, N33r, N33r, T33r, T33r, N33r, N33r, // 80..87
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 88..95
     N33r, A33r, N33r, C33r, N33r, N33r, N33r, G33r, // 96..103
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 104..111
-    N33r, N33r, N33r, N33r, T33r, N33r, N33r, N33r, // 112..119
+    N33r, N33r, N33r, N33r, T33r, T33r, N33r, N33r, // 112..119
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 120..127
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 128..135
     N33r, N33r, N33r, N33r, N33r, N33r, N33r, N33r, // 136..143
@@ -148,7 +148,7 @@ static const uint64_t *msTab33r[256] = {
 };
 
 static const uint64_t *msTab31l[256] = {
-    N31l, T31l, N31l, G31l, A31l, N31l, N31l, C31l, // 0..7
+    N31l, T31l, N31l, G31l, A31l, A31l, N31l, C31l, // 0..7
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 8..15
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 16..23
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 24..31
@@ -158,11 +158,11 @@ static const uint64_t *msTab31l[256] = {
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 56..63
     N31l, A31l, N31l, C31l, N31l, N31l, N31l, G31l, // 64..71
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 72..79
-    N31l, N31l, N31l, N31l, T31l, N31l, N31l, N31l, // 80..87
+    N31l, N31l, N31l, N31l, T31l, T31l, N31l, N31l, // 80..87
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 88..95
     N31l, A31l, N31l, C31l, N31l, N31l, N31l, G31l, // 96..103
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 104..111
-    N31l, N31l, N31l, N31l, T31l, N31l, N31l, N31l, // 112..119
+    N31l, N31l, N31l, N31l, T31l, T31l, N31l, N31l, // 112..119
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 120..127
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 128..135
     N31l, N31l, N31l, N31l, N31l, N31l, N31l, N31l, // 136..143
