@@ -22,3 +22,9 @@ dist_doc_DATA = \
 	README.md
 
 EXTRA_DIST=autogen.sh
+
+noinst_HEADERS = stHashIterator.hpp
+
+SUBDIRS = \
+	unittest \
+	vendor
