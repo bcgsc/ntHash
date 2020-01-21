@@ -155,7 +155,8 @@ private:
     unsigned m_k;
 
     /** hash values
-     *  [seed1Hash1, seed1Hash2 ... seed3Hash1, seed3Hash2]
+     *  For m_h = n and m_h2 = m:
+     *  [seed1Hash1, seed1Hash2 ... seed(n)Hash(m-1), seed(n)Hash(m)]
     */
     uint64_t *m_hVec;
 
