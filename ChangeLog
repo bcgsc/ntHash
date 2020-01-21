@@ -2,7 +2,7 @@
 
 	* Release version 2.1.0
 	* Added support for RNA sequences
-	* Updated stHashIterator with the ability to produce multiple hashes for each seed
+	* stHashIterator is now able to produce multiple hashes for each seed
 
 2017-03-08  Hamid Mohamadi <hmohamadi@bcgsc.ca>
 
