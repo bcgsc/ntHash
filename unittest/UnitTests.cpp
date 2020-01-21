@@ -97,7 +97,7 @@ TEST_CASE("test fixture", "[UnitTests]")
         std::vector<std::string> seedString;
         seedString.push_back("11111100000000111111");
 
-        auto h = seedString.size();
+        auto numSeeds = seedString.size();
         auto k = seedString[0].size();
 
         std::vector<std::vector<unsigned>> seedSet = stHashIterator::parseSeed(seedString);
@@ -107,11 +107,11 @@ TEST_CASE("test fixture", "[UnitTests]")
         std::string kmerM2 = "ACGTACACTGTACTGAGTCT";
         std::string kmerM3 = "ACGTACACTGCACTGAGTCT";
 
-        stHashIterator ssItr(kmer, seedSet, h, k);
+        stHashIterator ssItr(kmer, seedSet, numSeeds, 1, k);
 
-        stHashIterator ssM1Itr(kmerM1, seedSet, h, k);
-        stHashIterator ssM2Itr(kmerM2, seedSet, h, k);
-        stHashIterator ssM3Itr(kmerM3, seedSet, h, k);
+        stHashIterator ssM1Itr(kmerM1, seedSet, numSeeds, 1, k);
+        stHashIterator ssM2Itr(kmerM2, seedSet, numSeeds, 1, k);
+        stHashIterator ssM3Itr(kmerM3, seedSet, numSeeds, 1, k);
 
         assert((*ssItr)[0] == (*ssM1Itr)[0]);
         assert((*ssItr)[0] == (*ssM2Itr)[0]);
