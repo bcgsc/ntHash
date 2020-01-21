@@ -19,7 +19,7 @@ class stHashIterator
 {
 
 public:
-   
+
     static std::vector<std::vector<unsigned> > parseSeed(const std::vector<std::string> &seedString) {
         std::vector<std::vector<unsigned> > seedSet;
         for (unsigned i=0; i< seedString.size(); i++) {
@@ -31,7 +31,7 @@ public:
         }
         return seedSet;
     }
-    
+
     /**
      * Default constructor. Creates an iterator pointing to
      * the end of the iterator range.
@@ -55,7 +55,7 @@ public:
     {
         init();
     }
-   
+
     /** Initialize internal state of iterator */
     void init()
     {
@@ -85,7 +85,7 @@ public:
         else
             NTMSM64(m_seq.data()+m_pos, m_seed, m_seq.at(m_pos-1), m_seq.at(m_pos-1+m_k), m_k, m_h, m_h2, m_fhVal, m_rhVal, m_hVec, m_hStn);
     }
-    
+
     size_t pos() const{
     	return m_pos;
     }
@@ -96,13 +96,13 @@ public:
         return m_hStn;
     }
 
-    
+
     /** get pointer to hash values for current k-mer */
     const uint64_t* operator*() const
     {
         return m_hVec;
     }
-    
+
 
     /** test equality with another iterator */
     bool operator==(const stHashIterator& it) const
@@ -115,20 +115,20 @@ public:
     {
         return !(*this == it);
     }
-    
+
     /** pre-increment operator */
     stHashIterator& operator++()
     {
         next();
         return *this;
     }
-    
+
     /** iterator pointing to one past last element */
     static const stHashIterator end()
     {
         return stHashIterator();
     }
-    
+
     /** destructor */
     ~stHashIterator() {
         if(m_hVec!=NULL) {
@@ -138,13 +138,13 @@ public:
     }
 
 private:
-    
+
     /** DNA sequence */
     std::string m_seq;
-    
+
     /** Spaced Seed sequence */
     std::vector<std::vector<unsigned> > m_seed;
-   
+
     /** number of seeds */
     unsigned m_h;
 
@@ -159,7 +159,7 @@ private:
 
     /** hash strands, forward = 0, reverse-complement = 1 */
     bool *m_hStn;
-    
+
     /** position of current k-mer */
     size_t m_pos;
 
