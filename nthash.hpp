@@ -664,7 +664,7 @@ const unsigned k, const unsigned m, const unsigned m2, uint64_t& fhVal, uint64_t
         uint64_t fsVal=fhVal, rsVal=rhVal;
         for(std::vector<unsigned>::const_iterator i=seedSeq[j].begin(); i!=seedSeq[j].end(); ++i) {
             fsVal ^= (msTab31l[(unsigned char)kmerSeq[*i]][(k-1-*i)%31] | msTab33r[(unsigned char)kmerSeq[*i]][(k-1-*i)%33]);
-            rsVal ^= (msTab31l[(unsigned char)kmerSeq[*i]&cpOff][*i%31] | msTab33r[(unsigned char)kmerSeq[*i]&cpOff][*i%33]);;
+            rsVal ^= (msTab31l[(unsigned char)kmerSeq[*i]&cpOff][*i%31] | msTab33r[(unsigned char)kmerSeq[*i]&cpOff][*i%33]);
         }
         hStn[j * m2] = rsVal<fsVal;
         hVal[j * m2] = hStn[j * m2]? rsVal : fsVal;
