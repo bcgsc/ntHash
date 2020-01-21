@@ -154,7 +154,10 @@ private:
     /** k-mer size */
     unsigned m_k;
 
-    /** hash values */
+    /** hash values
+     *  For m_h = n and m_h2 = m:
+     *  [seed1Hash1, seed1Hash2 ... seed(n)Hash(m-1), seed(n)Hash(m)]
+    */
     uint64_t *m_hVec;
 
     /** hash strands, forward = 0, reverse-complement = 1 */
