@@ -1,5 +1,5 @@
 AC_PREREQ(2.62)
-AC_INIT(NTHASH, 1.0.4, hmohamadi@bcgsc.ca, ntHash,
+AC_INIT(NTHASH, 2.1.0, hmohamadi@bcgsc.ca, ntHash,
 		https://github.com/bcgsc/ntHash)
 # add 'foreign' to allow README.md instead of README
 AM_INIT_AUTOMAKE([foreign subdir-objects])
