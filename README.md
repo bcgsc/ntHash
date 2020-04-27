@@ -1,3 +1,9 @@
+[![Release](https://img.shields.io/github/release/bcgsc/ntHash.svg)](https://github.com/bcgsc/ntHash/releases)
+[![Downloads](https://img.shields.io/github/downloads/bcgsc/ntHash/total?logo=github)](https://github.com/bcgsc/ntHash/archive/master.zip)
+[![Issues](https://img.shields.io/github/issues/bcgsc/ntHash.svg)](https://github.com/bcgsc/ntHash/issues)
+
+![Logo](https://github.com/bcgsc/ntHash/blob/master/nthash-logo.png)
+
 ntHash 
 =
 ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA sequence. 
