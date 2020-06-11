@@ -385,9 +385,9 @@ inline uint64_t swapbits3263(const uint64_t v) {
     return v ^ ((x << 32) | (x << 63));
 }
 
-inline uint64_t swapxbits033(const uint64_t v, const unsigned y) {
-    uint64_t x = (v ^ (v >> 33)) & (std::numeric_limits<uint64_t>::max() >> (64 - y));
-    return v ^ (x | (x << 33));
+inline uint64_t swapxbits033(const uint64_t v, const unsigned x) {
+    uint64_t y = (v ^ (v >> 33)) & (std::numeric_limits<uint64_t>::max() >> (64 - x));
+    return v ^ (y | (y << 33));
 }
 
 // forward-strand hash value of the base kmer, i.e. fhval(kmer_0)
