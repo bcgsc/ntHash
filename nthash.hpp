@@ -9,8 +9,8 @@
 #ifndef NT_HASH_H
 #define NT_HASH_H
 
-#include <stdint.h>
 #include <limits>
+#include <stdint.h>
 #include <vector>
 
 static const uint8_t RCconvertTab[256] = {
