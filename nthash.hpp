@@ -356,11 +356,6 @@ inline uint64_t rolx(const uint64_t v, const unsigned x) {
     return (v << x) | (v >> (64 - x));
 }
 
-// rotate "v" to the left 4 position
-inline uint64_t rol4(const uint64_t v) {
-    return (v << 4) | (v >> 60);
-}
-
 // rotate "v" to the right by 1 position
 inline uint64_t ror1(const uint64_t v) {
     return (v >> 1) | (v << 63);
@@ -388,11 +383,6 @@ inline uint64_t swapbits033(const uint64_t v) {
 inline uint64_t swapbits3263(const uint64_t v) {
     uint64_t x = ((v >> 32) ^ (v >> 63)) & 1;
     return v ^ ((x << 32) | (x << 63));
-}
-
-inline uint64_t swapbits033033(const uint64_t v) {
-    uint64_t x = (v ^ (v >> 33)) & 15;
-    return v ^ (x | (x << 33));
 }
 
 inline uint64_t swapxbits033(const uint64_t v, const unsigned y) {
