@@ -84,9 +84,11 @@ TEST_CASE("test fixture", "[UnitTests]")
 
         for (int i = 0; i < 3; ++i)
         {
+			ntHashIterator kmerPosIt(kmer, 3, 18, i);
             for (int j = 0; j < 3; ++j)
             {
                 assert((*rollingHashIt)[j] == (*vecKmerIt[i])[j]);
+				assert((*rollingHashIt)[j] == (*kmerPosIt)[j]);
             }
             ++rollingHashIt;
         }
