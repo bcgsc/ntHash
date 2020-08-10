@@ -34,8 +34,8 @@ public:
      * @param k k-mer size
      * @param h number of hashes
     */
-    ssHashIterator(const std::string& seq, const std::vector<bool>& seed, unsigned k):
-        m_seq(seq), m_seed(seed), m_k(k), m_hVal(0), m_sVal(0), m_pos(0)
+    ssHashIterator(const std::string& seq, const std::vector<bool>& seed, unsigned k, size_t pos = 0):
+        m_seq(seq), m_seed(seed), m_k(k), m_hVal(0), m_sVal(0), m_pos(pos)
     {
         init();
     }
