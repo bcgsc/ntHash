@@ -125,7 +125,7 @@ TEST_CASE("test fixture", "[UnitTests]")
         ntHashIterator dnaIt(kmer, 3, 20);
 
         std::string rnaKmer = "ACGUACACUGGACUGAGUCU";
-        ntHashIterator rnaIt(rnakmer, 3, 20);
+        ntHashIterator rnaIt(rnaKmer, 3, 20);
 
         for (int i = 0; i < 3; ++i)
         {
