@@ -35,8 +35,8 @@ public:
      * @param k k-mer size
      * @param h number of hashes
     */
-    ntHashIterator(const std::string& seq, unsigned h, unsigned k):
-        m_seq(seq), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_pos(0)
+    ntHashIterator(const std::string& seq, unsigned h, unsigned k, size_t pos = 0):
+        m_seq(seq), m_h(h), m_k(k), m_hVec(new uint64_t[h]), m_pos(pos)
     {
         init();
     }
