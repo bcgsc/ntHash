@@ -8,8 +8,6 @@ ntHash
 =
 ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA sequence. 
 
-Archived since 2021-09-16: the development of ntHash is now ongoing at the btllib repository: https://github.com/bcgsc/btllib
-
 
 # Build the test suite
 
