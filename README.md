@@ -10,7 +10,7 @@ ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA
 
 # ntHash2
 
-Support for fast spaced seed hashing has been added to ntHash2 -- check out the README on the [development branch](https://github.com/bcgsc/ntHash/tree/nthash2).
+Support for fast spaced seed hashing has been added to ntHash2. To try it out, check out the README on the [development branch](https://github.com/bcgsc/ntHash/tree/nthash2). ntHash2 will soon replace ntHash on the master branch.
 
 
 # Build the test suite
