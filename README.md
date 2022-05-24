@@ -75,9 +75,9 @@ In the plain text format (tab separated values), the rows consist of the hashes 
 ### Static Library Usage
 
 To use ntHash in a C++ project:
-+ Link the code with `libnthash.a` (i.e. pass `-L path/to/nthash/release -l libnthash.a` to the compiler).
++ Link the code with `libnthash.a` (i.e. pass `-L path/to/nthash/release -l nthash` to the compiler).
 + Add the `include` directory (pass `-I path/to/nthash/include` to the compiler).
-+ Repeat for btllib (add flags: `-L path/to/nthash/release/btllib -l libbtllib.a -I path/to/nthash/vendor/btllib/include`)
++ Repeat for btllib (add flags: `-L path/to/nthash/release/btllib -l btllib -I path/to/nthash/vendor/btllib/include`)
 + Import ntHash in the code using `#include <nthash/nthash.hpp>`.
 + Access ntHash classes from the `nthash` namespace.
 
