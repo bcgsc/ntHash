@@ -401,6 +401,9 @@ inline uint64_t NTF64(const char * kmerSeq, const unsigned k) {
         hVal ^= tetramerTab[tetramerLoc];
     }
 	unsigned remainder = k % 4;
+    if (remainder == 0) {
+        return hVal;
+    }
     hVal = rolx(hVal, remainder);
     hVal = swapxbits033(hVal, remainder);
 	if (remainder == 3) {
