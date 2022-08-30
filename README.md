@@ -18,7 +18,9 @@ ntHash is included in [btllib](https://github.com/bcgsc/btllib), which can be in
 conda install -c bioconda btllib
 ```
 
-This installs other classes such as Bloom filters that can be used with ntHash.  Also, ntHash can be imported in Python projects via btllib's wrappers. ntHash's code is automatically synced to btllib on each release. Refer to [btllib's readme](https://github.com/bcgsc/btllib/blob/master/README.md) for usage instructions.
+This installs other classes such as Bloom filters that can be used with ntHash.  Also, ntHash can be imported in Python projects via btllib's wrappers. ntHash's code is automatically synced to btllib on each release.
+
+**Refer to [btllib's readme](https://github.com/bcgsc/btllib/blob/master/README.md) for usage instructions.**
 
 ## Manual Compilation
 
@@ -110,6 +112,9 @@ Refer to docs for more information.
 
 Publications
 ============
+
+## [ntHash2](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac564/6674501)
+Parham Kazemi, Johnathan Wong, Vladimir Nikolić, Hamid Mohamadi, René L Warren, Inanç Birol, ntHash2: recursive spaced seed hashing for nucleotide sequences, Bioinformatics, 2022;, btac564, [https://doi.org/10.1093/bioinformatics/btac564](https://doi.org/10.1093/bioinformatics/btac564)
 
 ## [ntHash](http://bioinformatics.oxfordjournals.org/content/early/2016/08/01/bioinformatics.btw397)
 
