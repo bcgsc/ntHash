@@ -10,21 +10,7 @@ ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA
 
 # Installation & Usage
 
-## btllib (Recommended)
-
-ntHash is included in [btllib](https://github.com/bcgsc/btllib), which can be installed using Conda:
-
-```shell
-conda install -c bioconda btllib
-```
-
-This installs other classes such as Bloom filters that can be used with ntHash.  Also, ntHash can be imported in Python projects via btllib's wrappers. ntHash's code is automatically synced to btllib on each release.
-
-**Refer to [btllib's readme](https://github.com/bcgsc/btllib/blob/master/README.md) for usage instructions.**
-
-## Manual Compilation
-
-To use ntHash without installing btllib from conda, download the repo and generate a cmake buildsystem in an arbitrary directory (e.g. `release`), by running the following command in the project's root:
+Download the repo and generate a cmake buildsystem in an arbitrary directory (e.g. `release`), by running the following command in the project's root:
 
 ```shell
 cmake -S . -B release
