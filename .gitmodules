@@ -1,3 +1,0 @@
-[submodule "vendor/argparse"]
-	path = vendor/argparse
-	url = git@github.com:p-ranav/argparse.git
