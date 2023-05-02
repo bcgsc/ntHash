@@ -2,6 +2,7 @@
 #define NTHASH_LOWLEVEL_HPP
 
 #include "nthash/consts.hpp"
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -12,8 +13,6 @@
 #include <vector>
 
 namespace nthash {
-
-
 
 template<typename T>
 inline T

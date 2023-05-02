@@ -10,7 +10,7 @@ include_dirs = [
     include_directories('include')
 ]
 
-sources = ['src/nthash.cpp', 'src/consts.cpp', 'src/lowlevel.cpp']
+sources = ['src/nthash.cpp', 'src/lowlevel.cpp']
 
 nthash_lib = static_library(
     'nthash',
