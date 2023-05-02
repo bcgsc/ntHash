@@ -1,10 +1,3 @@
-/*
- * nthash_consts.hpp
- * Author: Hamid Mohamadi
- * Genome Sciences Centre,
- * British Columbia Cancer Agency
- */
-
 #ifndef NTHASH_CONSTS_HPP
 #define NTHASH_CONSTS_HPP
 

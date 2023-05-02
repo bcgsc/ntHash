@@ -1,4 +1,4 @@
-#include "nthash/nthash_lowlevel.hpp"
+#include "nthash/lowlevel.hpp"
 
 namespace nthash {
 

@@ -1,4 +1,4 @@
-#include "nthash/nthash_consts.hpp"
+#include "nthash/consts.hpp"
 
 namespace nthash {
 

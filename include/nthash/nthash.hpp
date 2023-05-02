@@ -1,9 +1,10 @@
 #ifndef NTHASH_HPP
 #define NTHASH_HPP
 
-#include "nthash/nthash_lowlevel.hpp"
+#include "nthash/lowlevel.hpp"
 
 #include <cstdint>
+#include <cstring>
 #include <limits>
 #include <memory>
 #include <string>

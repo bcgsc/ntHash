@@ -1,17 +1,16 @@
 project(
     'ntHash',
     'cpp',
-    version: '2.3.0',
+    version: '2.4.0',
     license: 'MIT',
     default_options: ['cpp_std=c++17', 'werror=true', 'warning_level=3'],
 )
 
 include_dirs = [
-    include_directories('include'),
-    include_directories('vendor/argparse/include'),
+    include_directories('include')
 ]
 
-sources = ['src/nthash.cpp', 'src/nthash_consts.cpp', 'src/nthash_lowlevel.cpp']
+sources = ['src/nthash.cpp', 'src/consts.cpp', 'src/lowlevel.cpp']
 
 nthash_lib = static_library(
     'nthash',
@@ -26,7 +25,7 @@ lib_dep = declare_dependency(
     include_directories: include_dirs,
 )
 
-if get_option('buildtype') == 'release'
+if get_option('buildtype') != 'release'
     catch2 = dependency(
         'Catch2',
         method: 'cmake',

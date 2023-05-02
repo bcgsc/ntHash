@@ -1,5 +1,23 @@
 #include "nthash/nthash.hpp"
 
+namespace {
+
+inline void
+raise_warning(const std::string& class_name, const std::string& msg)
+{
+  std::cerr << "[ntHash::" << class_name << "] \33[33mWARNING: \33[0m" << msg
+            << std::endl;
+}
+
+inline void
+raise_error(const std::string& class_name, const std::string& msg)
+{
+  std::cerr << "[ntHash::" << class_name << "] \33[31mERROR: \33[0m" << msg
+            << std::endl;
+  std::exit(1); // NOLINT(concurrency-mt-unsafe)
+}
+
+}
 namespace nthash {
 
 NtHash::NtHash(const char* seq,
@@ -15,28 +33,32 @@ NtHash::NtHash(const char* seq,
   , initialized(false)
   , hashes_array(new uint64_t[hash_num])
 {
-  // Parameter sanity check
-  btllib::check_error(k == 0, "NtHash: k must be greater than 0");
-  btllib::check_error(k > NTHASH_K_MAX,
-                      "NtHash: passed k value (" + std::to_string(k) +
-                        ") is larger than allowed (" +
-                        std::to_string(NTHASH_K_MAX) + ").");
-  btllib::check_error(hash_num > NTHASH_HASH_NUM_MAX,
-                      "NtHash: passed number of hashes (" +
-                        std::to_string(hash_num) +
-                        ") is larger than allowed (" +
-                        std::to_string(NTHASH_HASH_NUM_MAX) + ").");
-  btllib::check_warning(hash_num >= k,
-                        "NtHash: using " + std::to_string(hash_num) +
-                          " hash functions and k size of " + std::to_string(k) +
-                          ". Did you permute the parameters?");
-  btllib::check_error(seq_len < k,
-                      "NtHash: sequence length (" + std::to_string(seq_len) +
-                        ") is smaller than k (" + std::to_string(k) + ").");
-  btllib::check_error(pos >= seq_len,
-                      "NtHash: passed position (" + std::to_string(pos) +
-                        ") is larger than sequence length (" +
-                        std::to_string(seq_len) + ").");
+  if (k == 0) {
+    raise_error("NtHash", "k must be greater than 0");
+  }
+  if (k > NTHASH_K_MAX) {
+    raise_error("NtHash",
+                "passed k value (" + std::to_string(k) +
+                  ") is larger than allowed (" + std::to_string(NTHASH_K_MAX) +
+                  ")");
+  }
+  if (hash_num > NTHASH_HASH_NUM_MAX) {
+    raise_error("NtHash",
+                "passed number of hashes (" + std::to_string(hash_num) +
+                  ") is larger than allowed (" +
+                  std::to_string(NTHASH_HASH_NUM_MAX) + ")");
+  }
+  if (seq_len < k) {
+    raise_error("NtHash",
+                "sequence length (" + std::to_string(seq_len) +
+                  ") is smaller than k (" + std::to_string(k) + ")");
+  }
+  if (pos >= seq_len) {
+    raise_error("NtHash",
+                "passed position (" + std::to_string(pos) +
+                  ") is larger than sequence length (" +
+                  std::to_string(seq_len) + ")");
+  }
 }
 
 NtHash::NtHash(const std::string& seq,
@@ -74,23 +96,23 @@ BlindNtHash::BlindNtHash(const char* seq,
   , initialized(false)
   , hashes_array(new uint64_t[hash_num])
 {
-  btllib::check_error(k == seq_len,
-                      "BlindNtHash: passed sequence length (" +
-                        std::to_string(seq_len) + ") is not equal to k (" +
-                        std::to_string(k) + ").");
-  btllib::check_error(k > NTHASH_K_MAX,
-                      "BlindNtHash: passed k value (" + std::to_string(k) +
-                        ") is larger than allowed (" +
-                        std::to_string(NTHASH_K_MAX) + ").");
-  btllib::check_error(hash_num > NTHASH_HASH_NUM_MAX,
-                      "BlindNtHash: passed number of hashes (" +
-                        std::to_string(hash_num) +
-                        ") is larger than allowed (" +
-                        std::to_string(NTHASH_HASH_NUM_MAX) + ").");
-  btllib::check_warning(hash_num >= k,
-                        "BlindNtHash: using " + std::to_string(hash_num) +
-                          " hash functions and k size of " + std::to_string(k) +
-                          ". Did you permute the parameters?");
+  if (seq_len != k) {
+    raise_error("BlindNtHash",
+                "sequence length (" + std::to_string(seq_len) +
+                  ") is not equal k (" + std::to_string(k) + ")");
+  }
+  if (k > NTHASH_K_MAX) {
+    raise_error("BlindNtHash",
+                "passed k value (" + std::to_string(k) +
+                  ") is larger than allowed (" + std::to_string(NTHASH_K_MAX) +
+                  ")");
+  }
+  if (hash_num > NTHASH_HASH_NUM_MAX) {
+    raise_error("BlindNtHash",
+                "passed number of hashes (" + std::to_string(hash_num) +
+                  ") is larger than allowed (" +
+                  std::to_string(NTHASH_HASH_NUM_MAX) + ")");
+  }
   std::memcpy(this->seq.get(), seq, seq_len);
 }
 
@@ -208,15 +230,20 @@ void
 check_seeds(const std::vector<std::string>& seeds, unsigned k)
 {
   for (const auto& seed : seeds) {
-    btllib::check_error(
-      seed.length() != k,
-      "Spaced seed string length (" + std::to_string(seed.length()) +
-        ") not equal to k=" + std::to_string(k) + " in " + seed);
+
+    if (seed.length() != k) {
+      raise_error("SeedNtHash",
+                  "Spaced seed string length (" +
+                    std::to_string(seed.length()) +
+                    ") not equal to k=" + std::to_string(k) + " in " + seed);
+    }
     std::string reversed(seed.rbegin(), seed.rend());
-    btllib::check_warning(
-      seed != reversed,
-      "Seed " + seed +
-        " is not symmetric, reverse-complement hashing will be inconsistent");
+    if (seed != reversed) {
+      raise_warning(
+        "SeedNtHash",
+        "Seed " + seed +
+          " is not symmetric, reverse-complement hashing will be inconsistent");
+    }
   }
 }
 

@@ -1,21 +1,19 @@
-/*
- * nthash_lowlevel.hpp
- * Author: Hamid Mohamadi
- * Genome Sciences Centre,
- * British Columbia Cancer Agency
- */
-
 #ifndef NTHASH_LOWLEVEL_HPP
 #define NTHASH_LOWLEVEL_HPP
 
-#include "nthash/nthash_consts.hpp"
+#include "nthash/consts.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <ctime>
+#include <iostream>
 #include <limits>
+#include <string>
 #include <vector>
 
 namespace nthash {
+
+
 
 template<typename T>
 inline T
