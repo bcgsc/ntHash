@@ -58,13 +58,14 @@ main()
     };
 
     nthash::NtHash nthash(seq, h, k);
-    nthash::BlindNtHash ntblind(seq.substr(0, k), h, k);
+    std::string kmer0 = seq.substr(0, k);
+    nthash::BlindNtHash blind(seq, h, k);
 
     for (const auto& h_vals : hashes) {
       nthash.roll();
       TEST_ASSERT_ARRAY_EQ(h_vals, nthash.hashes(), h);
-      ntblind.roll(seq[ntblind.get_pos() + 1]);
-      TEST_ASSERT_ARRAY_EQ(h_vals, ntblind.hashes(), h);
+      blind.roll(seq[blind.get_pos() + k]);
+      TEST_ASSERT_ARRAY_EQ(h_vals, blind.hashes(), h);
     }
   }
 

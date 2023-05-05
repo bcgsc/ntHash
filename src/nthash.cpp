@@ -96,11 +96,6 @@ BlindNtHash::BlindNtHash(const char* seq,
   , initialized(false)
   , hashes_array(new uint64_t[hash_num])
 {
-  if (seq_len != k) {
-    raise_error("BlindNtHash",
-                "sequence length (" + std::to_string(seq_len) +
-                  ") is not equal k (" + std::to_string(k) + ")");
-  }
   if (k > NTHASH_K_MAX) {
     raise_error("BlindNtHash",
                 "passed k value (" + std::to_string(k) +
