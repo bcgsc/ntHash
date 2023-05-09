@@ -1,11 +1,44 @@
 #include "nthash/nthash.hpp"
-#include "btllib/seq.hpp"
-#include "helpers.hpp"
 
+#include <chrono>
+#include <cstdlib>
+#include <functional>
 #include <iostream>
 #include <queue>
+#include <random>
 #include <stack>
 #include <string>
+
+#define PRINT_TEST_NAME(TEST_NAME)                                             \
+  std::cerr << __FILE__ << ": Testing " << TEST_NAME << std::endl;
+
+#define TEST_ASSERT(x)                                                         \
+  if (!(x)) {                                                                  \
+    std::cerr << __FILE__ ":" << __LINE__ << ":TEST_ASSERT: " #x " is false"   \
+              << std::endl;                                                    \
+    std::exit(EXIT_FAILURE);                                                   \
+  }
+
+#define TEST_ASSERT_RELATIONAL(x, y, op)                                       \
+  if (!((x)op(y))) {                                                           \
+    std::cerr << __FILE__ ":" << __LINE__                                      \
+              << ":TEST_ASSERT_RELATIONAL: " #x " " #op " " #y << '\n'         \
+              << #x " = " << x << '\n'                                         \
+              << #y " = " << y << std::endl;                                   \
+    std::exit(EXIT_FAILURE);                                                   \
+  }
+
+#define TEST_ASSERT_EQ(x, y) TEST_ASSERT_RELATIONAL(x, y, ==)
+#define TEST_ASSERT_NE(x, y) TEST_ASSERT_RELATIONAL(x, y, !=)
+#define TEST_ASSERT_GE(x, y) TEST_ASSERT_RELATIONAL(x, y, >=)
+#define TEST_ASSERT_GT(x, y) TEST_ASSERT_RELATIONAL(x, y, >)
+#define TEST_ASSERT_LE(x, y) TEST_ASSERT_RELATIONAL(x, y, <=)
+#define TEST_ASSERT_LT(x, y) TEST_ASSERT_RELATIONAL(x, y, <)
+
+#define TEST_ASSERT_ARRAY_EQ(x, y, size)                                       \
+  for (unsigned i = 0; i < size; i++) {                                        \
+    TEST_ASSERT_EQ(x[i], y[i])                                                 \
+  }
 
 int
 main()
@@ -25,13 +58,14 @@ main()
     };
 
     nthash::NtHash nthash(seq, h, k);
-    nthash::BlindNtHash ntblind(seq, h, k);
+    std::string kmer0 = seq.substr(0, k);
+    nthash::BlindNtHash blind(seq, h, k);
 
     for (const auto& h_vals : hashes) {
       nthash.roll();
       TEST_ASSERT_ARRAY_EQ(h_vals, nthash.hashes(), h);
-      ntblind.roll(seq[ntblind.get_pos() + 1]);
-      TEST_ASSERT_ARRAY_EQ(h_vals, ntblind.hashes(), h);
+      blind.roll(seq[blind.get_pos() + k]);
+      TEST_ASSERT_ARRAY_EQ(h_vals, blind.hashes(), h);
     }
   }
 
@@ -448,7 +482,7 @@ main()
     PRINT_TEST_NAME("canonical hashing in spaced seeds")
 
     std::string seq_fwd = "CACTCGGCCACACACACACACACACACCCTCACACACACAAAACGCACAC";
-    std::string seq_rev = btllib::get_reverse_complement(seq_fwd);
+    std::string seq_rev = "GTGTGCGTTTTGTGTGTGTGAGGGTGTGTGTGTGTGTGTGTGGCCGAGTG";
 
     std::vector<std::string> seeds = {
       "11011000001100101101011000011010110100110000011011",

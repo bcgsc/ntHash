@@ -1,6 +1,32 @@
-#include "nthash/nthash_consts.hpp"
+#ifndef NTHASH_CONSTS_HPP
+#define NTHASH_CONSTS_HPP
+
+#include <cmath>
+#include <cstdint>
 
 namespace nthash {
+
+#define MS_TAB(CHAR, ROT)                                                      \
+  (MS_TAB_31L[CHAR][(ROT) < 31 ? (ROT) : (ROT) % 31] | /* NOLINT */            \
+   MS_TAB_33R[CHAR][(ROT) < 33 ? (ROT) : (ROT) % 33])  /* NOLINT */
+
+// offset for the complement base in the random seeds table
+const uint8_t CP_OFF = 0x07;
+
+// shift for gerenerating multiple hash values
+const int MULTISHIFT = 27;
+
+// seed for gerenerating multiple hash values
+const uint64_t MULTISEED = 0x90b45d39fb6da1fa;
+
+// 64-bit random seeds corresponding to bases and their complements
+const uint64_t SEED_A = 0x3c8bfbb395c60474;
+const uint64_t SEED_C = 0x3193c18562a02b4c;
+const uint64_t SEED_G = 0x20323ed082572324;
+const uint64_t SEED_T = 0x295549f54be24456;
+const uint64_t SEED_N = 0x0000000000000000;
+
+const int ASCII_SIZE = 256;
 
 const uint64_t SEED_TAB[ASCII_SIZE] = {
   SEED_N, SEED_T, SEED_N, SEED_G, SEED_A, SEED_A, SEED_N, SEED_C, // 0..7
@@ -407,3 +433,5 @@ const uint64_t TETRAMER_TAB[4 * 4 * 4 * 4] = {
 };
 
 } // namespace nthash
+
+#endif

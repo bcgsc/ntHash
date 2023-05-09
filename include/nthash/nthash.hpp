@@ -1,17 +1,10 @@
-/*
- * nthash.hpp
- * Author: Hamid Mohamadi
- * Genome Sciences Centre,
- * British Columbia Cancer Agency
- */
-
 #ifndef NTHASH_HPP
 #define NTHASH_HPP
 
-#include "btllib/status.hpp"
-#include "nthash/nthash_lowlevel.hpp"
+#include "nthash/lowlevel.hpp"
 
 #include <cstdint>
+#include <cstring>
 #include <limits>
 #include <memory>
 #include <string>
