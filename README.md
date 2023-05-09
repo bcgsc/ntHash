@@ -10,62 +10,31 @@ ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA
 
 # Installation & Usage
 
-Download the repo (either from the releases section or close using `git clone --recurse-submodules https://github.com/bcgsc/ntHash`). Generate a cmake buildsystem in an arbitrary directory (e.g. `release`), by running the following command in the project's root:
+Download the repo (either from the releases section or close using `git clone --recurse-submodules https://github.com/bcgsc/ntHash`). Generate a cmake buildsystem in an arbitrary directory (e.g. `build`), by running the following command in the project's root:
 
 ```shell
-cmake -S . -B release
+meson setup build
 ```
 
 Then, build the project and its dependencies using:
 
 ```shell
-cmake --build release --target all
+cd build && ninja
 ```
 
-The project's executable (`./nthash`), static library (`libnthash.a`), and tests (`nthash_tests`) will be generated alongside `btllib` in the `release` folder.
+The project's static library (`libnthash.a`) and tests (`nthash`) will be generated alongside in the `build` folder.
 
-Tests can be run using `ctest`:
+Tests can be run using `ninja` in the `build` directory:
 
 ```shell
-cd release && ctest
+ninja test
 ```
-
-### Executable
-
-After building the project, use the output binary file to generate hash values from input data and store the results on disk:
-
-```
-Usage: nthash [options] files 
-
-Positional arguments:
-files           Input sequence files [required]
-
-Optional arguments:
--v --version    prints version information and exits [default: false]
--k              k-mer size [required]
--o              Output file (for -f collect) or directory path [required]
--f              Output file organization (create files containing hashes for each 'file', 'record', or 'collect' all hashes into a single file [default: "file"]
--h              Number of hashes per k-mer [default: 1]
--s              Input spaced seed patterns separated by commas (e.g. 1110111,11011011). Performs k-mer hashing if no value provided.
---long          Optimize file reader for long sequences (>5kbp) [default: false]
---binary        Output hashes in binary files (otherwise plain text) [default: false]
---verbose       Print progress to stdout [default: false]
-```
-
-For example, given two input files `1.fa` and `2.fa`, two hash values for each 64-mer can be saved to a binary file called `out.bin` by running this command in `release`:
-
-```shell
-./nthash -k 64 -h 2 -o out.bin -f collect --binary --verbose 1.fa 2.fa
-```
-
-In the plain text format (tab separated values), the rows consist of the hashes of k-mers/seeds in the same order seen in the input sequences. For binary output, these values are dumped without any delimiters. E.g. in the case of `out.bin` generated above, the first and second hashes of the first k-mer are stored in the beginning of the file, followed by the first and second hashes of the second k-mer.
 
 ### Static Library Usage
 
 To use ntHash in a C++ project:
-+ Link the code with `libnthash.a` (i.e. pass `-L path/to/nthash/release -l nthash` to the compiler).
++ Link the code with `libnthash.a` (i.e. pass `-Lpath/to/nthash/build -lnthash` to the compiler).
 + Add the `include` directory (pass `-I path/to/nthash/include` to the compiler).
-+ Repeat for btllib (add flags: `-L path/to/nthash/release/btllib -l btllib -I path/to/nthash/vendor/btllib/include`)
 + Import ntHash in the code using `#include <nthash/nthash.hpp>`.
 + Access ntHash classes from the `nthash` namespace.
 
