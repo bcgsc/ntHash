@@ -10,7 +10,9 @@ ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA
 
 # Installation & Usage
 
-Download the repo (either from the releases section or close using `git clone https://github.com/bcgsc/ntHash`). Generate a cmake buildsystem in an arbitrary directory (e.g. `build`), by running the following command in the project's root:
+Make sure [Meson](https://mesonbuild.com/) is installed on the system.
+
+Download the repo (either from the releases section or close using `git clone https://github.com/bcgsc/ntHash`). Setup meson in an arbitrary directory (e.g. `build`), by running the following command in the project's root:
 
 ```shell
 meson setup build
