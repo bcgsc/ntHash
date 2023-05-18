@@ -497,11 +497,34 @@ main()
 
     const unsigned h = 4;
 
-    nthash::SeedNtHash nthash1(seq_fwd, seeds, h, seeds[0].length());
-    nthash::SeedNtHash nthash2(seq_rev, seeds, h, seeds[0].length());
+    nthash::SeedNtHash h1(seq_fwd, seeds, h, seeds[0].length());
+    nthash::SeedNtHash h2(seq_rev, seeds, h, seeds[0].length());
 
-    while (nthash1.roll() && nthash2.roll()) {
-      TEST_ASSERT_ARRAY_EQ(nthash1.hashes(), nthash2.hashes(), h);
+    bool can_roll = true;
+    while (can_roll) {
+      can_roll = h1.roll();
+      can_roll &= h2.roll();
+      TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), h);
+    }
+  }
+
+  {
+    PRINT_TEST_NAME("copying SeedNtHash objects")
+
+    std::string seq = "AACGTGACTACTGACTAGCTAGCTAGCTGATCGT";
+    std::vector<std::string> seeds = { "111111111101111111111",
+                                       "110111010010010111011" };
+
+    const unsigned h = 4;
+
+    nthash::SeedNtHash h1(seq, seeds, h, seeds[0].length());
+    nthash::SeedNtHash h2(h1);
+
+    bool can_roll = true;
+    while (can_roll) {
+      can_roll = h1.roll();
+      can_roll &= h2.roll();
+      TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), h);
     }
   }
 
