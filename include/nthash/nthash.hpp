@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <deque>
 #include <limits>
 #include <memory>
 #include <string>
@@ -388,6 +389,68 @@ private:
   std::unique_ptr<uint64_t[]> reverse_hash;
 };
 
+class BlindSeedNtHash
+{
+
+public:
+  BlindSeedNtHash(const char* seq,
+                  const std::vector<std::string>& seeds,
+                  unsigned hash_num_per_seed,
+                  unsigned k,
+                  size_t pos = 0);
+  BlindSeedNtHash(const std::string& seq,
+                  const std::vector<std::string>& seeds,
+                  unsigned hash_num_per_seed,
+                  unsigned k,
+                  size_t pos = 0);
+
+  BlindSeedNtHash(BlindSeedNtHash& seed_nthash);
+  BlindSeedNtHash(BlindSeedNtHash&&) = default;
+
+  /**
+   * Like the NtHash::roll() function, but instead of advancing in the
+   * sequence BlindSeedNtHash object was constructed on, the provided character
+   * \p char_in is used as the next base. Useful if you want to query for
+   * possible paths in an implicit de Bruijn graph graph.
+   *
+   * @return true on success and false otherwise.
+   */
+  bool roll(char char_in);
+
+  const uint64_t* hashes() const { return hashes_array.get(); }
+
+  /**
+   * Get the position of last hashed k-mer or the k-mer to be hashed if roll()
+   * has never been called on this NtHash object.
+   */
+  size_t get_pos() const { return pos; }
+  bool forward() const { return forward_hash <= reverse_hash; }
+  unsigned get_hash_num_per_seed() const { return hash_num_per_seed; }
+  unsigned get_k() const { return k; }
+
+  uint64_t* get_forward_hash() const { return forward_hash.get(); }
+  uint64_t* get_reverse_hash() const { return reverse_hash.get(); }
+
+private:
+  /** Initialize internal state of iterator */
+  bool init();
+
+  std::deque<char> seq;
+  const size_t seq_len = std::numeric_limits<std::size_t>::max();
+  const unsigned hash_num_per_seed;
+  const NTHASH_K_TYPE k;
+
+  size_t pos;
+  bool initialized;
+  std::vector<SpacedSeedBlocks> blocks;
+  std::vector<SpacedSeedMonomers> monomers;
+  std::unique_ptr<uint64_t[]> fh_no_monomers;
+  std::unique_ptr<uint64_t[]> rh_no_monomers;
+  std::unique_ptr<uint64_t[]> forward_hash;
+  std::unique_ptr<uint64_t[]> reverse_hash;
+  std::unique_ptr<uint64_t[]> hashes_array;
+};
+
 // NOLINTNEXTLINE
 #define BTLLIB_NTHASH_INIT(CLASS, NTHASH_CALL, MEMBER_PREFIX)                  \
   inline bool CLASS::init()                                                    \
@@ -411,7 +474,8 @@ private:
   }
 
 // NOLINTNEXTLINE
-#define BTLLIB_NTHASH_ROLL(CLASS, FN_DECL, NTHASH_CALL, MEMBER_PREFIX)         \
+#define BTLLIB_NTHASH_ROLL(                                                    \
+  CLASS, FN_DECL, CHAR_IN, NTHASH_CALL, MEMBER_PREFIX)                         \
   inline bool CLASS::FN_DECL                                                   \
   {                                                                            \
     if (!MEMBER_PREFIX initialized) {                                          \
@@ -420,9 +484,7 @@ private:
     if (MEMBER_PREFIX pos >= MEMBER_PREFIX seq_len - MEMBER_PREFIX k) {        \
       return false;                                                            \
     }                                                                          \
-    if (SEED_TAB[(unsigned char)(MEMBER_PREFIX seq[MEMBER_PREFIX pos +         \
-                                                   MEMBER_PREFIX k])] ==       \
-        SEED_N) {                                                              \
+    if (SEED_TAB[(unsigned char)(CHAR_IN)] == SEED_N) {                        \
       MEMBER_PREFIX pos += MEMBER_PREFIX k;                                    \
       return init();                                                           \
     }                                                                          \
@@ -472,6 +534,7 @@ BTLLIB_NTHASH_INIT(NtHash,
                           hashes_array.get()), )
 BTLLIB_NTHASH_ROLL(NtHash,
                    roll(),
+                   seq[pos + k],
                    ntmc64(seq[pos],
                           seq[pos + k],
                           k,
@@ -562,6 +625,7 @@ BTLLIB_NTHASH_INIT(BlindNtHash,
 BTLLIB_NTHASH_ROLL(
   BlindNtHash,
   roll(char char_in),
+  char_in,
   {
     ntmc64(seq[pos % seq_len],
            char_in,
@@ -631,6 +695,7 @@ BTLLIB_NTHASH_INIT(SeedNtHash,
                    nthash.)
 BTLLIB_NTHASH_ROLL(SeedNtHash,
                    roll(),
+                   nthash.seq[nthash.pos + nthash.k],
                    ntmsm64(nthash.seq + nthash.pos,
                            blocks,
                            monomers,
@@ -795,6 +860,39 @@ BTLLIB_NTHASH_PEEK(
              nthash.hashes_array.get());
   },
   nthash.)
+
+BTLLIB_NTHASH_INIT(BlindSeedNtHash,
+                   ntmsm64(seq,
+                           blocks,
+                           monomers,
+                           k,
+                           blocks.size(),
+                           hash_num_per_seed,
+                           fh_no_monomers.get(),
+                           rh_no_monomers.get(),
+                           forward_hash.get(),
+                           reverse_hash.get(),
+                           posN,
+                           hashes_array.get()), )
+BTLLIB_NTHASH_ROLL(
+  BlindSeedNtHash,
+  roll(char char_in),
+  char_in,
+  {
+    seq.push_back(char_in);
+    ntmsm64(seq,
+            blocks,
+            monomers,
+            k,
+            blocks.size(),
+            hash_num_per_seed,
+            fh_no_monomers.get(),
+            rh_no_monomers.get(),
+            forward_hash.get(),
+            reverse_hash.get(),
+            hashes_array.get());
+    seq.pop_front();
+  }, )
 
 #undef BTLLIB_NTHASH_INIT
 #undef BTLLIB_NTHASH_ROLL

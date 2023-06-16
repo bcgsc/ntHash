@@ -528,5 +528,42 @@ main()
     }
   }
 
+  {
+    PRINT_TEST_NAME("BlindSeedNtHash")
+
+    std::string seq = "ATGCTAGTAGCTGAC";
+    std::vector<std::string> seeds = { "110011", "101101" };
+    std::string kmer0 = seq.substr(0, seeds[0].size());
+
+    nthash::SeedNtHash h1(seq, seeds, 1, seeds[0].size());
+    h1.roll();
+    nthash::BlindSeedNtHash h2(kmer0, seeds, 1, seeds[0].size());
+
+    while (h1.roll()) {
+      h2.roll(seq[h2.get_pos() + seeds[0].size()]);
+      TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), 2)
+    }
+  }
+
+  {
+    PRINT_TEST_NAME("BlindSeedNtHash copy constructor")
+
+    std::string seq = "ATGCTAGTAGCTGAC";
+    std::vector<std::string> seeds = { "110011", "101101" };
+    std::string kmer0 = seq.substr(0, seeds[0].size());
+
+    nthash::BlindSeedNtHash h1(kmer0, seeds, 1, seeds[0].size());
+    h1.roll('A');
+    h1.roll('C');
+    nthash::BlindSeedNtHash h2(h1);
+    TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), 2)
+    h1.roll('G');
+    h2.roll('G');
+    TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), 2)
+    h1.roll('T');
+    h2.roll('T');
+    TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), 2)
+  }
+
   return 0;
 }

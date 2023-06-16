@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
+#include <deque>
 #include <iostream>
 #include <limits>
 #include <string>
@@ -816,6 +817,53 @@ ntmsm64(const char* kmer_seq,
   return true;
 }
 
+inline bool
+ntmsm64(const std::deque<char>& kmer_seq,
+        const std::vector<SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<SpacedSeedMonomers>& seeds_monomers,
+        unsigned k,
+        unsigned m,
+        unsigned m2,
+        uint64_t* fh_nomonos,
+        uint64_t* rh_nomonos,
+        uint64_t* fh_val,
+        uint64_t* rh_val,
+        unsigned& loc_n,
+        uint64_t* h_val)
+{
+  unsigned i_base;
+  uint64_t fh_seed, rh_seed;
+  for (unsigned i_seed = 0; i_seed < m; i_seed++) {
+    fh_seed = 0;
+    rh_seed = 0;
+    for (const auto& block : seeds_blocks[i_seed]) {
+      for (unsigned pos = block[0]; pos < block[1]; pos++) {
+        if (kmer_seq[pos] == SEED_N) {
+          loc_n = pos;
+          return false;
+        }
+        fh_seed ^= MS_TAB((unsigned char)kmer_seq[pos], k - 1 - pos);
+        rh_seed ^= MS_TAB((unsigned char)kmer_seq[pos] & CP_OFF, pos);
+      }
+    }
+    fh_nomonos[i_seed] = fh_seed;
+    rh_nomonos[i_seed] = rh_seed;
+    for (unsigned pos : seeds_monomers[i_seed]) {
+      fh_seed ^= MS_TAB((unsigned char)kmer_seq[pos], k - 1 - pos);
+      rh_seed ^= MS_TAB((unsigned char)kmer_seq[pos] & CP_OFF, pos);
+    }
+    fh_val[i_seed] = fh_seed;
+    rh_val[i_seed] = rh_seed;
+    i_base = i_seed * m2;
+    h_val[i_base] = canonical(fh_seed, rh_seed);
+    for (unsigned i_hash = 1; i_hash < m2; i_hash++) {
+      h_val[i_base + i_hash] = h_val[i_base] * (i_hash ^ k * MULTISEED);
+      h_val[i_base + i_hash] ^= h_val[i_base + i_hash] >> MULTISHIFT;
+    }
+  }
+  return true;
+}
+
 #define NTMSM64(ROL_HANDLING, IN_HANDLING, OUT_HANDLING, ROR_HANDLING)         \
   unsigned char char_out, char_in;                                             \
   uint64_t fh_seed, rh_seed;                                                   \
@@ -871,6 +919,27 @@ ntmsm64(const char* kmer_seq,
  */
 inline void
 ntmsm64(const char* kmer_seq,
+        const std::vector<SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<SpacedSeedMonomers>& seeds_monomers,
+        unsigned k,
+        unsigned m,
+        unsigned m2,
+        uint64_t* fh_nomonos,
+        uint64_t* rh_nomonos,
+        uint64_t* fh_val,
+        uint64_t* rh_val,
+        uint64_t* h_val)
+{
+  NTMSM64(fh_seed = srol(fh_nomonos[i_seed]); rh_seed = rh_nomonos[i_seed];
+          , i_in = block[1];
+          char_in = (unsigned char)kmer_seq[i_in];
+          , i_out = block[0];
+          char_out = (unsigned char)kmer_seq[i_out];
+          , rh_seed = sror(rh_seed);)
+}
+
+inline void
+ntmsm64(const std::deque<char>& kmer_seq,
         const std::vector<SpacedSeedBlocks>& seeds_blocks,
         const std::vector<SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
