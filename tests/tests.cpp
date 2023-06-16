@@ -535,13 +535,13 @@ main()
     std::vector<std::string> seeds = { "110011", "101101" };
     std::string kmer0 = seq.substr(0, seeds[0].size());
 
-    nthash::SeedNtHash h1(seq, seeds, 1, seeds[0].size());
+    nthash::SeedNtHash h1(seq, seeds, 3, seeds[0].size());
     h1.roll();
-    nthash::BlindSeedNtHash h2(kmer0, seeds, 1, seeds[0].size());
+    nthash::BlindSeedNtHash h2(kmer0, seeds, 3, seeds[0].size());
 
     while (h1.roll()) {
       h2.roll(seq[h2.get_pos() + seeds[0].size()]);
-      TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), 2)
+      TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), 6)
     }
   }
 
