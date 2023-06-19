@@ -1001,6 +1001,27 @@ ntmsm64l(const char* kmer_seq,
           , fh_seed = sror(fh_seed);)
 }
 
+inline void
+ntmsm64l(const std::deque<char>& kmer_seq,
+         const std::vector<SpacedSeedBlocks>& seeds_blocks,
+         const std::vector<SpacedSeedMonomers>& seeds_monomers,
+         unsigned k,
+         unsigned m,
+         unsigned m2,
+         uint64_t* fh_nomonos,
+         uint64_t* rh_nomonos,
+         uint64_t* fh_val,
+         uint64_t* rh_val,
+         uint64_t* h_val)
+{
+  NTMSM64(fh_seed = fh_nomonos[i_seed]; rh_seed = srol(rh_nomonos[i_seed]);
+          , i_in = block[0];
+          char_in = (unsigned char)kmer_seq[i_in];
+          , i_out = block[1];
+          char_out = (unsigned char)kmer_seq[i_out];
+          , fh_seed = sror(fh_seed);)
+}
+
 /**
  * Generate multiple hash values for the input spaced seeds and the next
  * k-mer by performing a forward peek operation.

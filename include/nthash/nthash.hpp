@@ -417,6 +417,13 @@ public:
    */
   bool roll(char char_in);
 
+  /**
+   * Like the roll(char char_in) function, but advance backwards.
+   *
+   * @return true on success and false otherwise.
+   */
+  bool roll_back(char char_in);
+
   const uint64_t* hashes() const { return hashes_array.get(); }
 
   /**
@@ -494,7 +501,8 @@ private:
   }
 
 // NOLINTNEXTLINE
-#define BTLLIB_NTHASH_ROLL_BACK(CLASS, FN_DECL, NTHASH_CALL, MEMBER_PREFIX)    \
+#define BTLLIB_NTHASH_ROLL_BACK(                                               \
+  CLASS, FN_DECL, CHAR_IN, NTHASH_CALL, MEMBER_PREFIX)                         \
   inline bool CLASS::FN_DECL                                                   \
   {                                                                            \
     if (!MEMBER_PREFIX initialized) {                                          \
@@ -503,8 +511,7 @@ private:
     if (MEMBER_PREFIX pos <= 0) {                                              \
       return false;                                                            \
     }                                                                          \
-    if (SEED_TAB[(unsigned char)(MEMBER_PREFIX seq[MEMBER_PREFIX pos - 1])] == \
-        SEED_N) {                                                              \
+    if (SEED_TAB[(unsigned char)(CHAR_IN)] == SEED_N) {                        \
       MEMBER_PREFIX pos -= MEMBER_PREFIX k;                                    \
       return init();                                                           \
     }                                                                          \
@@ -545,6 +552,7 @@ BTLLIB_NTHASH_ROLL(NtHash,
                    , )
 BTLLIB_NTHASH_ROLL_BACK(NtHash,
                         roll_back(),
+                        seq[pos - 1],
                         ntmc64l(seq[pos + k - 1],
                                 seq[pos - 1],
                                 k,
@@ -556,7 +564,6 @@ BTLLIB_NTHASH_ROLL_BACK(NtHash,
 BTLLIB_NTHASH_PEEK(
   NtHash,
   peek(),
-
   {
     uint64_t forward_hash_tmp = forward_hash;
     uint64_t reverse_hash_tmp = reverse_hash;
@@ -571,7 +578,6 @@ BTLLIB_NTHASH_PEEK(
 BTLLIB_NTHASH_PEEK(
   NtHash,
   peek(char char_in),
-
   {
     uint64_t forward_hash_tmp = forward_hash;
     uint64_t reverse_hash_tmp = reverse_hash;
@@ -586,7 +592,6 @@ BTLLIB_NTHASH_PEEK(
 BTLLIB_NTHASH_PEEK(
   NtHash,
   peek_back(),
-
   {
     uint64_t forward_hash_tmp = forward_hash;
     uint64_t reverse_hash_tmp = reverse_hash;
@@ -601,7 +606,6 @@ BTLLIB_NTHASH_PEEK(
 BTLLIB_NTHASH_PEEK(
   NtHash,
   peek_back(char char_in),
-
   {
     uint64_t forward_hash_tmp = forward_hash;
     uint64_t reverse_hash_tmp = reverse_hash;
@@ -639,6 +643,7 @@ BTLLIB_NTHASH_ROLL(
 BTLLIB_NTHASH_ROLL_BACK(
   BlindNtHash,
   roll_back(char char_in),
+  char_in,
   {
     ntmc64l(seq[(pos + k - 1) % seq_len],
             char_in,
@@ -652,7 +657,6 @@ BTLLIB_NTHASH_ROLL_BACK(
 BTLLIB_NTHASH_PEEK(
   BlindNtHash,
   peek(char char_in),
-
   {
     uint64_t forward_hash_tmp = forward_hash;
     uint64_t reverse_hash_tmp = reverse_hash;
@@ -710,6 +714,7 @@ BTLLIB_NTHASH_ROLL(SeedNtHash,
                    , nthash.)
 BTLLIB_NTHASH_ROLL_BACK(SeedNtHash,
                         roll_back(),
+                        nthash.seq[nthash.pos - 1],
                         ntmsm64l(nthash.seq + nthash.pos - 1,
                                  blocks,
                                  monomers,
@@ -725,7 +730,6 @@ BTLLIB_NTHASH_ROLL_BACK(SeedNtHash,
 BTLLIB_NTHASH_PEEK(
   SeedNtHash,
   peek(),
-
   {
     std::unique_ptr<uint64_t[]> fh_no_monomers_tmp(new uint64_t[blocks.size()]);
     std::unique_ptr<uint64_t[]> rh_no_monomers_tmp(new uint64_t[blocks.size()]);
@@ -759,7 +763,6 @@ BTLLIB_NTHASH_PEEK(
 BTLLIB_NTHASH_PEEK(
   SeedNtHash,
   peek(char char_in),
-
   {
     std::unique_ptr<uint64_t[]> fh_no_monomers_tmp(new uint64_t[blocks.size()]);
     std::unique_ptr<uint64_t[]> rh_no_monomers_tmp(new uint64_t[blocks.size()]);
@@ -794,7 +797,6 @@ BTLLIB_NTHASH_PEEK(
 BTLLIB_NTHASH_PEEK(
   SeedNtHash,
   peek_back(),
-
   {
     std::unique_ptr<uint64_t[]> fh_no_monomers_tmp(new uint64_t[blocks.size()]);
     std::unique_ptr<uint64_t[]> rh_no_monomers_tmp(new uint64_t[blocks.size()]);
@@ -828,7 +830,6 @@ BTLLIB_NTHASH_PEEK(
 BTLLIB_NTHASH_PEEK(
   SeedNtHash,
   peek_back(char char_in),
-
   {
     std::unique_ptr<uint64_t[]> fh_no_monomers_tmp(new uint64_t[blocks.size()]);
     std::unique_ptr<uint64_t[]> rh_no_monomers_tmp(new uint64_t[blocks.size()]);
@@ -892,6 +893,26 @@ BTLLIB_NTHASH_ROLL(
             reverse_hash.get(),
             hashes_array.get());
     seq.pop_front();
+  }, )
+
+BTLLIB_NTHASH_ROLL_BACK(
+  BlindSeedNtHash,
+  roll_back(char char_in),
+  char_in,
+  {
+    seq.push_front(char_in);
+    ntmsm64l(seq,
+            blocks,
+            monomers,
+            k,
+            blocks.size(),
+            hash_num_per_seed,
+            fh_no_monomers.get(),
+            rh_no_monomers.get(),
+            forward_hash.get(),
+            reverse_hash.get(),
+            hashes_array.get());
+    seq.pop_back();
   }, )
 
 #undef BTLLIB_NTHASH_INIT

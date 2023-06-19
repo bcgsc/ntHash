@@ -546,6 +546,19 @@ main()
   }
 
   {
+    PRINT_TEST_NAME("BlindSeedNtHash roll back")
+
+    std::string kmer = "ACCAGT";
+    std::vector<std::string> seeds = { "110011", "101101" };
+
+    nthash::BlindSeedNtHash h(kmer, seeds, 3, seeds[0].size());
+    h.roll('A');
+    const auto hashes1 = h.hashes();
+    h.roll_back('A');
+    TEST_ASSERT_ARRAY_EQ(hashes1, h.hashes(), 3)
+  }
+
+  {
     PRINT_TEST_NAME("BlindSeedNtHash copy constructor")
 
     std::string seq = "ATGCTAGTAGCTGAC";
