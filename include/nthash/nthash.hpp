@@ -902,16 +902,16 @@ BTLLIB_NTHASH_ROLL_BACK(
   {
     seq.push_front(char_in);
     ntmsm64l(seq,
-            blocks,
-            monomers,
-            k,
-            blocks.size(),
-            hash_num_per_seed,
-            fh_no_monomers.get(),
-            rh_no_monomers.get(),
-            forward_hash.get(),
-            reverse_hash.get(),
-            hashes_array.get());
+             blocks,
+             monomers,
+             k,
+             blocks.size(),
+             hash_num_per_seed,
+             fh_no_monomers.get(),
+             rh_no_monomers.get(),
+             forward_hash.get(),
+             reverse_hash.get(),
+             hashes_array.get());
     seq.pop_back();
   }, )
 
