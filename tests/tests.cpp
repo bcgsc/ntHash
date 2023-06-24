@@ -578,5 +578,23 @@ main()
     TEST_ASSERT_ARRAY_EQ(h1.hashes(), h2.hashes(), 2)
   }
 
+  {
+    PRINT_TEST_NAME("k-mer vs. full-care spaced seed hashing")
+    const std::string seq = "ATGCTAGTAGCTGAC";
+    const std::vector<std::string> seeds = { "11111" };
+    const unsigned k = seeds[0].size();
+    const unsigned h = 3;
+
+    nthash::NtHash kmer(seq, h, k);
+    nthash::SeedNtHash seed(seq, seeds, h, k);
+
+    bool can_roll = true;
+    while (can_roll) {
+      can_roll = kmer.roll();
+      can_roll |= seed.roll();
+      TEST_ASSERT_ARRAY_EQ(kmer.hashes(), seed.hashes(), h)
+    }
+  }
+
   return 0;
 }
