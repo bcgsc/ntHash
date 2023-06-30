@@ -188,8 +188,8 @@ namespace nthash {
 
 NtHash::NtHash(const char* seq,
                size_t seq_len,
-               NUM_HASHES_TYPE num_hashes,
-               K_TYPE k,
+               typedefs::NUM_HASHES_TYPE num_hashes,
+               typedefs::K_TYPE k,
                size_t pos)
   : seq(seq, seq_len)
   , num_hashes(num_hashes)
@@ -323,8 +323,8 @@ NtHash::peek_back(char char_in)
 }
 
 BlindNtHash::BlindNtHash(const char* seq,
-                         NUM_HASHES_TYPE num_hashes,
-                         K_TYPE k,
+                         typedefs::NUM_HASHES_TYPE num_hashes,
+                         typedefs::K_TYPE k,
                          size_t pos)
   : seq(seq, seq + k)
   , num_hashes(num_hashes)

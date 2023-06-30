@@ -7,13 +7,13 @@ using namespace nthash;
 
 void
 get_blocks(const std::vector<std::string>& seed_strings,
-           std::vector<SpacedSeedBlocks>& blocks,
-           std::vector<SpacedSeedMonomers>& monomers)
+           std::vector<typedefs::SpacedSeedBlocks>& blocks,
+           std::vector<typedefs::SpacedSeedMonomers>& monomers)
 {
   for (const auto& seed_string : seed_strings) {
     char pad = seed_string[seed_string.length() - 1] == '1' ? '0' : '1';
     const std::string padded_string = seed_string + pad;
-    SpacedSeedBlocks care_blocks, ignore_blocks;
+    typedefs::SpacedSeedBlocks care_blocks, ignore_blocks;
     std::vector<unsigned> care_monos, ignore_monos;
     unsigned i_start = 0;
     bool is_care_block = padded_string[0] == '1';
@@ -56,8 +56,8 @@ get_blocks(const std::vector<std::string>& seed_strings,
 void
 parsed_seeds_to_blocks(const std::vector<std::vector<unsigned>>& seeds,
                        unsigned k,
-                       std::vector<SpacedSeedBlocks>& blocks,
-                       std::vector<SpacedSeedMonomers>& monomers)
+                       std::vector<typedefs::SpacedSeedBlocks>& blocks,
+                       std::vector<typedefs::SpacedSeedMonomers>& monomers)
 {
   std::vector<std::string> seed_strings;
   for (const auto& seed : seeds) {
@@ -117,8 +117,8 @@ check_seeds(const std::vector<std::string>& seeds, unsigned k)
  */
 inline bool
 ntmsm64(const char* kmer_seq,
-        const std::vector<SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -217,8 +217,8 @@ ntmsm64(const char* kmer_seq,
  */
 inline void
 ntmsm64(const char* kmer_seq,
-        const std::vector<SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -238,8 +238,8 @@ ntmsm64(const char* kmer_seq,
 
 inline void
 ntmsm64(const std::deque<char>& kmer_seq,
-        const std::vector<SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -280,8 +280,8 @@ ntmsm64(const std::deque<char>& kmer_seq,
  */
 inline void
 ntmsm64l(const char* kmer_seq,
-         const std::vector<SpacedSeedBlocks>& seeds_blocks,
-         const std::vector<SpacedSeedMonomers>& seeds_monomers,
+         const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
+         const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
          unsigned k,
          unsigned m,
          unsigned m2,
@@ -301,8 +301,8 @@ ntmsm64l(const char* kmer_seq,
 
 inline void
 ntmsm64l(const std::deque<char>& kmer_seq,
-         const std::vector<SpacedSeedBlocks>& seeds_blocks,
-         const std::vector<SpacedSeedMonomers>& seeds_monomers,
+         const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
+         const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
          unsigned k,
          unsigned m,
          unsigned m2,
@@ -344,8 +344,8 @@ ntmsm64l(const std::deque<char>& kmer_seq,
 inline void
 ntmsm64(const char* kmer_seq,
         char in,
-        const std::vector<SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -390,8 +390,8 @@ ntmsm64(const char* kmer_seq,
 inline void
 ntmsm64l(const char* kmer_seq,
          char in,
-         const std::vector<SpacedSeedBlocks>& seeds_blocks,
-         const std::vector<SpacedSeedMonomers>& seeds_monomers,
+         const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
+         const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
          unsigned k,
          unsigned m,
          unsigned m2,
@@ -437,8 +437,8 @@ parse_seeds(const std::vector<std::string>& seed_strings)
 SeedNtHash::SeedNtHash(const char* seq,
                        size_t seq_len,
                        const std::vector<std::string>& seeds,
-                       NUM_HASHES_TYPE num_hashes_per_seed,
-                       K_TYPE k,
+                       typedefs::NUM_HASHES_TYPE num_hashes_per_seed,
+                       typedefs::K_TYPE k,
                        size_t pos)
   : seq(seq, seq_len)
   , num_hashes_per_seed(num_hashes_per_seed)
@@ -461,8 +461,8 @@ SeedNtHash::SeedNtHash(const char* seq,
 SeedNtHash::SeedNtHash(const char* seq,
                        size_t seq_len,
                        const std::vector<std::vector<unsigned>>& seeds,
-                       NUM_HASHES_TYPE num_hashes_per_seed,
-                       K_TYPE k,
+                       typedefs::NUM_HASHES_TYPE num_hashes_per_seed,
+                       typedefs::K_TYPE k,
                        size_t pos)
   : seq(seq, seq_len)
   , num_hashes_per_seed(num_hashes_per_seed)
@@ -651,8 +651,8 @@ SeedNtHash::peek_back(char char_in)
 
 BlindSeedNtHash::BlindSeedNtHash(const char* seq,
                                  const std::vector<std::string>& seeds,
-                                 NUM_HASHES_TYPE num_hashes_per_seed,
-                                 K_TYPE k,
+                                 typedefs::NUM_HASHES_TYPE num_hashes_per_seed,
+                                 typedefs::K_TYPE k,
                                  size_t pos)
   : seq(seq, seq + k)
   , num_hashes_per_seed(num_hashes_per_seed)
