@@ -23,24 +23,17 @@ lib_dep = declare_dependency(
     include_directories: include_dirs,
 )
 
-executable(
-    'bench',
-    'examples/benchmark.cpp',
-    dependencies: [lib_dep],
-    include_directories: include_dirs,
-)
-
 if get_option('buildtype') != 'release'
-    catch2 = dependency(
-        'Catch2',
-        method: 'cmake',
-        modules: ['Catch2::Catch2WithMain'],
-        required: false,
+    executable(
+        'bench',
+        'examples/benchmark.cpp',
+        dependencies: [lib_dep],
+        include_directories: include_dirs,
     )
     test_exec = executable(
         'nthash',
         'tests/tests.cpp',
-        dependencies: [lib_dep, catch2],
+        dependencies: [lib_dep],
         include_directories: include_dirs,
         install: true,
     )
