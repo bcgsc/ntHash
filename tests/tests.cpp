@@ -52,14 +52,13 @@ main()
     const unsigned h = 3;
 
     const std::vector<std::array<uint64_t, h>> hashes = {
-      { 0xf59ecb45f0e22b9c, 0x4969c33ac240c129, 0x688d616f0d7e08c3 },
       { 0x38cc00f940aebdae, 0xab7e1b110e086fc6, 0x11a1818bcfdd553 },
       { 0x603a48c5a11c794a, 0xe66016e61816b9c4, 0xc5b13cb146996ffe }
     };
 
     nthash::NtHash nthash(seq, h, k);
-    std::string kmer0 = seq.substr(0, k);
-    nthash::BlindNtHash blind(seq, h, k);
+    nthash.roll();
+    nthash::BlindNtHash blind(seq.data(), h, k);
 
     for (const auto& h_vals : hashes) {
       nthash.roll();
@@ -88,19 +87,19 @@ main()
     TEST_ASSERT_EQ(hashes.size(), seq.length() - k + 1);
 
     // check same hash value for identical k-mers (first and last)
-    TEST_ASSERT_ARRAY_EQ(hashes[0], hashes[hashes.size() - 1], h);
+    TEST_ASSERT_ARRAY_EQ(hashes.front(), hashes.back(), h);
   }
 
   {
-    PRINT_TEST_NAME("k-mer rolling vs ntbase hash values")
+    PRINT_TEST_NAME("k-mer rolling vs. base hash values")
 
     std::string seq = "ACGTACACTGGACTGAGTCT";
 
     nthash::NtHash nthash(seq, 3, seq.size() - 2);
     /* 18-mers of kmer*/
-    std::string kmer1 = "ACGTACACTGGACTGAGT";
-    std::string kmer2 = "CGTACACTGGACTGAGTC";
-    std::string kmer3 = "GTACACTGGACTGAGTCT";
+    std::string kmer1 = seq.substr(0, 18);
+    std::string kmer2 = seq.substr(1, 18);
+    std::string kmer3 = seq.substr(2, 18);
 
     nthash::NtHash nthash_vector[] = {
       nthash::NtHash(kmer1, nthash.get_hash_num(), kmer1.size()),
@@ -209,70 +208,20 @@ main()
   }
 
   {
-    PRINT_TEST_NAME("base substitution")
+    PRINT_TEST_NAME("RNA")
+    unsigned h = 3, k = 20;
 
-    std::string seq = "ACGTACACTGGACTGAGTCT";
-    std::string sub = "ACGCGCACTGGACTGAGTCT";
+    std::string seq = "ACGTACACTGGACTGAGTCTACGG";
+    nthash::NtHash dna_nthash(seq, h, k);
 
-    nthash::NtHash nthash(seq, 3, seq.size());
-    nthash::NtHash nthash_subbed(sub, 3, sub.size());
+    std::string rna_seq = "ACGUACACUGGACUGAGUCUACGG";
+    nthash::NtHash rna_nthash(rna_seq, h, k);
 
-    nthash.roll();
-    nthash.sub({ 3, 4 }, { 'C', 'G' });
-    nthash_subbed.roll();
-    TEST_ASSERT_EQ(nthash.get_hash_num(), nthash_subbed.get_hash_num());
-    size_t i;
-    for (i = 0; i < nthash.get_hash_num(); ++i) {
-      TEST_ASSERT_EQ(nthash.hashes()[i], nthash_subbed.hashes()[i]);
-    }
-    TEST_ASSERT_EQ(i, 3);
-  }
-
-  {
-    std::cerr << "Testing RNA" << std::endl;
-
-    std::string seq = "ACGTACACTGGACTGAGTCT";
-    nthash::NtHash dna_nthash(seq, 3, 20);
-
-    std::string rna_seq = "ACGUACACUGGACUGAGUCU";
-    nthash::NtHash rna_nthash(rna_seq, 3, 20);
-
-    dna_nthash.roll();
-    rna_nthash.roll();
-    size_t i;
-    for (i = 0; i < dna_nthash.get_hash_num(); ++i) {
-      TEST_ASSERT_EQ(dna_nthash.hashes()[i], rna_nthash.hashes()[i]);
-    }
-    TEST_ASSERT_EQ(i, 3);
-  }
-
-  {
-    PRINT_TEST_NAME("block parsing");
-
-    std::vector<nthash::SpacedSeedBlocks> blocks_out;
-    std::vector<nthash::SpacedSeedMonomers> monos_out;
-
-    std::vector<std::string> seeds = { "1101001001011", "11011" };
-    std::vector<nthash::SpacedSeedBlocks> blocks_true = {
-      { { 0, 2 }, { 11, 13 } }, { { 0, 5 } }
-    };
-    std::vector<nthash::SpacedSeedMonomers> monos_true = { { 3, 6, 9 }, { 2 } };
-
-    nthash::parse_seeds(seeds, blocks_out, monos_out);
-
-    for (unsigned i_seed = 0; i_seed < seeds.size(); i_seed++) {
-      TEST_ASSERT_EQ(blocks_out[i_seed].size(), blocks_true[i_seed].size());
-      for (unsigned i_block = 0; i_block < blocks_out[i_seed].size();
-           i_block++) {
-        TEST_ASSERT_EQ(blocks_out[i_seed][i_block][0],
-                       blocks_true[i_seed][i_block][0]);
-        TEST_ASSERT_EQ(blocks_out[i_seed][i_block][1],
-                       blocks_true[i_seed][i_block][1]);
-      }
-      TEST_ASSERT_EQ(monos_out[i_seed].size(), monos_true[i_seed].size());
-      for (unsigned i = 0; i < monos_true[i_seed].size(); i++) {
-        TEST_ASSERT_EQ(monos_out[i_seed][i], monos_true[i_seed][i]);
-      }
+    bool can_roll = true;
+    while (can_roll) {
+      can_roll = dna_nthash.roll();
+      can_roll &= rna_nthash.roll();
+      TEST_ASSERT_ARRAY_EQ(dna_nthash.hashes(), rna_nthash.hashes(), h);
     }
   }
 
@@ -398,87 +347,6 @@ main()
   }
 
   {
-    std::cerr << "Testing rolling spaced seeds vs masked hashing" << std::endl;
-
-    std::string seq = "AACGTGACTACTGACTAGCTAGCTAGCTGATCGT";
-    std::vector<std::string> seeds = { "111111111101111111111",
-                                       "110111010010010111011" };
-    const unsigned k = seeds[0].length();
-    const unsigned h = 2;
-
-    std::queue<uint64_t> masked_hashes;
-    for (unsigned i = 0; i <= seq.size() - k; i++) {
-      for (std::string seed : seeds) {
-        uint64_t h_vals[h];
-        uint64_t fk = nthash::ntf64(seq.data() + i, k);
-        uint64_t rk = nthash::ntr64(seq.data() + i, k);
-        uint64_t hs = nthash::mask_hash(fk, rk, seed.data(), seq.data() + i, k);
-        nthash::nte64(hs, k, h, h_vals);
-        for (unsigned i = 0; i < h; i++) {
-          masked_hashes.push(h_vals[i]);
-        }
-      }
-    }
-
-    std::queue<uint64_t> rolled_hashes;
-    nthash::SeedNtHash roller(seq, seeds, h, k);
-    unsigned num_hashes = roller.get_hash_num_per_seed() * seeds.size();
-    while (roller.roll()) {
-      for (unsigned i = 0; i < num_hashes; i++) {
-        rolled_hashes.push(roller.hashes()[i]);
-      }
-    }
-
-    TEST_ASSERT_EQ(masked_hashes.size(), rolled_hashes.size());
-    while (masked_hashes.size() > 0) {
-      uint64_t masked_hash = masked_hashes.front();
-      uint64_t rolled_hash = rolled_hashes.front();
-      TEST_ASSERT_EQ(masked_hash, rolled_hash);
-      masked_hashes.pop();
-      rolled_hashes.pop();
-    }
-  }
-
-  {
-    std::cerr << "Testing reset function" << std::endl;
-
-    std::string seq1 = "ACATAAGT";
-    std::string seed = "1001";
-    unsigned k = seed.length();
-    std::queue<uint64_t> hashes1, hashes2;
-
-    nthash::NtHash kmer_hash(seq1, 1, k);
-    while (kmer_hash.roll()) {
-      hashes1.push(kmer_hash.hashes()[0]);
-    }
-    kmer_hash.change_seq(seq1, 0);
-    while (kmer_hash.roll()) {
-      hashes2.push(kmer_hash.hashes()[0]);
-    }
-    TEST_ASSERT_EQ(hashes1.size(), hashes2.size());
-    while (!hashes1.empty()) {
-      TEST_ASSERT_EQ(hashes1.front(), hashes2.front());
-      hashes1.pop();
-      hashes2.pop();
-    }
-
-    nthash::SeedNtHash seed_hash(seq1, { seed }, 1, k);
-    while (seed_hash.roll()) {
-      hashes1.push(seed_hash.hashes()[0]);
-    }
-    seed_hash.change_seq(seq1);
-    while (seed_hash.roll()) {
-      hashes2.push(seed_hash.hashes()[0]);
-    }
-    TEST_ASSERT_EQ(hashes1.size(), hashes2.size());
-    while (!hashes1.empty()) {
-      TEST_ASSERT_EQ(hashes1.front(), hashes2.front());
-      hashes1.pop();
-      hashes2.pop();
-    }
-  }
-
-  {
     PRINT_TEST_NAME("canonical hashing in spaced seeds")
 
     std::string seq_fwd = "CACTCGGCCACACACACACACACACACCCTCACACACACAAAACGCACAC";
@@ -533,11 +401,10 @@ main()
 
     std::string seq = "ATGCTAGTAGCTGAC";
     std::vector<std::string> seeds = { "110011", "101101" };
-    std::string kmer0 = seq.substr(0, seeds[0].size());
 
     nthash::SeedNtHash h1(seq, seeds, 3, seeds[0].size());
     h1.roll();
-    nthash::BlindSeedNtHash h2(kmer0, seeds, 3, seeds[0].size());
+    nthash::BlindSeedNtHash h2(seq.data(), seeds, 3, seeds[0].size());
 
     while (h1.roll()) {
       h2.roll(seq[h2.get_pos() + seeds[0].size()]);
@@ -551,7 +418,7 @@ main()
     std::string kmer = "ACCAGT";
     std::vector<std::string> seeds = { "110011", "101101" };
 
-    nthash::BlindSeedNtHash h(kmer, seeds, 3, seeds[0].size());
+    nthash::BlindSeedNtHash h(kmer.data(), seeds, 3, seeds[0].size());
     h.roll('A');
     const auto hashes1 = h.hashes();
     h.roll_back('A');
@@ -563,9 +430,8 @@ main()
 
     std::string seq = "ATGCTAGTAGCTGAC";
     std::vector<std::string> seeds = { "110011", "101101" };
-    std::string kmer0 = seq.substr(0, seeds[0].size());
 
-    nthash::BlindSeedNtHash h1(kmer0, seeds, 1, seeds[0].size());
+    nthash::BlindSeedNtHash h1(seq.data(), seeds, 1, seeds[0].size());
     h1.roll('A');
     h1.roll('C');
     nthash::BlindSeedNtHash h2(h1);

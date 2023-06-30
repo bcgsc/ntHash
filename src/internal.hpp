@@ -1,23 +1,119 @@
-#ifndef NTHASH_CONSTS_HPP
-#define NTHASH_CONSTS_HPP
+#pragma once
 
-#include <cmath>
-#include <cstdint>
-
-namespace nthash {
+#include <cstddef>
+#include <iostream>
+#include <limits>
 
 #define MS_TAB(CHAR, ROT)                                                      \
   (MS_TAB_31L[CHAR][(ROT) < 31 ? (ROT) : (ROT) % 31] | /* NOLINT */            \
    MS_TAB_33R[CHAR][(ROT) < 33 ? (ROT) : (ROT) % 33])  /* NOLINT */
 
-// offset for the complement base in the random seeds table
-const uint8_t CP_OFF = 0x07;
+namespace nthash {
 
-// shift for gerenerating multiple hash values
+inline void
+raise_warning(const std::string& class_name, const std::string& msg)
+{
+  std::cerr << "[ntHash::" << class_name << "] \33[33mWARNING: \33[0m" << msg
+            << std::endl;
+}
+
+inline void
+raise_error(const std::string& class_name, const std::string& msg)
+{
+  std::cerr << "[ntHash::" << class_name << "] \33[31mERROR: \33[0m" << msg
+            << std::endl;
+  std::exit(1); // NOLINT(concurrency-mt-unsafe)
+}
+
+template<typename T>
+inline T
+canonical(const T fwd, const T rev)
+{
+  return fwd + rev;
+}
+
+static_assert(std::numeric_limits<uint64_t>::max() + 1 == 0,
+              "Integers don't overflow on this platform which is necessary for "
+              "ntHash canonical hash computation.");
+
+/**
+ * Split a 64-bit word into 33 and 31-bit sub-words and left-rotate them
+ * separately.
+ * @param x A 64-bit unsigned integer
+ * @return Split-rotation result
+ */
+inline uint64_t
+srol(const uint64_t x)
+{
+  uint64_t m = ((x & 0x8000000000000000ULL) >> 30) | // NOLINT
+               ((x & 0x100000000ULL) >> 32);         // NOLINT
+  return ((x << 1) & 0xFFFFFFFDFFFFFFFFULL) | m;     // NOLINT
+}
+
+/**
+ * Split a 64-bit word into 33 and 31-bit sub-words and left-rotate them
+ * separately multiple times.
+ * @param x A 64-bit unsigned integer
+ * @param d Number of rotations
+ * @return Split-rotation result
+ */
+inline uint64_t
+srol(const uint64_t x, const unsigned d)
+{
+  if (d == 0) {
+    return x;
+  }
+  uint64_t v = (x << d) | (x >> (64 - d));                         // NOLINT
+  uint64_t y = (v ^ (v >> 33)) &                                   // NOLINT
+               (std::numeric_limits<uint64_t>::max() >> (64 - d)); // NOLINT
+  return v ^ (y | (y << 33));                                      // NOLINT
+}
+
+/**
+ * Split a 64-bit word into 33 and 31-bit sub-words and right-rotate them
+ * separately.
+ * @param x A 64-bit unsigned integer
+ * @return Split-rotation result
+ */
+inline uint64_t
+sror(const uint64_t x)
+{
+  uint64_t m = ((x & 0x200000000ULL) << 30) | ((x & 1ULL) << 32); // NOLINT
+  return ((x >> 1) & 0xFFFFFFFEFFFFFFFFULL) | m;                  // NOLINT
+}
+
+// shift for generating multiple hash values
 const int MULTISHIFT = 27;
 
-// seed for gerenerating multiple hash values
+// seed for generating multiple hash values
 const uint64_t MULTISEED = 0x90b45d39fb6da1fa;
+
+/**
+ * Extend hash array using a base hash value.
+ * @param fwd_hash Forward hash value
+ * @param rev_hash Reverse hash value
+ * @param k k-mer size
+ * @param h Size of the resulting hash array (number of extra hashes minus one)
+ * @param h_val Array of size h for storing the output hashes
+ */
+inline void
+extend_hashes(uint64_t fwd_hash,
+              uint64_t rev_hash,
+              unsigned k,
+              unsigned h,
+              uint64_t* hash_array)
+{
+  uint64_t t_val;
+  hash_array[0] = canonical(fwd_hash, rev_hash);
+  for (unsigned i = 1; i < h; i++) {
+    t_val = hash_array[0] * (i ^ k * MULTISEED);
+    t_val ^= t_val >> MULTISHIFT;
+    hash_array[i] = t_val;
+  }
+}
+
+// offset for the complement base in the random seeds table
+const uint8_t CP_OFF = 0x07;
 
 // 64-bit random seeds corresponding to bases and their complements
 const uint64_t SEED_A = 0x3c8bfbb395c60474;
@@ -250,11 +346,11 @@ const uint8_t CONVERT_TAB[ASCII_SIZE] = {
   255, 255, 255, 255, 255, 255, 255, 255, // 56..63
   255, 0,   255, 1,   255, 255, 255, 2,   // 64..71
   255, 255, 255, 255, 255, 255, 255, 255, // 72..79
-  255, 255, 255, 255, 3,   0,   255, 255, // 80..87
+  255, 255, 255, 255, 3,   3,   255, 255, // 80..87
   255, 255, 255, 255, 255, 255, 255, 255, // 88..95
   255, 0,   255, 1,   255, 255, 255, 2,   // 96..103
   255, 255, 255, 255, 255, 255, 255, 255, // 104..111
-  255, 255, 255, 255, 3,   0,   255, 255, // 112..119
+  255, 255, 255, 255, 3,   3,   255, 255, // 112..119
   255, 255, 255, 255, 255, 255, 255, 255, // 120..127
   255, 255, 255, 255, 255, 255, 255, 255, // 128..135
   255, 255, 255, 255, 255, 255, 255, 255, // 136..143
@@ -285,11 +381,11 @@ const uint8_t RC_CONVERT_TAB[ASCII_SIZE] = {
   255, 255, 255, 255, 255, 255, 255, 255, // 56..63
   255, 3,   255, 2,   255, 255, 255, 1,   // 64..71
   255, 255, 255, 255, 255, 255, 255, 255, // 72..79
-  255, 255, 255, 255, 0,   3,   255, 255, // 80..87
+  255, 255, 255, 255, 0,   0,   255, 255, // 80..87
   255, 255, 255, 255, 255, 255, 255, 255, // 88..95
   255, 3,   255, 2,   255, 255, 255, 1,   // 96..103
   255, 255, 255, 255, 255, 255, 255, 255, // 104..111
-  255, 255, 255, 255, 0,   3,   255, 255, // 112..119
+  255, 255, 255, 255, 0,   0,   255, 255, // 112..119
   255, 255, 255, 255, 255, 255, 255, 255, // 120..127
   255, 255, 255, 255, 255, 255, 255, 255, // 128..135
   255, 255, 255, 255, 255, 255, 255, 255, // 136..143
@@ -432,6 +528,4 @@ const uint64_t TETRAMER_TAB[4 * 4 * 4 * 4] = {
   10664720106027613972U
 };
 
-} // namespace nthash
-
-#endif
+}

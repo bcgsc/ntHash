@@ -6,11 +6,9 @@ project(
     default_options: ['cpp_std=c++17', 'werror=true', 'warning_level=3'],
 )
 
-include_dirs = [
-    include_directories('include')
-]
+include_dirs = [include_directories('include')]
 
-sources = ['src/nthash.cpp']
+sources = ['src/kmer.cpp', 'src/seed.cpp']
 
 nthash_lib = static_library(
     'nthash',
@@ -22,6 +20,13 @@ nthash_lib = static_library(
 
 lib_dep = declare_dependency(
     link_with: nthash_lib,
+    include_directories: include_dirs,
+)
+
+executable(
+    'bench',
+    'examples/benchmark.cpp',
+    dependencies: [lib_dep],
     include_directories: include_dirs,
 )
 
