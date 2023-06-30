@@ -1,8 +1,12 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
+#include <cstring>
 #include <deque>
+#include <memory>
 #include <string>
+#include <vector>
 
 namespace nthash {
 
