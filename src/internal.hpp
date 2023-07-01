@@ -4,10 +4,6 @@
 #include <iostream>
 #include <limits>
 
-#define MS_TAB(CHAR, ROT)                                                      \
-  (MS_TAB_31L[CHAR][(ROT) < 31 ? (ROT) : (ROT) % 31] | /* NOLINT */            \
-   MS_TAB_33R[CHAR][(ROT) < 33 ? (ROT) : (ROT) % 33])  /* NOLINT */
-
 namespace nthash {
 
 inline void
@@ -68,6 +64,15 @@ srol(const uint64_t x, const unsigned d)
                (std::numeric_limits<uint64_t>::max() >> (64 - d)); // NOLINT
   return v ^ (y | (y << 33));                                      // NOLINT
 }
+
+/**
+ * Get the pre-computed result of srol for a specific base.
+ * @param c The character as an unsigned char
+ * @param d Number of rotations
+ * @return Split-rotation result
+ */
+inline uint64_t
+srol_table(unsigned char c, unsigned d);
 
 /**
  * Split a 64-bit word into 33 and 31-bit sub-words and right-rotate them
@@ -335,6 +340,13 @@ const uint64_t* const MS_TAB_31L[ASCII_SIZE] = {
   N31L, N31L, N31L, N31L, N31L, N31L, N31L, N31L  // 248..255
 };
 
+inline uint64_t
+srol_table(unsigned char c, unsigned d)
+{
+  return (MS_TAB_31L[c][d < 31 ? d : d % 31] | /* NOLINT */
+          MS_TAB_33R[c][d < 33 ? d : d % 33]); /* NOLINT */
+}
+
 const uint8_t CONVERT_TAB[ASCII_SIZE] = {
   255, 255, 255, 255, 255, 255, 255, 255, // 0..7
   255, 255, 255, 255, 255, 255, 255, 255, // 8..15
@@ -528,4 +540,4 @@ const uint64_t TETRAMER_TAB[4 * 4 * 4 * 4] = {
   10664720106027613972U
 };
 
-}
+} // namespace nthash

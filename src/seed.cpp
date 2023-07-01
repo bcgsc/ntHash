@@ -3,17 +3,28 @@
 
 namespace {
 
-using namespace nthash;
+using nthash::canonical;
+using nthash::CP_OFF;
+using nthash::MULTISEED;
+using nthash::MULTISHIFT;
+using nthash::raise_error;
+using nthash::raise_warning;
+using nthash::SEED_N;
+using nthash::srol;
+using nthash::srol_table;
+using nthash::sror;
+using nthash::typedefs::SpacedSeedBlocks;
+using nthash::typedefs::SpacedSeedMonomers;
 
 void
 get_blocks(const std::vector<std::string>& seed_strings,
-           std::vector<typedefs::SpacedSeedBlocks>& blocks,
-           std::vector<typedefs::SpacedSeedMonomers>& monomers)
+           std::vector<SpacedSeedBlocks>& blocks,
+           std::vector<SpacedSeedMonomers>& monomers)
 {
   for (const auto& seed_string : seed_strings) {
     char pad = seed_string[seed_string.length() - 1] == '1' ? '0' : '1';
     const std::string padded_string = seed_string + pad;
-    typedefs::SpacedSeedBlocks care_blocks, ignore_blocks;
+    SpacedSeedBlocks care_blocks, ignore_blocks;
     std::vector<unsigned> care_monos, ignore_monos;
     unsigned i_start = 0;
     bool is_care_block = padded_string[0] == '1';
@@ -56,8 +67,8 @@ get_blocks(const std::vector<std::string>& seed_strings,
 void
 parsed_seeds_to_blocks(const std::vector<std::vector<unsigned>>& seeds,
                        unsigned k,
-                       std::vector<typedefs::SpacedSeedBlocks>& blocks,
-                       std::vector<typedefs::SpacedSeedMonomers>& monomers)
+                       std::vector<SpacedSeedBlocks>& blocks,
+                       std::vector<SpacedSeedMonomers>& monomers)
 {
   std::vector<std::string> seed_strings;
   for (const auto& seed : seeds) {
@@ -117,8 +128,8 @@ check_seeds(const std::vector<std::string>& seeds, unsigned k)
  */
 inline bool
 ntmsm64(const char* kmer_seq,
-        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -140,15 +151,15 @@ ntmsm64(const char* kmer_seq,
           loc_n = pos;
           return false;
         }
-        fh_seed ^= MS_TAB((unsigned char)kmer_seq[pos], k - 1 - pos);
-        rh_seed ^= MS_TAB((unsigned char)kmer_seq[pos] & CP_OFF, pos);
+        fh_seed ^= srol_table((unsigned char)kmer_seq[pos], k - 1 - pos);
+        rh_seed ^= srol_table((unsigned char)kmer_seq[pos] & CP_OFF, pos);
       }
     }
     fh_nomonos[i_seed] = fh_seed;
     rh_nomonos[i_seed] = rh_seed;
     for (unsigned pos : seeds_monomers[i_seed]) {
-      fh_seed ^= MS_TAB((unsigned char)kmer_seq[pos], k - 1 - pos);
-      rh_seed ^= MS_TAB((unsigned char)kmer_seq[pos] & CP_OFF, pos);
+      fh_seed ^= srol_table((unsigned char)kmer_seq[pos], k - 1 - pos);
+      rh_seed ^= srol_table((unsigned char)kmer_seq[pos] & CP_OFF, pos);
     }
     fh_val[i_seed] = fh_seed;
     rh_val[i_seed] = rh_seed;
@@ -172,17 +183,17 @@ ntmsm64(const char* kmer_seq,
     {                                                                          \
       IN_HANDLING                                                              \
       OUT_HANDLING                                                             \
-      fh_seed ^= MS_TAB(char_out, k - i_out);                                  \
-      fh_seed ^= MS_TAB(char_in, k - i_in);                                    \
-      rh_seed ^= MS_TAB(char_out & CP_OFF, i_out);                             \
-      rh_seed ^= MS_TAB(char_in & CP_OFF, i_in);                               \
+      fh_seed ^= srol_table(char_out, k - i_out);                              \
+      fh_seed ^= srol_table(char_in, k - i_in);                                \
+      rh_seed ^= srol_table(char_out & CP_OFF, i_out);                         \
+      rh_seed ^= srol_table(char_in & CP_OFF, i_in);                           \
     }                                                                          \
     ROR_HANDLING /* NOLINT(bugprone-macro-parentheses) */                      \
       fh_nomonos[i_seed] = fh_seed;                                            \
     rh_nomonos[i_seed] = rh_seed;                                              \
     for (const auto& pos : seeds_monomers[i_seed]) {                           \
-      fh_seed ^= MS_TAB((unsigned char)kmer_seq[pos + 1], k - 1 - pos);        \
-      rh_seed ^= MS_TAB((unsigned char)kmer_seq[pos + 1] & CP_OFF, pos);       \
+      fh_seed ^= srol_table((unsigned char)kmer_seq[pos + 1], k - 1 - pos);    \
+      rh_seed ^= srol_table((unsigned char)kmer_seq[pos + 1] & CP_OFF, pos);   \
     }                                                                          \
     fh_val[i_seed] = fh_seed;                                                  \
     rh_val[i_seed] = rh_seed;                                                  \
@@ -217,8 +228,8 @@ ntmsm64(const char* kmer_seq,
  */
 inline void
 ntmsm64(const char* kmer_seq,
-        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -238,8 +249,8 @@ ntmsm64(const char* kmer_seq,
 
 inline void
 ntmsm64(const std::deque<char>& kmer_seq,
-        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -280,8 +291,8 @@ ntmsm64(const std::deque<char>& kmer_seq,
  */
 inline void
 ntmsm64l(const char* kmer_seq,
-         const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
-         const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
+         const std::vector<SpacedSeedBlocks>& seeds_blocks,
+         const std::vector<SpacedSeedMonomers>& seeds_monomers,
          unsigned k,
          unsigned m,
          unsigned m2,
@@ -301,8 +312,8 @@ ntmsm64l(const char* kmer_seq,
 
 inline void
 ntmsm64l(const std::deque<char>& kmer_seq,
-         const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
-         const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
+         const std::vector<SpacedSeedBlocks>& seeds_blocks,
+         const std::vector<SpacedSeedMonomers>& seeds_monomers,
          unsigned k,
          unsigned m,
          unsigned m2,
@@ -344,8 +355,8 @@ ntmsm64l(const std::deque<char>& kmer_seq,
 inline void
 ntmsm64(const char* kmer_seq,
         char in,
-        const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
-        const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
+        const std::vector<SpacedSeedBlocks>& seeds_blocks,
+        const std::vector<SpacedSeedMonomers>& seeds_monomers,
         unsigned k,
         unsigned m,
         unsigned m2,
@@ -390,8 +401,8 @@ ntmsm64(const char* kmer_seq,
 inline void
 ntmsm64l(const char* kmer_seq,
          char in,
-         const std::vector<typedefs::SpacedSeedBlocks>& seeds_blocks,
-         const std::vector<typedefs::SpacedSeedMonomers>& seeds_monomers,
+         const std::vector<SpacedSeedBlocks>& seeds_blocks,
+         const std::vector<SpacedSeedMonomers>& seeds_monomers,
          unsigned k,
          unsigned m,
          unsigned m2,
@@ -412,7 +423,7 @@ ntmsm64l(const char* kmer_seq,
     , fh_seed = sror(fh_seed);)
 }
 
-}
+} // namespace
 
 namespace nthash {
 
@@ -543,7 +554,8 @@ SeedNtHash::roll_back()
   if (SEED_TAB[(unsigned char)seq[pos - 1]] == SEED_N && pos >= k) {
     pos -= k;
     return init();
-  } else if (SEED_TAB[(unsigned char)seq[pos - 1]] == SEED_N) {
+  }
+  if (SEED_TAB[(unsigned char)seq[pos - 1]] == SEED_N) {
     return false;
   }
   ntmsm64l(seq.data() + pos - 1,
@@ -653,7 +665,7 @@ BlindSeedNtHash::BlindSeedNtHash(const char* seq,
                                  const std::vector<std::string>& seeds,
                                  typedefs::NUM_HASHES_TYPE num_hashes_per_seed,
                                  typedefs::K_TYPE k,
-                                 size_t pos)
+                                 ssize_t pos)
   : seq(seq + pos, seq + pos + k)
   , num_hashes_per_seed(num_hashes_per_seed)
   , k(k)
@@ -719,4 +731,4 @@ BlindSeedNtHash::roll_back(char char_in)
   --pos;
 }
 
-}
+} // namespace nthash

@@ -3,7 +3,17 @@
 
 namespace {
 
-using namespace nthash;
+using nthash::CONVERT_TAB;
+using nthash::CP_OFF;
+using nthash::DIMER_TAB;
+using nthash::RC_CONVERT_TAB;
+using nthash::SEED_N;
+using nthash::SEED_TAB;
+using nthash::srol;
+using nthash::srol_table;
+using nthash::sror;
+using nthash::TETRAMER_TAB;
+using nthash::TRIMER_TAB;
 
 /**
  * Check the current k-mer for non ACGTU's
@@ -15,7 +25,7 @@ using namespace nthash;
 inline bool
 is_invalid_kmer(const char* seq, unsigned k, size_t& pos_n)
 {
-  for (int i = k - 1; i >= 0; i--) {
+  for (int i = (int)k - 1; i >= 0; i--) {
     if (SEED_TAB[(unsigned char)seq[i]] == SEED_N) {
       pos_n = i;
       return true;
@@ -36,24 +46,25 @@ base_forward_hash(const char* seq, unsigned k)
   uint64_t h_val = 0;
   for (unsigned i = 0; i < k / 4; i++) {
     h_val = srol(h_val, 4);
-    uint8_t curr_offset = 4 * i;
-    uint8_t tetramer_loc =
+    const uint8_t curr_offset = 4 * i;
+    const uint8_t tetramer_loc =
       64 * CONVERT_TAB[(unsigned char)seq[curr_offset]] +     // NOLINT
       16 * CONVERT_TAB[(unsigned char)seq[curr_offset + 1]] + // NOLINT
       4 * CONVERT_TAB[(unsigned char)seq[curr_offset + 2]] +
       CONVERT_TAB[(unsigned char)seq[curr_offset + 3]];
     h_val ^= TETRAMER_TAB[tetramer_loc];
   }
-  unsigned remainder = k % 4;
+  const unsigned remainder = k % 4;
   h_val = srol(h_val, remainder);
   if (remainder == 3) {
-    uint8_t trimer_loc = 16 * CONVERT_TAB[(unsigned char)seq[k - 3]] + // NOLINT
-                         4 * CONVERT_TAB[(unsigned char)seq[k - 2]] +
-                         CONVERT_TAB[(unsigned char)seq[k - 1]];
+    const uint8_t trimer_loc =
+      16 * CONVERT_TAB[(unsigned char)seq[k - 3]] + // NOLINT
+      4 * CONVERT_TAB[(unsigned char)seq[k - 2]] +
+      CONVERT_TAB[(unsigned char)seq[k - 1]];
     h_val ^= TRIMER_TAB[trimer_loc];
   } else if (remainder == 2) {
-    uint8_t dimer_loc = 4 * CONVERT_TAB[(unsigned char)seq[k - 2]] +
-                        CONVERT_TAB[(unsigned char)seq[k - 1]];
+    const uint8_t dimer_loc = 4 * CONVERT_TAB[(unsigned char)seq[k - 2]] +
+                              CONVERT_TAB[(unsigned char)seq[k - 1]];
     h_val ^= DIMER_TAB[dimer_loc];
   } else if (remainder == 1) {
     h_val ^= SEED_TAB[(unsigned char)seq[k - 1]];
@@ -78,7 +89,7 @@ next_forward_hash(uint64_t fh_val,
 {
   uint64_t h_val = srol(fh_val);
   h_val ^= SEED_TAB[char_in];
-  h_val ^= MS_TAB(char_out, k);
+  h_val ^= srol_table(char_out, k);
   return h_val;
 }
 
@@ -96,7 +107,7 @@ prev_forward_hash(uint64_t fh_val,
                   unsigned char char_out,
                   unsigned char char_in)
 {
-  uint64_t h_val = fh_val ^ MS_TAB(char_in, k);
+  uint64_t h_val = fh_val ^ srol_table(char_in, k);
   h_val ^= SEED_TAB[char_out];
   h_val = sror(h_val);
   return h_val;
@@ -156,7 +167,7 @@ next_reverse_hash(uint64_t rh_val,
                   unsigned char char_out,
                   unsigned char char_in)
 {
-  uint64_t h_val = rh_val ^ MS_TAB(char_in & CP_OFF, k);
+  uint64_t h_val = rh_val ^ srol_table(char_in & CP_OFF, k);
   h_val ^= SEED_TAB[char_out & CP_OFF];
   h_val = sror(h_val);
   return h_val;
@@ -178,7 +189,7 @@ prev_reverse_hash(uint64_t rh_val,
 {
   uint64_t h_val = srol(rh_val);
   h_val ^= SEED_TAB[char_in & CP_OFF];
-  h_val ^= MS_TAB(char_out & CP_OFF, k);
+  h_val ^= srol_table(char_out & CP_OFF, k);
   return h_val;
 }
 
@@ -264,7 +275,8 @@ NtHash::roll_back()
   if (SEED_TAB[(unsigned char)seq[pos - 1]] == SEED_N && pos >= k) {
     pos -= k;
     return init();
-  } else if (SEED_TAB[(unsigned char)seq[pos - 1]] == SEED_N) {
+  }
+  if (SEED_TAB[(unsigned char)seq[pos - 1]] == SEED_N) {
     return false;
   }
   fwd_hash = prev_forward_hash(fwd_hash, k, seq[pos + k - 1], seq[pos - 1]);
@@ -325,7 +337,7 @@ NtHash::peek_back(char char_in)
 BlindNtHash::BlindNtHash(const char* seq,
                          typedefs::NUM_HASHES_TYPE num_hashes,
                          typedefs::K_TYPE k,
-                         size_t pos)
+                         ssize_t pos)
   : seq(seq + pos, seq + pos + k)
   , num_hashes(num_hashes)
   , pos(pos)
@@ -377,4 +389,4 @@ BlindNtHash::peek_back(char char_in)
   extend_hashes(fwd, rev, seq.size(), num_hashes, hash_arr.get());
 }
 
-}
+} // namespace nthash

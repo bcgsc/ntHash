@@ -26,7 +26,7 @@ using NUM_HASHES_TYPE = uint8_t;
 using K_TYPE = uint16_t;
 using SpacedSeedBlocks = std::vector<std::array<unsigned, 2>>;
 using SpacedSeedMonomers = std::vector<unsigned>;
-}
+} // namespace typedefs
 
 /**
  * Normal k-mer hashing.
@@ -89,7 +89,8 @@ public:
          typedefs::K_TYPE k,
          size_t pos = 0)
     : NtHash(seq.data(), seq.size(), num_hashes, k, pos)
-  {}
+  {
+  }
 
   NtHash(const NtHash& obj)
     : seq(obj.seq)
@@ -194,8 +195,8 @@ public:
 
 private:
   std::string_view seq;
-  const typedefs::NUM_HASHES_TYPE num_hashes;
-  const typedefs::K_TYPE k;
+  typedefs::NUM_HASHES_TYPE num_hashes;
+  typedefs::K_TYPE k;
   size_t pos;
   bool initialized;
   uint64_t fwd_hash = 0;
@@ -224,7 +225,7 @@ public:
   BlindNtHash(const char* seq,
               typedefs::NUM_HASHES_TYPE num_hashes,
               typedefs::K_TYPE k,
-              size_t pos = 0);
+              ssize_t pos = 0);
 
   BlindNtHash(const BlindNtHash& obj)
     : seq(obj.seq)
@@ -302,7 +303,7 @@ public:
 
 private:
   std::deque<char> seq;
-  const typedefs::NUM_HASHES_TYPE num_hashes;
+  typedefs::NUM_HASHES_TYPE num_hashes;
   ssize_t pos;
   uint64_t fwd_hash = 0;
   uint64_t rev_hash = 0;
@@ -345,7 +346,8 @@ public:
              typedefs::K_TYPE k,
              size_t pos = 0)
     : SeedNtHash(seq.data(), seq.size(), seeds, num_hashes_per_seed, k, pos)
-  {}
+  {
+  }
 
   /**
    * Construct an ntHash object for spaced seeds.
@@ -379,7 +381,8 @@ public:
              typedefs::K_TYPE k,
              size_t pos = 0)
     : SeedNtHash(seq.data(), seq.size(), seeds, num_hashes_per_seed, k, pos)
-  {}
+  {
+  }
 
   SeedNtHash(const SeedNtHash& obj)
     : seq(obj.seq)
@@ -498,8 +501,8 @@ public:
 
 private:
   std::string_view seq;
-  const typedefs::NUM_HASHES_TYPE num_hashes_per_seed;
-  const typedefs::K_TYPE k;
+  typedefs::NUM_HASHES_TYPE num_hashes_per_seed;
+  typedefs::K_TYPE k;
   size_t pos;
   bool initialized;
   std::vector<typedefs::SpacedSeedBlocks> blocks;
@@ -535,7 +538,7 @@ public:
                   const std::vector<std::string>& seeds,
                   typedefs::NUM_HASHES_TYPE num_hashes_per_seed,
                   typedefs::K_TYPE k,
-                  size_t pos = 0);
+                  ssize_t pos = 0);
 
   BlindSeedNtHash(const BlindSeedNtHash& seed_nthash)
     : seq(seed_nthash.seq)
@@ -630,8 +633,8 @@ public:
 
 private:
   std::deque<char> seq;
-  const typedefs::NUM_HASHES_TYPE num_hashes_per_seed;
-  const typedefs::K_TYPE k;
+  typedefs::NUM_HASHES_TYPE num_hashes_per_seed;
+  typedefs::K_TYPE k;
   ssize_t pos;
   std::vector<typedefs::SpacedSeedBlocks> blocks;
   std::vector<typedefs::SpacedSeedMonomers> monomers;
@@ -642,4 +645,4 @@ private:
   std::unique_ptr<uint64_t[]> hash_arr;
 };
 
-}
+} // namespace nthash
