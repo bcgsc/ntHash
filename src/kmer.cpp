@@ -44,27 +44,27 @@ inline uint64_t
 base_forward_hash(const char* seq, unsigned k)
 {
   uint64_t h_val = 0;
-  for (unsigned i = 0; i < k / 4; i++) {
+  for (unsigned i = 0; i < k - 3; i += 4) {
     h_val = srol(h_val, 4);
-    const uint8_t curr_offset = 4 * i;
-    const uint8_t tetramer_loc =
-      64 * CONVERT_TAB[(unsigned char)seq[curr_offset]] +     // NOLINT
-      16 * CONVERT_TAB[(unsigned char)seq[curr_offset + 1]] + // NOLINT
-      4 * CONVERT_TAB[(unsigned char)seq[curr_offset + 2]] +
-      CONVERT_TAB[(unsigned char)seq[curr_offset + 3]];
-    h_val ^= TETRAMER_TAB[tetramer_loc];
+    uint8_t loc = 0;
+    loc += 64 * CONVERT_TAB[(unsigned char)seq[i]];     // NOLINT
+    loc += 16 * CONVERT_TAB[(unsigned char)seq[i + 1]]; // NOLINT
+    loc += 4 * CONVERT_TAB[(unsigned char)seq[i + 2]];
+    loc += CONVERT_TAB[(unsigned char)seq[i + 3]];
+    h_val ^= TETRAMER_TAB[loc];
   }
   const unsigned remainder = k % 4;
   h_val = srol(h_val, remainder);
   if (remainder == 3) {
-    const uint8_t trimer_loc =
-      16 * CONVERT_TAB[(unsigned char)seq[k - 3]] + // NOLINT
-      4 * CONVERT_TAB[(unsigned char)seq[k - 2]] +
-      CONVERT_TAB[(unsigned char)seq[k - 1]];
+    uint8_t trimer_loc = 0;
+    trimer_loc += 16 * CONVERT_TAB[(unsigned char)seq[k - 3]]; // NOLINT
+    trimer_loc += 4 * CONVERT_TAB[(unsigned char)seq[k - 2]];
+    trimer_loc += CONVERT_TAB[(unsigned char)seq[k - 1]];
     h_val ^= TRIMER_TAB[trimer_loc];
   } else if (remainder == 2) {
-    const uint8_t dimer_loc = 4 * CONVERT_TAB[(unsigned char)seq[k - 2]] +
-                              CONVERT_TAB[(unsigned char)seq[k - 1]];
+    uint8_t dimer_loc = 0;
+    dimer_loc += 4 * CONVERT_TAB[(unsigned char)seq[k - 2]];
+    dimer_loc += CONVERT_TAB[(unsigned char)seq[k - 1]];
     h_val ^= DIMER_TAB[dimer_loc];
   } else if (remainder == 1) {
     h_val ^= SEED_TAB[(unsigned char)seq[k - 1]];
@@ -126,27 +126,27 @@ base_reverse_hash(const char* seq, unsigned k)
   uint64_t h_val = 0;
   unsigned remainder = k % 4;
   if (remainder == 3) {
-    uint8_t trimer_loc =
-      16 * RC_CONVERT_TAB[(unsigned char)seq[k - 1]] + // NOLINT
-      4 * RC_CONVERT_TAB[(unsigned char)seq[k - 2]] +
-      RC_CONVERT_TAB[(unsigned char)seq[k - 3]];
+    uint8_t trimer_loc = 0;
+    trimer_loc += 16 * RC_CONVERT_TAB[(unsigned char)seq[k - 1]]; // NOLINT
+    trimer_loc += 4 * RC_CONVERT_TAB[(unsigned char)seq[k - 2]];
+    trimer_loc += RC_CONVERT_TAB[(unsigned char)seq[k - 3]];
     h_val ^= TRIMER_TAB[trimer_loc];
   } else if (remainder == 2) {
-    uint8_t dimer_loc = 4 * RC_CONVERT_TAB[(unsigned char)seq[k - 1]] +
-                        RC_CONVERT_TAB[(unsigned char)seq[k - 2]];
+    uint8_t dimer_loc = 0;
+    dimer_loc += 4 * RC_CONVERT_TAB[(unsigned char)seq[k - 1]];
+    dimer_loc += RC_CONVERT_TAB[(unsigned char)seq[k - 2]];
     h_val ^= DIMER_TAB[dimer_loc];
   } else if (remainder == 1) {
     h_val ^= SEED_TAB[(unsigned char)seq[k - 1] & CP_OFF];
   }
-  for (unsigned i = 0; i < k / 4; i++) {
+  for (int i = (int)(k - remainder) - 1; i >= 3; i -= 4) {
     h_val = srol(h_val, 4);
-    uint8_t curr_offset = 4 * (k / 4 - i) - 1;
-    uint8_t tetramer_loc =
-      64 * RC_CONVERT_TAB[(unsigned char)seq[curr_offset]] +     // NOLINT
-      16 * RC_CONVERT_TAB[(unsigned char)seq[curr_offset - 1]] + // NOLINT
-      4 * RC_CONVERT_TAB[(unsigned char)seq[curr_offset - 2]] +
-      RC_CONVERT_TAB[(unsigned char)seq[curr_offset - 3]];
-    h_val ^= TETRAMER_TAB[tetramer_loc];
+    uint8_t loc = 0;
+    loc += 64 * RC_CONVERT_TAB[(unsigned char)seq[i]];     // NOLINT
+    loc += 16 * RC_CONVERT_TAB[(unsigned char)seq[i - 1]]; // NOLINT
+    loc += 4 * RC_CONVERT_TAB[(unsigned char)seq[i - 2]];
+    loc += RC_CONVERT_TAB[(unsigned char)seq[i - 3]];
+    h_val ^= TETRAMER_TAB[loc];
   }
   return h_val;
 }
