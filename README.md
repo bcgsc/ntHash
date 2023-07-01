@@ -85,5 +85,3 @@ Hamid Mohamadi, Justin Chu, Benjamin P Vandervalk, and Inanc Birol.
 
 + ntHash: [Hamid Mohamadi](https://github.com/mohamadi)
 + ntHash2: [Parham Kazemi](https://github.com/parham-k)
-+ btllib: [Vladimir Nikolic](https://github.com/vlad0x00)
-+ [argparse for C++](https://github.com/p-ranav/argparse)
