@@ -326,7 +326,7 @@ BlindNtHash::BlindNtHash(const char* seq,
                          typedefs::NUM_HASHES_TYPE num_hashes,
                          typedefs::K_TYPE k,
                          size_t pos)
-  : seq(seq, seq + k)
+  : seq(seq + pos, seq + pos + k)
   , num_hashes(num_hashes)
   , pos(pos)
   , hash_arr(new uint64_t[num_hashes])

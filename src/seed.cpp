@@ -654,7 +654,7 @@ BlindSeedNtHash::BlindSeedNtHash(const char* seq,
                                  typedefs::NUM_HASHES_TYPE num_hashes_per_seed,
                                  typedefs::K_TYPE k,
                                  size_t pos)
-  : seq(seq, seq + k)
+  : seq(seq + pos, seq + pos + k)
   , num_hashes_per_seed(num_hashes_per_seed)
   , k(k)
   , pos(pos)
@@ -667,7 +667,7 @@ BlindSeedNtHash::BlindSeedNtHash(const char* seq,
   check_seeds(seeds, k);
   get_blocks(seeds, blocks, monomers);
   unsigned pos_n = 0;
-  ntmsm64(seq,
+  ntmsm64(seq + pos,
           blocks,
           monomers,
           k,
