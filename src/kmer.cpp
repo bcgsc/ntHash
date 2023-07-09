@@ -124,7 +124,7 @@ inline uint64_t
 base_reverse_hash(const char* seq, unsigned k)
 {
   uint64_t h_val = 0;
-  unsigned remainder = k % 4;
+  const unsigned remainder = k % 4;
   if (remainder == 3) {
     uint8_t trimer_loc = 0;
     trimer_loc += 16 * RC_CONVERT_TAB[(unsigned char)seq[k - 1]]; // NOLINT
@@ -304,8 +304,8 @@ NtHash::peek(char char_in)
   if (SEED_TAB[(unsigned char)char_in] == SEED_N) {
     return false;
   }
-  uint64_t fwd = next_forward_hash(fwd_hash, k, seq[pos], char_in);
-  uint64_t rev = next_reverse_hash(rev_hash, k, seq[pos], char_in);
+  const uint64_t fwd = next_forward_hash(fwd_hash, k, seq[pos], char_in);
+  const uint64_t rev = next_reverse_hash(rev_hash, k, seq[pos], char_in);
   extend_hashes(fwd, rev, k, num_hashes, hash_arr.get());
   return true;
 }
@@ -328,8 +328,9 @@ NtHash::peek_back(char char_in)
   if (SEED_TAB[(unsigned char)char_in] == SEED_N) {
     return false;
   }
-  uint64_t fwd = prev_forward_hash(fwd_hash, k, seq[pos + k - 1], char_in);
-  uint64_t rev = prev_reverse_hash(rev_hash, k, seq[pos + k - 1], char_in);
+  const unsigned char char_out = seq[pos + k - 1];
+  const uint64_t fwd = prev_forward_hash(fwd_hash, k, char_out, char_in);
+  const uint64_t rev = prev_reverse_hash(rev_hash, k, char_out, char_in);
   extend_hashes(fwd, rev, k, num_hashes, hash_arr.get());
   return true;
 }
@@ -376,16 +377,18 @@ BlindNtHash::roll_back(char char_in)
 void
 BlindNtHash::peek(char char_in)
 {
-  uint64_t fwd = next_forward_hash(fwd_hash, seq.size(), seq.front(), char_in);
-  uint64_t rev = next_reverse_hash(rev_hash, seq.size(), seq.front(), char_in);
+  const typedefs::K_TYPE k = seq.size();
+  const uint64_t fwd = next_forward_hash(fwd_hash, k, seq.front(), char_in);
+  const uint64_t rev = next_reverse_hash(rev_hash, k, seq.front(), char_in);
   extend_hashes(fwd, rev, seq.size(), num_hashes, hash_arr.get());
 }
 
 void
 BlindNtHash::peek_back(char char_in)
 {
-  uint64_t fwd = prev_forward_hash(fwd_hash, seq.size(), seq.back(), char_in);
-  uint64_t rev = prev_reverse_hash(rev_hash, seq.size(), seq.back(), char_in);
+  const typedefs::K_TYPE k = seq.size();
+  const uint64_t fwd = prev_forward_hash(fwd_hash, k, seq.back(), char_in);
+  const uint64_t rev = prev_reverse_hash(rev_hash, k, seq.back(), char_in);
   extend_hashes(fwd, rev, seq.size(), num_hashes, hash_arr.get());
 }
 

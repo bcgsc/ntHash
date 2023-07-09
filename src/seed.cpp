@@ -22,7 +22,7 @@ get_blocks(const std::vector<std::string>& seed_strings,
            std::vector<SpacedSeedMonomers>& monomers)
 {
   for (const auto& seed_string : seed_strings) {
-    char pad = seed_string[seed_string.length() - 1] == '1' ? '0' : '1';
+    const char pad = seed_string[seed_string.length() - 1] == '1' ? '0' : '1';
     const std::string padded_string = seed_string + pad;
     SpacedSeedBlocks care_blocks, ignore_blocks;
     std::vector<unsigned> care_monos, ignore_monos;
@@ -33,7 +33,7 @@ get_blocks(const std::vector<std::string>& seed_strings,
         if (pos - i_start == 1) {
           care_monos.push_back(i_start);
         } else {
-          std::array<unsigned, 2> block{ { i_start, pos } };
+          const std::array<unsigned, 2> block{ { i_start, pos } };
           care_blocks.push_back(block);
         }
         i_start = pos;
@@ -42,18 +42,19 @@ get_blocks(const std::vector<std::string>& seed_strings,
         if (pos - i_start == 1) {
           ignore_monos.push_back(i_start);
         } else {
-          std::array<unsigned, 2> block{ { i_start, pos } };
+          const std::array<unsigned, 2> block{ { i_start, pos } };
           ignore_blocks.push_back(block);
         }
         i_start = pos;
         is_care_block = true;
       }
     }
-    unsigned num_cares = care_blocks.size() * 2 + care_monos.size();
-    unsigned num_ignores = ignore_blocks.size() * 2 + ignore_monos.size() + 2;
+    const unsigned num_cares = care_blocks.size() * 2 + care_monos.size();
+    const unsigned num_ignores =
+      ignore_blocks.size() * 2 + ignore_monos.size() + 2;
     if (num_ignores < num_cares) {
-      unsigned string_end = seed_string.length();
-      std::array<unsigned, 2> block{ { 0, string_end } };
+      const unsigned string_end = seed_string.length();
+      const std::array<unsigned, 2> block{ { 0, string_end } };
       ignore_blocks.push_back(block);
       blocks.push_back(ignore_blocks);
       monomers.push_back(ignore_monos);
@@ -92,7 +93,7 @@ check_seeds(const std::vector<std::string>& seeds, unsigned k)
                     std::to_string(seed.length()) +
                     ") not equal to k=" + std::to_string(k) + " in " + seed);
     }
-    std::string reversed(seed.rbegin(), seed.rend());
+    const std::string reversed(seed.rbegin(), seed.rend());
     if (seed != reversed) {
       raise_warning(
         "SeedNtHash",
@@ -157,7 +158,7 @@ ntmsm64(const char* kmer_seq,
     }
     fh_nomonos[i_seed] = fh_seed;
     rh_nomonos[i_seed] = rh_seed;
-    for (unsigned pos : seeds_monomers[i_seed]) {
+    for (const auto& pos : seeds_monomers[i_seed]) {
       fh_seed ^= srol_table((unsigned char)kmer_seq[pos], k - 1 - pos);
       rh_seed ^= srol_table((unsigned char)kmer_seq[pos] & CP_OFF, pos);
     }
@@ -588,10 +589,12 @@ SeedNtHash::peek(char char_in)
   if (!initialized) {
     return init();
   }
-  std::unique_ptr<uint64_t[]> fwd_hash_nomonos_cpy(new uint64_t[blocks.size()]);
-  std::unique_ptr<uint64_t[]> rev_hash_nomonos_cpy(new uint64_t[blocks.size()]);
-  std::unique_ptr<uint64_t[]> fwd_hash_cpy(new uint64_t[blocks.size()]);
-  std::unique_ptr<uint64_t[]> rev_hash_cpy(new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> fwd_hash_nomonos_cpy(
+    new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> rev_hash_nomonos_cpy(
+    new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> fwd_hash_cpy(new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> rev_hash_cpy(new uint64_t[blocks.size()]);
   std::memcpy(fwd_hash_nomonos_cpy.get(),
               fwd_hash_nomonos.get(),
               blocks.size() * sizeof(uint64_t));
@@ -632,10 +635,10 @@ SeedNtHash::peek_back(char char_in)
   if (!initialized) {
     return init();
   }
-  std::unique_ptr<uint64_t[]> fwd_hash_nomonos_cpy(new uint64_t[blocks.size()]);
-  std::unique_ptr<uint64_t[]> rev_hash_nomonos_cpy(new uint64_t[blocks.size()]);
-  std::unique_ptr<uint64_t[]> fwd_hash_cpy(new uint64_t[blocks.size()]);
-  std::unique_ptr<uint64_t[]> rev_hash_cpy(new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> fwd_hash_nomonos_cpy(new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> rev_hash_nomonos_cpy(new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> fwd_hash_cpy(new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> rev_hash_cpy(new uint64_t[blocks.size()]);
   std::memcpy(fwd_hash_nomonos_cpy.get(),
               fwd_hash_nomonos.get(),
               blocks.size() * sizeof(uint64_t));
