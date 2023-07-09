@@ -3,7 +3,12 @@ project(
     'cpp',
     version: '2.4.0',
     license: 'MIT',
-    default_options: ['cpp_std=c++17', 'werror=true', 'warning_level=3'],
+    default_options: [
+        'cpp_std=c++17',
+        'werror=true',
+        'warning_level=3',
+        'optimization=3',
+    ],
 )
 
 include_dirs = [include_directories('include')]
