@@ -8,5 +8,5 @@ fi
 set -euo pipefail
 
 cd "${MESON_SOURCE_ROOT}"
-rm -r docs
+rm -r docs/generated
 doxygen
