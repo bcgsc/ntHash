@@ -635,8 +635,10 @@ SeedNtHash::peek_back(char char_in)
   if (!initialized) {
     return init();
   }
-  const std::unique_ptr<uint64_t[]> fwd_hash_nomonos_cpy(new uint64_t[blocks.size()]);
-  const std::unique_ptr<uint64_t[]> rev_hash_nomonos_cpy(new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> fwd_hash_nomonos_cpy(
+    new uint64_t[blocks.size()]);
+  const std::unique_ptr<uint64_t[]> rev_hash_nomonos_cpy(
+    new uint64_t[blocks.size()]);
   const std::unique_ptr<uint64_t[]> fwd_hash_cpy(new uint64_t[blocks.size()]);
   const std::unique_ptr<uint64_t[]> rev_hash_cpy(new uint64_t[blocks.size()]);
   std::memcpy(fwd_hash_nomonos_cpy.get(),
