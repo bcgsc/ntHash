@@ -69,8 +69,6 @@ var NAVTREEINDEX0 =
 "index.html#autotoc_md2":[2],
 "index.html#autotoc_md3":[3],
 "index.html#autotoc_md4":[4],
-"index.html#autotoc_md5":[4,0],
-"index.html#autotoc_md6":[4,1],
 "namespaces.html":[5,0],
 "nthash_8hpp_source.html":[7,0,0,0,0],
 "pages.html":[]

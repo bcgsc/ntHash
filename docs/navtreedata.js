@@ -29,10 +29,7 @@ var NAVTREE =
     [ "Usage", "index.html#autotoc_md1", null ],
     [ "Examples", "index.html#autotoc_md2", null ],
     [ "For developers", "index.html#autotoc_md3", null ],
-    [ "Publications", "index.html#autotoc_md4", [
-      [ "<a href=\"https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac564/6674501\" >ntHash2</a>", "index.html#autotoc_md5", null ],
-      [ "<a href=\"http://bioinformatics.oxfordjournals.org/content/early/2016/08/01/bioinformatics.btw397\" >ntHash</a>", "index.html#autotoc_md6", null ]
-    ] ],
+    [ "Publications", "index.html#autotoc_md4", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", null ]
     ] ],
