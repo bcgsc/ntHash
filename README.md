@@ -78,9 +78,9 @@ If compilation is successful, `libnthash.a` will be available in the `build` fol
 Before sending a PR, make sure that:
 
 - tests pass by running `meson test` in the project directory
-- code is formatted properly by running `ninja clang-format` in the `build` folder
-- coding standards have been met by making sure running `ninja clang-tidy-check` in `build` returns no errors
-- documentation is up-to-date by running `ninja docs` in `build`
+- code is formatted properly by running `ninja clang-format` in the `build` folder (requires `clang-format` to be available)
+- coding standards have been met by making sure running `ninja clang-tidy-check` in `build` returns no errors (requires `clang-tools` to be installed)
+- documentation is up-to-date by running `ninja docs` in `build` (requires [doxygen](https://www.doxygen.nl/))
 
 # Publications
 
