@@ -28,7 +28,7 @@ get_data(unsigned n, unsigned l)
 int
 main()
 {
-  const auto data = get_data(10000, 100);
+  const auto data = get_data(1000000, 100);
   auto t1 = std::chrono::system_clock::now();
   uint64_t sum = 0;
   for (const auto& seq : data) {
