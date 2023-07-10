@@ -1,0 +1,96 @@
+jobs:
+
+- job: linux
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - checkout: self
+
+  - script: echo "##vso[task.prependpath]$CONDA/bin"
+    displayName: Add conda to PATH
+
+  - script: conda create --yes --quiet --name nthash
+    displayName: Create Anaconda environment
+
+  - script: |
+      source activate nthash
+      conda install --yes -c conda-forge mamba
+      mamba install --yes -c conda-forge compilers clang llvm clang-format clang-tools meson ninja openmp
+    displayName: Install dependencies
+  
+  - script: |
+      source activate nthash
+      meson setup build && cd build && ninja
+    displayName: 'Build the project'
+
+  - script: |
+      source activate nthash
+      set -o errexit -o pipefail
+      cd examples
+      g++ kmer_hashing.cpp -std=c++17 -I../include -L../build -lnthash && ./a.out
+    displayName: 'Compile example'
+
+  - script: |
+      source activate nthash
+      cd build && ninja clang-format-check
+    displayName: 'Check code format'
+
+  - script: |
+      source activate nthash
+      cd build && ninja clang-tidy
+    displayName: 'Run clang-tidy'
+
+  - script: |
+      source activate nthash
+      cd build && meson test --print-errorlogs
+    displayName: 'Run tests'
+
+- job: macos
+  pool:
+    vmImage: 'macOS-latest'
+
+  steps:
+  - checkout: self
+    persistCredentials: true
+
+  - script: |
+      echo "##vso[task.prependpath]$CONDA/bin"
+      conda update -n base -y -c defaults conda
+    displayName: Add conda to PATH
+
+  - script: conda create --yes --quiet --name nthash
+    displayName: Create Anaconda environment
+
+  - script: |
+      source activate nthash
+      conda install --yes -c conda-forge mamba
+      mamba install --yes -c conda-forge compilers clang llvm clang-format clang-tools meson ninja openmp
+    displayName: Install dependencies
+  
+  - script: |
+      source activate nthash
+      meson setup build && cd build && ninja
+    displayName: 'Build the project'
+
+  - script: |
+      source activate nthash
+      set -o errexit -o pipefail
+      cd examples
+      g++ kmer_hashing.cpp -std=c++17 -I../include -L../build -lnthash && ./a.out
+    displayName: 'Compile example'
+
+  - script: |
+      source activate nthash
+      cd build && ninja clang-format-check
+    displayName: 'Check code format'
+
+  - script: |
+      source activate nthash
+      cd build && ninja clang-tidy
+    displayName: 'Run clang-tidy'
+
+  - script: |
+      source activate nthash
+      cd build && meson test --print-errorlogs
+    displayName: 'Run tests'
