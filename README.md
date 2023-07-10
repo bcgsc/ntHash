@@ -4,41 +4,36 @@
 
 ![Logo](nthash-logo.png)
 
-ntHash 
-=
-ntHash is a recursive hash function for hashing all possible k-mers in a DNA/RNA sequence.
+ntHash is an efficient rolling hash function for k-mers and spaced seeds.
 
-# Installation & Usage
+# Installation
 
 Make sure [Meson](https://mesonbuild.com/) is installed on the system.
 
-Download the repo (either from the releases section or close using `git clone https://github.com/bcgsc/ntHash`). Setup meson in an arbitrary directory (e.g. `build`), by running the following command in the project's root:
+Download the repo (either from the releases section or close using `git clone https://github.com/bcgsc/ntHash`). Setup meson in an arbitrary directory (e.g. `build`), by running the following command in the project's root (include `--prefix=PREFIX` set the installation prefix to `PREFIX`):
 
 ```shell
-meson setup build
+meson setup --buildtype=release --prefix=PREFIX build
 ```
 
-Then, build the project and its dependencies using:
+Then, install the project and its dependencies using:
 
 ```shell
-cd build && ninja
+meson install -C build 
 ```
 
-The project's static library (`libnthash.a`) and tests (`nthash`) will be generated alongside in the `build` folder.
+This will install `include/nthash` and `lib/libnthash.a` to the installation prefix.
 
-Tests can be run using `ninja` in the `build` directory:
-
-```shell
-ninja test
-```
-
-### Static Library Usage
+# Usage
 
 To use ntHash in a C++ project:
-+ Link the code with `libnthash.a` (i.e. pass `-Lpath/to/nthash/build -lnthash` to the compiler).
-+ Add the `include` directory (pass `-I path/to/nthash/include` to the compiler).
-+ Import ntHash in the code using `#include <nthash/nthash.hpp>`.
-+ Access ntHash classes from the `nthash` namespace.
+- Import ntHash in the code using `#include <nthash/nthash.hpp>`
+- Access ntHash classes from the `nthash` namespace
+- Add the `include` directory (pass `-IPREFIX/include` to the compiler)
+- Link the code with `libnthash.a` (i.e. pass `-LPREFIX/lib -lnthash` to the compiler, where `PREFIX` is the installation prefix)
+- Compile your code with `-std=c++17` (and preferably `-O3`) enabled
+
+Refer to [docs](https://bcgsc.github.io/ntHash/) for more information.
 
 # Examples
 
@@ -54,21 +49,40 @@ while (nth.roll()) {
 ```
 
 ```C++
-std::vector<std::string> seeds = {"10001", "11011"};
+std::vector<std::string> seeds = {"10101", "11011"};
 nthash::SeedNtHash nth("TGACTGATCGAGTCGTACTAG", seeds, 3, 5);
 while (nth.roll()) {
-    // nth.hashes()[0] = "T###T"'s first hash
-    // nth.hashes()[1] = "T###T"'s second hash
-    // nth.hashes()[2] = "T###T"'s third hash
+    // nth.hashes()[0] = "T*A#T"'s first hash
+    // nth.hashes()[1] = "T#A#T"'s second hash
+    // nth.hashes()[2] = "T#A#T"'s third hash
     // nth.hashes()[3] = "TG#CT"'s first hash
 }
 ```
 
-Refer to [docs](https://bcgsc.github.io/ntHash/) for more information.
+# For developers
 
+If you would like to contribute to the development of ntHash, after forking/cloning the repo, create the `build` directory without the release flag:
 
-Publications
-============
+```
+meson setup build
+```
+
+Compile the code, tests, and benchmarking script using:
+
+```
+meson compile -C build
+```
+
+If compilation is successful, `libnthash.a` will be available in the `build` folder. The benchmarking script is also compiled as the `bench` binary file in `build`.
+
+Before sending a PR, make sure that:
+
+- tests pass by running `meson test` in the project directory
+- code is formatted properly by running `ninja clang-format` in the `build` folder
+- coding standards have been met by making sure running `ninja clang-tidy-check` in `build` returns no errors
+- documentation is up-to-date by running `ninja docs` in `build`
+
+# Publications
 
 ## [ntHash2](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac564/6674501)
 Parham Kazemi, Johnathan Wong, Vladimir Nikolić, Hamid Mohamadi, René L Warren, Inanç Birol, ntHash2: recursive spaced seed hashing for nucleotide sequences, Bioinformatics, 2022;, btac564, [https://doi.org/10.1093/bioinformatics/btac564](https://doi.org/10.1093/bioinformatics/btac564)
@@ -78,10 +92,4 @@ Parham Kazemi, Johnathan Wong, Vladimir Nikolić, Hamid Mohamadi, René L Warren
 Hamid Mohamadi, Justin Chu, Benjamin P Vandervalk, and Inanc Birol.
 **ntHash: recursive nucleotide hashing**.
 *Bioinformatics* (2016) 32 (22): 3492-3494.
-[doi:10.1093/bioinformatics/btw397 ](http://dx.doi.org/10.1093/bioinformatics/btw397)
-
-
-# Acknowledgements
-
-+ ntHash: [Hamid Mohamadi](https://github.com/mohamadi)
-+ ntHash2: [Parham Kazemi](https://github.com/parham-k)
+[doi:10.1093/bioinformatics/btw397](http://dx.doi.org/10.1093/bioinformatics/btw397)
