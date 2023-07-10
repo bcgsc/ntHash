@@ -52,7 +52,7 @@ while (nth.roll()) {
 std::vector<std::string> seeds = {"10101", "11011"};
 nthash::SeedNtHash nth("TGACTGATCGAGTCGTACTAG", seeds, 3, 5);
 while (nth.roll()) {
-    // nth.hashes()[0] = "T*A#T"'s first hash
+    // nth.hashes()[0] = "T#A#T"'s first hash
     // nth.hashes()[1] = "T#A#T"'s second hash
     // nth.hashes()[2] = "T#A#T"'s third hash
     // nth.hashes()[3] = "TG#CT"'s first hash
@@ -84,12 +84,9 @@ Before sending a PR, make sure that:
 
 # Publications
 
-## [ntHash2](https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac564/6674501)
 Parham Kazemi, Johnathan Wong, Vladimir Nikolić, Hamid Mohamadi, René L Warren, Inanç Birol, ntHash2: recursive spaced seed hashing for nucleotide sequences, Bioinformatics, 2022;, btac564, [https://doi.org/10.1093/bioinformatics/btac564](https://doi.org/10.1093/bioinformatics/btac564)
 
-## [ntHash](http://bioinformatics.oxfordjournals.org/content/early/2016/08/01/bioinformatics.btw397)
-
 Hamid Mohamadi, Justin Chu, Benjamin P Vandervalk, and Inanc Birol.
-**ntHash: recursive nucleotide hashing**.
+ntHash: recursive nucleotide hashing.
 *Bioinformatics* (2016) 32 (22): 3492-3494.
 [doi:10.1093/bioinformatics/btw397](http://dx.doi.org/10.1093/bioinformatics/btw397)
