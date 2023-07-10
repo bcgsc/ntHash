@@ -61,6 +61,7 @@ jobs:
 
   - script: conda create --yes --quiet --name nthash
     displayName: Create Anaconda environment
+
   - script: |
       source activate nthash
       conda install --yes -c conda-forge mamba
