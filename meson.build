@@ -48,7 +48,7 @@ endif
 doxygen = find_program('doxygen', required: false)
 if doxygen.found()
     message('Doxygen found')
-    run_target('docs', command: [doxygen, meson.source_root() + '/Doxyfile'])
+    run_target('docs', command: [meson.source_root() + '/update-docs.sh'])
 else
     warning('Documentation disabled without doxygen')
 endif

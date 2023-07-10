@@ -64,7 +64,7 @@ while (nth.roll()) {
 }
 ```
 
-Refer to docs for more information.
+Refer to [docs](https://bcgsc.github.io/ntHash/) for more information.
 
 
 Publications
